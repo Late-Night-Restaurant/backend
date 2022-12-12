@@ -1,2 +1,2 @@
-# Server
-Late Night Restaurant Server Repository
+# backend
+Late Night Restaurant Backend Repository
