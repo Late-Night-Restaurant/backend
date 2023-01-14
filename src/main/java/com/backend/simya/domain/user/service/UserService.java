@@ -9,7 +9,6 @@ import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

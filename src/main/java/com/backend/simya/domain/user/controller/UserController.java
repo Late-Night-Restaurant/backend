@@ -8,14 +8,18 @@ import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.common.ValidErrorDetails;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/simya")
 @RequiredArgsConstructor
@@ -26,8 +30,13 @@ public class UserController {
 
 
     @PostMapping("/form-signup")
-    public BaseResponse<UserDto> signup(@Valid @RequestBody UserDto userDto) {
+    public BaseResponse signup(@Valid @RequestBody UserDto userDto, Errors errors) {
         try {
+            if (errors.hasErrors()) {
+                log.info("ValidError: {}", errors);
+                ValidErrorDetails errorDetails = new ValidErrorDetails();
+                return new BaseResponse<>(errorDetails.validateHandling(errors));
+            }
             return new BaseResponse<>(userService.formSignup(userDto));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
