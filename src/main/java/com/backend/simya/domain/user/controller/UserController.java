@@ -30,7 +30,7 @@ public class UserController {
         try {
             return new BaseResponse<>(userService.formSignup(userDto));
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -44,21 +44,30 @@ public class UserController {
 //            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);// 토큰 헤더에 넣기
             return new BaseResponse<>(tokenDto);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/mypage")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // USER, ADMIN 권한 모두 허용
     public BaseResponse<User> getMyUserInfo() {
-        User userResponse = userService.getMyUserWithAuthorities().get();
-        return new BaseResponse<>(userResponse);
+        try {
+            User userResponse = userService.getMyUserWithAuthorities();
+            return new BaseResponse<>(userResponse);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     @GetMapping("/user/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')")   // ADMIN 권한만 허용 -> API를 호출 가능한 권한을 제한함
     public BaseResponse<User> getUserInfo(@PathVariable String username) {
-        User userResponse = userService.getUserWithAuthorities(username).get();
-        return new BaseResponse<>(userResponse);
+        try {
+            User userResponse = userService.getUserWithAuthorities(username);
+            return new BaseResponse<>(userResponse);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
     }
 }

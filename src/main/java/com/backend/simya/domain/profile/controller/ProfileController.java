@@ -28,21 +28,22 @@ public class ProfileController {
     private final UserService userService;
 
     @PostMapping("")
-    public BaseResponse<ProfileResponseDto> createProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto) throws BaseException {
+    public BaseResponse<ProfileResponseDto> createProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto) {
 
+        User user = null;
+        try {
 //        User user = authService.authenticateUser();  // 현재 접속한 유저
-        User user = userService.getMyUserWithAuthorities().orElseThrow(
-                () -> new BaseException(USERS_NOT_AUTHORIZED)
-        );
-        log.info("ProfileController - user: {}", user);
-        if (user == null) {
-            return new BaseResponse("존재하지 않는 사용자입니다.");   // TODO Custom Status ENUM 으로 만들어서 관리
+            user = userService.getMyUserWithAuthorities();
+            log.info("ProfileController - user: {}", user);
+        } catch (BaseException e) {
+            if (user == null) {
+                return new BaseResponse<>(e.getStatus());
+            }
         }
 
         try {
             profileRequestDto.setUserProfile(user);
             ProfileResponseDto profileResponseDto = profileService.createProfile(profileRequestDto);
-
             return new BaseResponse<>(profileResponseDto);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

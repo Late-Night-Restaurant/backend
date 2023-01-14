@@ -15,8 +15,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class UserDto {
 
-    @Email
-    @NotNull
+    @Email(message = "이메일 형식을 확인해주세요.")
+    @NotNull(message = "이메일을 입력해주세요.")
     @Size(min = 3, max = 50)
     private String email;
 

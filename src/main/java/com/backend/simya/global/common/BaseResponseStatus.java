@@ -25,14 +25,16 @@ public enum BaseResponseStatus {
     INVALID_USER_JWT(false, 403, "권한이 없는 유저의 접근입니다."),
 
     // user 관련
-    USERS_NOT_AUTHORIZED(false, 2009, "인가되지 않은 사용자입니다."),
-    USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요"),
-    POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
-    POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
-    POST_USERS_EXISTS_EMAIL(false, 2017, "중복된 이메일입니다."),
+    USERS_NOT_AUTHORIZED(false, 400, "인가되지 않은 사용자입니다."),
+    USERS_NOT_FOUND(false, 400, "존재하지 않는 사용자입니다."),
+    USERS_EMPTY_USER_ID(false, 400, "유저 아이디 값을 확인해주세요"),
+
+    POST_USERS_EXISTS_EMAIL(false, 400, "중복된 이메일입니다."),
 
     POST_USERS_EMPTY_PASSWORD(false, 400, "비밀번호를 입력해주세요."),
     USERS_PASSWORD_FORMAT(false, 400, "비밀번호는 8자 이상의 영문 대소문자와 특수문자로 구성해야 합니다."),
+
+    ACCESS_ONLY_ADMIN(false, 400, "관리자만 접근 가능합니다."),
 
 
     // user 관련
@@ -47,15 +49,18 @@ public enum BaseResponseStatus {
     DATABASE_ERROR(false, 503, "데이터베이스 연결에 실패했습니다."),
     SERVER_ERROR(false, 503, "서버와의 연결에 실패했습니다."),
 
+    GET_FAIL_USERINFO(false, 500, "회원정보 조회에 실패했습니다"),
+    POST_FAIL_USER(false, 500, "회원가입에 실패했습니다."),
+
     // [PATCH] user 정보 수정 시
-    MODIFY_FAIL_USERNAME(false, 4014, "회원 이름을 변경하는 데 실패했습니다."),
-    MODIFY_FAIL_POSTS_INFO(false, 4015, "게시글 정보 수정에 실패했습니다."),
+    MODIFY_FAIL_USERNAME(false, 500, "회원 이름을 변경하는 데 실패했습니다."),
+    MODIFY_FAIL_POSTS_INFO(false, 500, "게시글 정보 수정에 실패했습니다."),
 
-    DELETE_FAIL_PROFILE(false, 4100, "프로필 삭제에 실패했습니다."),
-    UPDATE_FAIL_PROFILE(false, 4100, "프로필 수정에 실패했습니다."),
+    DELETE_FAIL_PROFILE(false, 500, "프로필 삭제에 실패했습니다."),
+    UPDATE_FAIL_PROFILE(false, 500, "프로필 수정에 실패했습니다."),
 
-    PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패했습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패했습니다.");
+    PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
+    PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다.");
 
     /**
      * 5000, 6000 : 필요 시 추가 구현
