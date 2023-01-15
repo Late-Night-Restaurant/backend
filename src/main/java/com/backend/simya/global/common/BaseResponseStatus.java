@@ -45,6 +45,9 @@ public enum BaseResponseStatus {
     FAILED_TO_LOGIN(false, 404, "존재하지 않는 아이디이거나 비밀번호가 틀렸습니다."),
     BANNED_USER_IN_LOGIN(false, 403, "정지된 유저이므로 로그인이 불가합니다."),
 
+    USERS_NEED_ONE_MORE_PROFILE(false, 400, "모든 회원은 하나 이상의 프로필이 존재해야 합니다."),
+    ALREADY_DELETE_PROFILE(false, 400, "이미 삭제된 프로필입니다."),
+
 
 
     // 500 ~ : Database, Server 오류
@@ -63,8 +66,10 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_USERNAME(false, 500, "회원 이름을 변경하는 데 실패했습니다."),
     MODIFY_FAIL_POSTS_INFO(false, 500, "게시글 정보 수정에 실패했습니다."),
 
+    POST_FAIL_PROFILE(false, 500, "프로필 생성에 실패했습니다."),
     DELETE_FAIL_PROFILE(false, 500, "프로필 삭제에 실패했습니다."),
     UPDATE_FAIL_PROFILE(false, 500, "프로필 수정에 실패했습니다."),
+    SET_FAIL_MAIN_PROFILE(false, 500, "메인 프로필 지정에 실패했습니다."),
 
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다.");
