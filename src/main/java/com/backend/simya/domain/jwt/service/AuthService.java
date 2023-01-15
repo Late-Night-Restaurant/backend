@@ -11,12 +11,15 @@ import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -44,91 +47,119 @@ public class AuthService {
     //@Transactional
     public TokenDto login(LoginDto loginDto) throws BaseException {
         try{
-            Authentication authentication = authenticate(loginDto); // 인증
+            Authentication authentication = authenticate(loginDto);  // 인증
             return authorize(authentication);
-        } catch (Exception e) {
+        } catch (Exception exception) {
             throw new BaseException(FAILED_TO_LOGIN);
         }
     }
 
     // Authencation 객체를 만들어 인증한 뒤, Context에 저장
     @Transactional
-    public Authentication authenticate(LoginDto loginDto) throws UsernameNotFoundException {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
+    public Authentication authenticate(LoginDto loginDto) throws UsernameNotFoundException, BaseException {
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return authentication;
+        } catch (AuthenticationException e) {
+            throw new BaseException(USERS_INVALID_ACCESS);
+        } catch (Exception exception) {
+            throw new BaseException(USERS_NOT_AUTHORIZED);
+        }
     }
 
     // 토큰 발행으로 인가
     @Transactional
-    public TokenDto authorize(Authentication authentication) {
+    public TokenDto authorize(Authentication authentication) throws BaseException {
 
-        TokenDto tokenDto = tokenProvider.createToken(authentication.getName());
+        try {
+            TokenDto tokenDto = tokenProvider.createToken(authentication.getName());
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .key(authentication.getName())
+                    .value(tokenDto.getRefreshToken())
+                    .build();
 
-        refreshTokenRepository.save(refreshToken);
+            refreshTokenRepository.save(refreshToken);
 
-        return tokenDto;
+            return tokenDto;
+        } catch (Exception exception) {
+            throw new BaseException(FAILED_TO_JWT);
+        }
     }
 
     @Transactional
-    public HttpHeaders inputTokenInHeader(TokenDto tokenDto) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getAccessToken());
-        return httpHeaders;
+    public HttpHeaders inputTokenInHeader(TokenDto tokenDto) throws BaseException {
+        try {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getAccessToken());
+            return httpHeaders;
+        } catch (Exception exception) {
+            throw new BaseException(FAILED_JWT_IN_HEADER);
+        }
     }
 
     // 로그인한 사용자 여부에 대한 검증 시 Header 에서 토큰 값을 가져온다.
-    public String getJwt() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        log.info("AuthService - getJwt() : header에 저장된 Access Token {}", request.getHeader("Authorization"));
-        return request.getHeader("Authorization").substring(7);
+    public String getJwt() throws BaseException {
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            log.info("AuthService - getJwt() : header에 저장된 Access Token {}", request.getHeader("Authorization"));
+            return request.getHeader("Authorization").substring(7);
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
     }
 
     public String getUsername() throws BaseException {
-        String accessToken = getJwt();
-        if (accessToken == null) {
-            throw new BaseException(EMPTY_JWT);
-        }
-        // TODO Access Token 만료 여부 체크 로직 추가
-
-        Claims claims;
-
         try {
-            claims = tokenProvider.parseClaims(accessToken);
+            String accessToken = getJwt();
+            if (accessToken == null) {
+                throw new BaseException(EMPTY_JWT);
+            }
+            // TODO Access Token 만료 여부 체크 로직 추가
+
+            Claims claims = tokenProvider.parseClaims(accessToken);
+            log.info("AuthService - getUsername() : {}", claims);
+
+            return claims.get("sub", String.class);
         } catch (Exception e) {
             throw new BaseException(INVALID_JWT);
         }
-        log.info("AuthService - getUsername() : {}", claims);
-
-        return claims.get("sub", String.class);
     }
 
     public User authenticateUser() throws BaseException {
         String username = getUsername();
-        return userRepository.findByEmail(username).orElseThrow();
+        return userRepository.findByEmail(username).orElseThrow(
+                () -> new BaseException(USERS_NOT_FOUND)
+        );
     }
 
-    public boolean validateClaim(String accessToken) {
+    public boolean validateClaim(String accessToken) throws BaseException {
         try {
             Claims claims = tokenProvider.parseClaims(accessToken);
             return true;
         } catch (ExpiredJwtException e) {
             // TODO 토큰 만료 시, TokenRequestDto (AccessToken, RefreshToken 넘겨서 갱신)
+
             return false;
-        }
+        } /*catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+            throw new BaseException(MALFORMED_JWT);
+        } catch (UnsupportedJwtException e) {
+            log.info("지원하지 않는 JWT 토큰입니다.");
+            throw new BaseException(UNSUPPORTED_JWT);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+            throw new BaseException(INVALID_JWT);
+        }*/
 
     }
 
 
 
-
+    // TODO validateClaim -> reissue 에 넣어서 만료여부 체크 TokenProvider 거치지 않도록
     /**
      * 토큰 만료 시 재발급하는 메소드
      */

@@ -122,6 +122,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     //== 연관관계 매핑 메서드 ==//
     public void addProfile(Profile profile) {
         profileList.add(profile);
+        profile.setUserProfile(this);
     }
 
     public int getMainProfile() {
@@ -132,4 +133,9 @@ public class User extends BaseTimeEntity implements UserDetails {
         }
         return -1;
     }
+
+    /*public User toEntity() {
+        return User.builder()
+                .
+    }*/
 }
