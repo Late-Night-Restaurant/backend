@@ -55,6 +55,10 @@ public class Profile extends BaseTimeEntity {
         this.isRepresent = true;
     }
 
+    public void autoSetMainProfile() {
+        this.getUser().getProfileList().get(0).isRepresent = true;
+    }
+
     public void cancelMainProfile() {
         this.isRepresent = false;
     }

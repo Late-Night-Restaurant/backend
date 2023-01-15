@@ -9,6 +9,7 @@ import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.common.BaseResponseStatus;
 import com.backend.simya.global.common.ValidErrorDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
 
 @Slf4j
 @RestController
@@ -33,7 +36,7 @@ public class ProfileController {
         try {
             if (errors.hasErrors()) {
                 ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(errorDetails.validateHandling(errors));
+                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
             }
 //        User user = authService.authenticateUser();  // 현재 접속한 유저
             user = userService.getMyUserWithAuthorities();

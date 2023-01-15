@@ -1,6 +1,8 @@
 package com.backend.simya.domain.user.service;
 
 
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.user.dto.request.UserDto;
 import com.backend.simya.domain.user.entity.LoginType;
 import com.backend.simya.domain.user.entity.Role;
@@ -24,6 +26,7 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -40,6 +43,17 @@ public class UserService {
                         .role(Role.ROLE_USER)
                         .activated(true)
                         .build();
+
+                Profile mainProfile = Profile.builder()
+                        .nickname(userDto.getProfile().getNickname())
+                        .user(newUser)
+                        .comment(userDto.getProfile().getComment())
+                        .picture(userDto.getProfile().getPicture())
+                        .isRepresent(true)
+                        .activated(true)
+                        .build();
+                newUser.addProfile(mainProfile);
+                profileRepository.save(mainProfile);
 
                 return UserDto.from(userRepository.save(newUser));
             }

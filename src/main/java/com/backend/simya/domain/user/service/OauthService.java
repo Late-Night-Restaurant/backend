@@ -5,6 +5,8 @@ import com.backend.simya.domain.jwt.entity.RefreshToken;
 import com.backend.simya.domain.jwt.repository.RefreshTokenRepository;
 import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.user.dto.response.KakaoAccountDto;
 import com.backend.simya.domain.user.dto.response.KakaoTokenDto;
 import com.backend.simya.domain.user.entity.LoginType;
@@ -31,6 +33,7 @@ public class OauthService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final RefreshTokenRepository tokenRepository;
     private final AuthService authService;
     private final TokenProvider tokenProvider;
@@ -140,6 +143,18 @@ public class OauthService {
                     .role(Role.ROLE_USER)
                     .activated(true)
                     .build();
+
+            Profile mainProfile = Profile.builder()
+                    .nickname("simya")
+                    .user(newKakaoUser)
+                    .comment(null)
+                    .picture(null)
+                    .isRepresent(true)
+                    .activated(true)
+                    .build();
+            newKakaoUser.addProfile(mainProfile);
+            profileRepository.save(mainProfile);
+
             userRepository.save(newKakaoUser);
         }
         return tokenProvider.createToken(email);

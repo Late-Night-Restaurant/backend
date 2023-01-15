@@ -8,6 +8,7 @@ import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.common.BaseResponseStatus;
 import com.backend.simya.global.common.ValidErrorDetails;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
 
 @Slf4j
 @RestController
@@ -35,7 +38,7 @@ public class UserController {
             if (errors.hasErrors()) {
                 log.info("ValidError: {}", errors);
                 ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(errorDetails.validateHandling(errors));
+                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
             }
             return new BaseResponse<>(userService.formSignup(userDto));
         } catch (BaseException e) {
@@ -48,7 +51,7 @@ public class UserController {
         try{
             if (errors.hasErrors()) {
                 ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(errorDetails.validateHandling(errors));
+                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
             }
 
             TokenDto tokenDto = authService.login(loginDto);

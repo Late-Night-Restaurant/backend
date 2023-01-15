@@ -80,11 +80,16 @@ public class ProfileService {
     public void deleteProfile(Long profileId) throws BaseException {
         try {
             Profile profile = getProfileInfo(profileId);
+            boolean isMain = profile.isRepresent();
             if (profile.isActivated()) {
                 if (profile.getUser().getProfileList().isEmpty()) {
                     throw new BaseException(USERS_NEED_ONE_MORE_PROFILE);
                 }
                 profile.delete(profileId);
+
+                if (isMain) {
+                    profile.autoSetMainProfile();
+                }
             } else {
                 throw new BaseException(ALREADY_DELETE_PROFILE);
             }
