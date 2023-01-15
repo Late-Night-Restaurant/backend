@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_EMAIL(false, 2017, "중복된 이메일입니다."),
+    PROFILE_NOT_FOUND(false, 2018, "존재하지 않는 프로필입니다."),
 
     POST_USERS_EMPTY_PASSWORD(false, 400, "비밀번호를 입력해주세요."),
     USERS_PASSWORD_FORMAT(false, 400, "비밀번호는 8자 이상의 영문 대소문자와 특수문자로 구성해야 합니다."),
