@@ -1,6 +1,7 @@
 package com.backend.simya.domain.user.dto.request;
 
 import com.backend.simya.domain.profile.dto.request.ProfileRequestDto;
+import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -28,9 +29,12 @@ public class UserDto {
 
     public static UserDto from(User user) {
         if (user == null) return null;
+        Profile profile = user.getProfileList().get(0);
+        ProfileRequestDto profileRequestDto = new ProfileRequestDto(profile.getNickname(), profile.getComment(), profile.getPicture(), user);
 
         return UserDto.builder()
                 .email(user.getEmail())
+                .profile(profileRequestDto)
                 .build();
     }
 
