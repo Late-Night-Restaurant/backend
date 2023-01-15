@@ -24,19 +24,19 @@ public class ProfileRequestDto {
 
     private String picture;
 
-    private User user;
+//    private User user;
 
-    // TODO User 에서 addProfileList 할 때 한번에 처리하기
-    public void setUserProfile(User user) {
-        this.user = user;
-    }
+//    // TODO User 에서 addProfileList 할 때 한번에 처리하기
+//    public void setUserProfile(User user) {
+//        this.user = user;
+//    }
 
     public Profile toEntity() {
         return Profile.builder()
                 .nickname(nickname)
                 .comment(comment)
                 .picture(picture)
-                .user(user)
+                .user(null)
                 .isRepresent(false)
                 .activated(true)
                 .build();

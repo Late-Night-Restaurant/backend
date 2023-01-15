@@ -34,12 +34,14 @@ public class UserController {
 
     @PostMapping("/form-signup")
     public BaseResponse signup(@Valid @RequestBody UserDto userDto, Errors errors) {
+
+        if (errors.hasErrors()) {
+            log.info("ValidError: {}", errors);
+            ValidErrorDetails errorDetails = new ValidErrorDetails();
+            return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
+        }
+
         try {
-            if (errors.hasErrors()) {
-                log.info("ValidError: {}", errors);
-                ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
-            }
             return new BaseResponse<>(userService.formSignup(userDto));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
@@ -48,12 +50,13 @@ public class UserController {
 
     @GetMapping("/form-login")
     public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
-        try{
-            if (errors.hasErrors()) {
-                ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
-            }
 
+        if (errors.hasErrors()) {
+            ValidErrorDetails errorDetails = new ValidErrorDetails();
+            return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
+        }
+
+        try{
             TokenDto tokenDto = authService.login(loginDto);
             String accessToken = tokenDto.getAccessToken();
             String refreshToken = tokenDto.getRefreshToken();

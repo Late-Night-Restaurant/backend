@@ -32,18 +32,17 @@ public class ProfileController {
     @PostMapping("")
     public BaseResponse createProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto, Errors errors) {
 
-        User user = null;
+        if (errors.hasErrors()) {
+            ValidErrorDetails errorDetails = new ValidErrorDetails();
+            return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
+        }
+
         try {
-            if (errors.hasErrors()) {
-                ValidErrorDetails errorDetails = new ValidErrorDetails();
-                return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
-            }
 //        User user = authService.authenticateUser();  // 현재 접속한 유저
-            user = userService.getMyUserWithAuthorities();
+            User user = userService.getMyUserWithAuthorities();
             log.info("ProfileController - user: {}", user);
 
-            profileRequestDto.setUserProfile(user);
-            ProfileResponseDto profileResponseDto = profileService.createProfile(profileRequestDto);
+            ProfileResponseDto profileResponseDto = profileService.createProfile(profileRequestDto, user);
             return new BaseResponse<>(profileResponseDto);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());

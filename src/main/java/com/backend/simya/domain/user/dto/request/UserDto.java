@@ -30,7 +30,7 @@ public class UserDto {
     public static UserDto from(User user) {
         if (user == null) return null;
         Profile profile = user.getProfileList().get(0);
-        ProfileRequestDto profileRequestDto = new ProfileRequestDto(profile.getNickname(), profile.getComment(), profile.getPicture(), user);
+        ProfileRequestDto profileRequestDto = new ProfileRequestDto(profile.getNickname(), profile.getComment(), profile.getPicture());
 
         return UserDto.builder()
                 .email(user.getEmail())

@@ -24,13 +24,13 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     @Transactional
-    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto) throws BaseException {
+    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto, User user) throws BaseException {
 
         try {
             Profile profile = profileRequestDto.toEntity();
-            profile.getUser().addProfile(profile);
+            user.addProfile(profile);
             Long profileId = profileRepository.save(profile).getProfileId();
-            return new ProfileResponseDto(profileId, profile.getNickname(), profile.getUser());
+            return new ProfileResponseDto(profileId, profile.getNickname(), profile.getUser().getUsername());
         } catch (Exception ignored) {
             throw new BaseException(POST_FAIL_PROFILE);
         }
