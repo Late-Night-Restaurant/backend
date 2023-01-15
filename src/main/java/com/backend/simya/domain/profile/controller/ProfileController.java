@@ -9,13 +9,13 @@ import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.common.ValidErrorDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static com.backend.simya.global.common.BaseResponseStatus.USERS_NOT_AUTHORIZED;
 
 @Slf4j
 @RestController
@@ -24,28 +24,26 @@ import static com.backend.simya.global.common.BaseResponseStatus.USERS_NOT_AUTHO
 public class ProfileController {
 
     private final ProfileService profileService;
-    //    private final AuthService authService;
     private final UserService userService;
 
     @PostMapping("")
-    public BaseResponse<ProfileResponseDto> createProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto) throws BaseException {
+    public BaseResponse createProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto, Errors errors) {
 
-//        User user = authService.authenticateUser();  // 현재 접속한 유저
-        User user = userService.getMyUserWithAuthorities().orElseThrow(
-                () -> new BaseException(USERS_NOT_AUTHORIZED)
-        );
-        log.info("ProfileController - user: {}", user);
-        if (user == null) {
-            return new BaseResponse("존재하지 않는 사용자입니다.");   // TODO Custom Status ENUM 으로 만들어서 관리
-        }
-
+        User user = null;
         try {
+            if (errors.hasErrors()) {
+                ValidErrorDetails errorDetails = new ValidErrorDetails();
+                return new BaseResponse<>(errorDetails.validateHandling(errors));
+            }
+//        User user = authService.authenticateUser();  // 현재 접속한 유저
+            user = userService.getMyUserWithAuthorities();
+            log.info("ProfileController - user: {}", user);
+
             profileRequestDto.setUserProfile(user);
             ProfileResponseDto profileResponseDto = profileService.createProfile(profileRequestDto);
-
             return new BaseResponse<>(profileResponseDto);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -58,8 +56,8 @@ public class ProfileController {
 
             String result = "프로필 수정이 완료되었습니다.";
             return new BaseResponse<>(result);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -70,8 +68,8 @@ public class ProfileController {
             profileService.deleteProfile(profileId);
             String result = "프로필이 삭제되었습니다.";
             return new BaseResponse<>(result);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -81,8 +79,8 @@ public class ProfileController {
             profileService.setMainProfile(profileId);
             String result = "메인 프로필이 변경되었습니다.";
             return new BaseResponse<>(result);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -90,8 +88,8 @@ public class ProfileController {
     public BaseResponse<Profile> getProfileInfo(@PathVariable("profileId") Long profileId) {
         try {
             return new BaseResponse<>(profileService.getProfileInfo(profileId));
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 }
