@@ -1,7 +1,6 @@
 package com.backend.simya.domain.chattingroom.dto.response;
 
 import com.backend.simya.domain.chattingroom.entity.Category;
-import com.backend.simya.domain.profile.entity.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

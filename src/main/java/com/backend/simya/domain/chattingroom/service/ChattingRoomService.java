@@ -4,6 +4,7 @@ package com.backend.simya.domain.chattingroom.service;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
+import com.backend.simya.domain.chattingroom.dto.response.ChattingShowResponseDto;
 import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
 import com.backend.simya.domain.chattingroom.repository.ChattingRoomRepository;
 import com.backend.simya.domain.profile.entity.Profile;
@@ -65,6 +66,24 @@ public class ChattingRoomService {
         return chattingRoomRepository.findById(chattingRoomId).orElseThrow(
                 () -> new BaseException(CHATTING_ROOM_NOT_FOUND)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public ChattingShowResponseDto showChattingRoom(Long chattingRoomId) throws BaseException {
+        try {
+            ChattingRoom chattingRoom = getChattingRoom(chattingRoomId);
+            Profile profileInfo = profileService.getProfileInfo(chattingRoom.getProfile().getProfileId());
+
+            return ChattingShowResponseDto.builder()
+                    .chattingId(chattingRoom.getChattingRoomId())
+                    .chattingRoomName(chattingRoom.getChattingRoomName())
+                    .name(profileInfo.getNickname())
+                    .picture(profileInfo.getPicture())
+                    .comment(profileInfo.getComment())
+                    .build();
+        } catch (Exception ignored) {
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
 
