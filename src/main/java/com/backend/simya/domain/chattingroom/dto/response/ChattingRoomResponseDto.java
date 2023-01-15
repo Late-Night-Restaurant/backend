@@ -15,5 +15,6 @@ public class ChattingRoomResponseDto {
     private String signboardImageUrl;
     private String chattingRoomName;
     private String comment;
+    private boolean open;
 
 }

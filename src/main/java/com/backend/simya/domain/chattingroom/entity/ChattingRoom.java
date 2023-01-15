@@ -49,4 +49,8 @@ public class ChattingRoom extends BaseTimeEntity {
 
     @Column(name = "activated")
     private boolean activated;
+
+    public void openChatting() {
+        this.open = true;
+    }
 }

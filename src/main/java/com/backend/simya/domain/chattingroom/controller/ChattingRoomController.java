@@ -1,5 +1,6 @@
 package com.backend.simya.domain.chattingroom.controller;
 
+import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
 import com.backend.simya.domain.chattingroom.service.ChattingRoomService;
@@ -21,6 +22,16 @@ public class ChattingRoomController {
             return new BaseResponse(chattingRoomService.createChattingRoom(chattingRequestDto));
         } catch (BaseException e) {
             return new BaseResponse(e.getStatus());
+        }
+    }
+
+    @PatchMapping("{chattingRoomId}")
+    public BaseResponse<String> openChattingRoom(@PathVariable("chattingRoomId") Long chattingRoomId, @RequestBody ChattingOpenRequestDto chattingOpenRequestDto) {
+        try {
+            chattingRoomService.openChattingRoom(chattingRoomId, chattingOpenRequestDto);
+            return new BaseResponse<>("이야기 집이 오픈되었습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 

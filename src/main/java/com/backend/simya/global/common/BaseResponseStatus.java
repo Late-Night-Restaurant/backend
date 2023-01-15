@@ -41,6 +41,11 @@ public enum BaseResponseStatus {
     BANNED_USER_IN_LOGIN(false, 403, "정지된 유저이므로 로그인이 불가합니다."),
 
 
+    // chattingRoom 관련
+    FAILED_TO_OPEN(false, 403, "이야기 집 방장만 오픈이 가능합니다."),
+    CHATTING_ROOM_NOT_FOUND(false, 404, "존재하지 않는 이야기 집 입니다."),
+    CHATTING_ROOM_ALREADY_OPENED(false, 405, "이미 오픈된 이야기 집 입니다."),
+
 
     // 500 ~ : Database, Server 오류
     // 500 : Internal Server Error
@@ -56,7 +61,11 @@ public enum BaseResponseStatus {
     UPDATE_FAIL_PROFILE(false, 4100, "프로필 수정에 실패했습니다."),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패했습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패했습니다.");
+    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패했습니다."),
+
+    // chattingRoom 관련
+    CHATTING_ROOM_OPEN_FAILED(false, 504, "이야기 집 오픈에 실패했습니다."),
+    FAILED_TO_CREATE_TOPIC(false, 504, "이야기 집 메뉴 생성에 실패했습니다");
 
     /**
      * 5000, 6000 : 필요 시 추가 구현

@@ -1,6 +1,7 @@
 package com.backend.simya.domain.chattingroom.service;
 
 
+import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
 import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.backend.simya.global.common.BaseResponseStatus.DATABASE_ERROR;
+import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -24,6 +25,7 @@ public class ChattingRoomService {
 
     private final ChattingRoomRepository chattingRoomRepository;
     private final ProfileService profileService;
+    private final TopicService topicService;
 
     @Transactional
     public ChattingRoomResponseDto createChattingRoom(ChattingRoomRequestDto chattingRoomRequestDto) throws BaseException {
@@ -33,12 +35,37 @@ public class ChattingRoomService {
             ChattingRoom chattingRoom = chattingRoomRequestDto.toEntity(profile.get());
 
             Long chattingRoomId = chattingRoomRepository.save(chattingRoom).getChattingRoomId();
-            return new ChattingRoomResponseDto(chattingRoomId, profile.get().getProfileId(), chattingRoom.getCategory(), chattingRoom.getSignboardImageUrl(), chattingRoom.getChattingRoomName(), chattingRoom.getComment());
+            return new ChattingRoomResponseDto(chattingRoomId, profile.get().getProfileId(), chattingRoom.getCategory(), chattingRoom.getSignboardImageUrl(), chattingRoom.getChattingRoomName(), chattingRoom.getComment(), false);
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+    @Transactional
+    public void openChattingRoom(Long chattingRoomId, ChattingOpenRequestDto chattingOpenRequestDto) throws BaseException {
+        try {
+            ChattingRoom chattingRoom = getChattingRoom(chattingRoomId);
+            if (!chattingOpenRequestDto.getUserId().equals(chattingRoom.getProfile().getProfileId())) {  // 이야기 집 생성자가 오픈하려는지 확인
+                throw new BaseException(FAILED_TO_OPEN);
+            }
+            if (chattingRoom.isOpen()) {  // 이미 오픈된 이야기 집인 경우
+                throw new BaseException(CHATTING_ROOM_ALREADY_OPENED);
+            }
+            chattingRoom.openChatting();
+
+            topicService.createTopic(chattingRoom, chattingOpenRequestDto);
+            log.info("{} 이야기 집이 오픈되었습니다.", chattingRoom.getChattingRoomName());
+        } catch (Exception ignored) {
+            throw new BaseException(CHATTING_ROOM_OPEN_FAILED);
+        }
+
+    }
+
+    public ChattingRoom getChattingRoom(Long chattingRoomId) throws BaseException {
+        return chattingRoomRepository.findById(chattingRoomId).orElseThrow(
+                () -> new BaseException(CHATTING_ROOM_NOT_FOUND)
+        );
+    }
 
 
 }
