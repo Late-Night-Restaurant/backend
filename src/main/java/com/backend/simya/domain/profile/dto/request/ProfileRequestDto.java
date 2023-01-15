@@ -1,6 +1,7 @@
 package com.backend.simya.domain.profile.dto.request;
 
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.user.dto.request.UserDto;
 import com.backend.simya.domain.user.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;

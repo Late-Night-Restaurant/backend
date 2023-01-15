@@ -47,9 +47,12 @@ public class Profile extends BaseTimeEntity {
     private boolean activated;
 
 
+    public void setUserProfile(User user) {
+        this.user = user;
+    }
+
     public void selectMainProfile() {
         this.isRepresent = true;
-        System.out.println("Profile Entity - selectMainProfile() 실행");
     }
 
     public void cancelMainProfile() {

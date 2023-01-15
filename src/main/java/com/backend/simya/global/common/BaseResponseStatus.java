@@ -23,9 +23,13 @@ public enum BaseResponseStatus {
     EMPTY_JWT(false, 401, "JWT를 입력해주세요."),
     INVALID_JWT(false, 403, "유효하지 않은 JWT입니다."),
     INVALID_USER_JWT(false, 403, "권한이 없는 유저의 접근입니다."),
+    EXPIRED_JWT(false, 401, "만료된 JWT 토큰입니다."),
+    UNSUPPORTED_JWT(false, 401, "지원하지 않는 JWT 토큰입니다."),
+    MALFORMED_JWT(false, 401, "잘못된 JWT 서명입니다."),
 
     // user 관련
-    USERS_NOT_AUTHORIZED(false, 400, "인가되지 않은 사용자입니다."),
+    USERS_INVALID_ACCESS(false, 401, "잘못된 인가 접근입니다."),
+    USERS_NOT_AUTHORIZED(false, 401, "인가되지 않은 사용자입니다."),
     USERS_NOT_FOUND(false, 400, "존재하지 않는 사용자입니다."),
     USERS_EMPTY_USER_ID(false, 400, "유저 아이디 값을 확인해주세요"),
 
@@ -48,6 +52,9 @@ public enum BaseResponseStatus {
     // 503 : Service Unavailable
     DATABASE_ERROR(false, 503, "데이터베이스 연결에 실패했습니다."),
     SERVER_ERROR(false, 503, "서버와의 연결에 실패했습니다."),
+
+    FAILED_TO_JWT(false, 500, "토큰 발급에 실패했습니다."),
+    FAILED_JWT_IN_HEADER(false, 500, "JWT 토큰이 헤더에 정상적으로 들어가지 않았습니다."),
 
     GET_FAIL_USERINFO(false, 500, "회원정보 조회에 실패했습니다"),
     POST_FAIL_USER(false, 500, "회원가입에 실패했습니다."),

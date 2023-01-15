@@ -44,13 +44,21 @@ public class UserController {
     }
 
     @GetMapping("/form-login")
-    public BaseResponse<TokenDto> formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
         try{
+            if (errors.hasErrors()) {
+                ValidErrorDetails errorDetails = new ValidErrorDetails();
+                return new BaseResponse<>(errorDetails.validateHandling(errors));
+            }
+
             TokenDto tokenDto = authService.login(loginDto);
             String accessToken = tokenDto.getAccessToken();
             String refreshToken = tokenDto.getRefreshToken();
+
+            // 헤더에 토큰 추가
             response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
-//            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);// 토큰 헤더에 넣기
+            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);
+
             return new BaseResponse<>(tokenDto);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
