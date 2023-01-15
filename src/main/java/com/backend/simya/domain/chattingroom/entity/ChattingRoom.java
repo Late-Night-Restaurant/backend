@@ -28,8 +28,11 @@ public class ChattingRoom extends BaseTimeEntity {
     private Profile profile;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category_id")
-    private Category categoryId;
+    @Column(name = "category")
+    private Category category;
+
+    @Column(name = "chatting_room_name")
+    private String chattingRoomName;
 
     @Column(name = "comment")
     private String comment;
@@ -39,6 +42,9 @@ public class ChattingRoom extends BaseTimeEntity {
 
     @Column(name = "signboard_image_url")
     private String signboardImageUrl;
+
+    @Column(name = "open")
+    private boolean open;  // 오픈 상태인지
 
     @Column(name = "activated")
     private boolean activated;
