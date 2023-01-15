@@ -67,7 +67,8 @@ public enum BaseResponseStatus {
     // chattingRoom 관련
     CHATTING_ROOM_OPEN_FAILED(false, 504, "이야기 집 오픈에 실패했습니다."),
     FAILED_TO_CREATE_TOPIC(false, 504, "이야기 집 메뉴 생성에 실패했습니다"),
-    UPDATE_FAIL_CHATTING_ROOM(false, 505, "이야기 집 간판 수정에 실패했습니다");
+    UPDATE_FAIL_CHATTING_ROOM(false, 505, "이야기 집 간판 수정에 실패했습니다"),
+    DELETE_FAIL_CHATTING_ROOM(false, 506, "이야기 집 폐점에 실패했습니다.");
 
     /**
      * 5000, 6000 : 필요 시 추가 구현
