@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChattingRoomResponseDto {
+public class ChattingResponseDto {
 
     private Long chattingRoomId;
     private Long profileId;

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ChattingRoomRequestDto {
+public class ChattingRequestDto {
 
     private Long profileId;  // 방장 프로필_id
     private Category category;
