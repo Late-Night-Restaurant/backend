@@ -3,6 +3,7 @@ package com.backend.simya.domain.chattingroom.controller;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
+import com.backend.simya.domain.chattingroom.dto.response.ChattingShowResponseDto;
 import com.backend.simya.domain.chattingroom.service.ChattingRoomService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
@@ -30,6 +31,15 @@ public class ChattingRoomController {
         try {
             chattingRoomService.openChattingRoom(chattingRoomId, chattingOpenRequestDto);
             return new BaseResponse<>("이야기 집이 오픈되었습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("{chattingRoomId}")
+    public BaseResponse<ChattingShowResponseDto> showChattingRoom(@PathVariable("chattingRoomId") Long chattingRoomId) {
+        try {
+            return new BaseResponse<>(chattingRoomService.showChattingRoom(chattingRoomId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
