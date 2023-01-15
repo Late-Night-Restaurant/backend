@@ -2,8 +2,8 @@ package com.backend.simya.domain.chattingroom.service;
 
 
 import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
-import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
-import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
+import com.backend.simya.domain.chattingroom.dto.request.ChattingRequestDto;
+import com.backend.simya.domain.chattingroom.dto.response.ChattingResponseDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingShowResponseDto;
 import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
 import com.backend.simya.domain.chattingroom.repository.ChattingRoomRepository;
@@ -29,14 +29,14 @@ public class ChattingRoomService {
     private final TopicService topicService;
 
     @Transactional
-    public ChattingRoomResponseDto createChattingRoom(ChattingRoomRequestDto chattingRoomRequestDto) throws BaseException {
+    public ChattingResponseDto createChattingRoom(ChattingRequestDto chattingRoomRequestDto) throws BaseException {
 
         try {
             Optional<Profile> profile = profileService.findProfile(chattingRoomRequestDto.getProfileId());
             ChattingRoom chattingRoom = chattingRoomRequestDto.toEntity(profile.get());
 
             Long chattingRoomId = chattingRoomRepository.save(chattingRoom).getChattingRoomId();
-            return new ChattingRoomResponseDto(chattingRoomId, profile.get().getProfileId(), chattingRoom.getCategory(), chattingRoom.getSignboardImageUrl(), chattingRoom.getChattingRoomName(), chattingRoom.getComment(), false);
+            return new ChattingResponseDto(chattingRoomId, profile.get().getProfileId(), chattingRoom.getCategory(), chattingRoom.getSignboardImageUrl(), chattingRoom.getChattingRoomName(), chattingRoom.getComment(), false);
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
         }
