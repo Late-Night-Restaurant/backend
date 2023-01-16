@@ -2,6 +2,7 @@ package com.backend.simya.global.config.jwt;
 
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -25,13 +26,15 @@ import java.io.IOException;
  * 이때 DB 에 유저정보가 있는지 직접 조회한 것이 아니라 토큰에 실린 유저 정보를 조회한 것이므로, 탈퇴 등에 의해 DB에서 유저가 삭제된 경우는 Service 단에서 따로 고려를 해줘야 한다.
  *
  */
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String AUTHORIZATION_HEADER = "Access-Token";
+    public static final String REFRESH_HEADER = "Refresh-Token";
+    public static final String BEARER_PREFIX = "Access ";
 
     private final TokenProvider tokenProvider;
 
@@ -62,7 +65,11 @@ public class JwtFilter extends GenericFilterBean {
     // 필터링을 하려면 토큰 정보 필요 -> Request Header에서 토큰 정보를 꺼내오는 메소드
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        log.info("request = {}", request.getHeader("Access-Token"));
+        log.info("request = {}", request.getHeader("Authorization"));
+        log.info("BearerToken - {}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            log.info("StringUtils.hasText 실행 - {}", bearerToken.substring(7));
             return bearerToken.substring(7);
         }
         return null;

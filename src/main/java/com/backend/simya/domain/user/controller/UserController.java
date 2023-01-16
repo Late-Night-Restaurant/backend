@@ -52,6 +52,7 @@ public class UserController {
     public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
 
         if (errors.hasErrors()) {
+            log.info("ValidError: {}", errors);
             ValidErrorDetails errorDetails = new ValidErrorDetails();
             return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
         }
@@ -62,8 +63,8 @@ public class UserController {
             String refreshToken = tokenDto.getRefreshToken();
 
             // 헤더에 토큰 추가
-            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
-            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);
+            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Access " + accessToken);
+            response.addHeader(JwtFilter.REFRESH_HEADER, "Refresh  " + refreshToken);
 
             return new BaseResponse<>(tokenDto);
         } catch (BaseException e) {

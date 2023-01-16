@@ -29,6 +29,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Optional;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Service
@@ -46,6 +48,17 @@ public class AuthService {
     // 왜 UsernameNotFound가 아닌 Exception이 올까?
     //@Transactional
     public TokenDto login(LoginDto loginDto) throws BaseException {
+
+        Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
+        if (user.isEmpty()) {
+            throw new BaseException(USERS_NOT_FOUND);
+        } else {
+            if (!user.get().isActivated()) {
+                throw new BaseException(BANNED_USER_IN_LOGIN);
+            }
+        }
+
+
         try{
             Authentication authentication = authenticate(loginDto);  // 인증
             return authorize(authentication);
@@ -81,9 +94,7 @@ public class AuthService {
                     .key(authentication.getName())
                     .value(tokenDto.getRefreshToken())
                     .build();
-
             refreshTokenRepository.save(refreshToken);
-
             return tokenDto;
         } catch (Exception exception) {
             throw new BaseException(FAILED_TO_JWT);
@@ -94,7 +105,7 @@ public class AuthService {
     public HttpHeaders inputTokenInHeader(TokenDto tokenDto) throws BaseException {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getAccessToken());
+            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Access " + tokenDto.getAccessToken());
             return httpHeaders;
         } catch (Exception exception) {
             throw new BaseException(FAILED_JWT_IN_HEADER);
@@ -105,8 +116,9 @@ public class AuthService {
     public String getJwt() throws BaseException {
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            log.info("AuthService - getJwt() : header에 저장된 Access Token {}", request.getHeader("Authorization"));
-            return request.getHeader("Authorization").substring(7);
+            log.info("AuthService - getJwt() : header에 저장된 Access Token {}", request.getHeader("Access-Token"));
+            return request.getHeader("Access-Token").substring(7);
+
         } catch (Exception exception) {
             throw new BaseException(INVALID_JWT);
         }

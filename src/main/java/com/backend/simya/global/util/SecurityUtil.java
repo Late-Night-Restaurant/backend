@@ -15,7 +15,6 @@ public class SecurityUtil {
     private SecurityUtil() {}
 
     // Security Context의 Authentication 객체를 이용해 Username를 리턴해주는 간단한 유틸성 메소드
-    // TODO username(String) -> userId(Long) 로 변경
     public static Optional<String> getCurrentUsername() {
         /**
          * Security Context 에 Authentication 객체가 저장되는 시점은? JwtFilter 의 doFilter 메소드에서 Request 가 들어올 때
