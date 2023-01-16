@@ -11,6 +11,8 @@ public enum BaseResponseStatus {
 
     // 200 ~ : 성공
     SUCCESS(true, 200, "요청에 성공하였습니다."),
+    SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공하였습니다"),
+    SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
 
 
     // 400 ~ :  클라이언트 Request 오류
@@ -84,7 +86,14 @@ public enum BaseResponseStatus {
     UPDATE_FAIL_CHATTING_ROOM(false, 505, "이야기 집 간판 수정에 실패했습니다"),
     DELETE_FAIL_CHATTING_ROOM(false, 506, "이야기 집 폐점에 실패했습니다."),
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다.");
+    PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다."),
+
+
+    //review 관련
+    FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
+    FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다.");
+
+
 
     /**
      * 5000, 6000 : 필요 시 추가 구현
