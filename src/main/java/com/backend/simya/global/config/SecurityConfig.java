@@ -75,6 +75,13 @@ public class SecurityConfig {
                 .antMatchers("/", "/h2/**", "/simya/form-login", "/simya/auth", "/simya/form-signup", "/api/**").permitAll()
                 .anyRequest().authenticated()
 
+                // 로그아웃 설정
+                /*.and()
+                .logout()
+                .logoutUrl("simya/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")*/
+
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));   // addFilterBefore로 등록했던 JwtSecurityConfig 클래스 적용 추가
 
