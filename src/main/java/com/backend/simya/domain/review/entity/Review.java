@@ -41,6 +41,10 @@ public class Review extends BaseTimeEntity {
     @Column(name = "activated")
     private boolean activated;
 
+    public void setReviewersProfile (Profile profile) {
+        this.profile = profile;
+    }
+    
     public void setRate(int rate) {
         this.rate = rate;
     }
