@@ -26,13 +26,13 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     @Transactional
-    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto) throws BaseException {
+    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto, User user) throws BaseException {
 
         try {
             Profile profile = profileRequestDto.toEntity();
-            profile.getUser().addProfile(profile);
+            user.addProfile(profile);
             Long profileId = profileRepository.save(profile).getProfileId();
-            return new ProfileResponseDto(profileId, profile.getNickname(), profile.getUser());
+            return new ProfileResponseDto(profileId, profile.getNickname(), profile.getUser().getUsername());
         } catch (Exception ignored) {
             throw new BaseException(POST_FAIL_PROFILE);
         }
@@ -82,11 +82,16 @@ public class ProfileService {
     public void deleteProfile(Long profileId) throws BaseException {
         try {
             Profile profile = getProfileInfo(profileId);
+            boolean isMain = profile.isRepresent();
             if (profile.isActivated()) {
                 if (profile.getUser().getProfileList().isEmpty()) {
                     throw new BaseException(USERS_NEED_ONE_MORE_PROFILE);
                 }
                 profile.delete(profileId);
+
+                if (isMain) {
+                    profile.autoSetMainProfile();
+                }
             } else {
                 throw new BaseException(ALREADY_DELETE_PROFILE);
             }

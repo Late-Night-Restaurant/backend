@@ -1,6 +1,8 @@
 package com.backend.simya.domain.user.service;
 
 
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.user.dto.request.UserDto;
 import com.backend.simya.domain.user.entity.LoginType;
 import com.backend.simya.domain.user.entity.Role;
@@ -9,7 +11,6 @@ import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,25 +25,38 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserDto formSignup(UserDto userDto) throws BaseException {
 
-        try {
-            if (userRepository.existsByEmail(userDto.getEmail())) {
-                throw new BaseException(POST_USERS_EXISTS_EMAIL);
-            } else {
-                User newUser = User.builder()
-                        .email(userDto.getEmail())
-                        .pw(passwordEncoder.encode(userDto.getPassword()))
-                        .loginType(LoginType.FORM)
-                        .role(Role.ROLE_USER)
-                        .activated(true)
-                        .build();
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new BaseException(POST_USERS_EXISTS_EMAIL);
+        }
 
-                return UserDto.from(userRepository.save(newUser));
-            }
+        try {
+            User newUser = User.builder()
+                    .email(userDto.getEmail())
+                    .pw(passwordEncoder.encode(userDto.getPassword()))
+                    .loginType(LoginType.FORM)
+                    .role(Role.ROLE_USER)
+                    .activated(true)
+                    .build();
+
+            Profile mainProfile = Profile.builder()
+                    .nickname(userDto.getProfile().getNickname())
+                    .user(newUser)
+                    .comment(userDto.getProfile().getComment())
+                    .picture(userDto.getProfile().getPicture())
+                    .isRepresent(true)
+                    .activated(true)
+                    .build();
+            newUser.addProfile(mainProfile);
+            profileRepository.save(mainProfile);
+
+            return UserDto.from(userRepository.save(newUser));
+
         } catch (Exception exception) {
             throw new BaseException(POST_FAIL_USER);
         }
@@ -68,13 +82,11 @@ public class UserService {
     // SecurityContext에 저장된 email 에 해당하는 유저, 권한의 정보만 가저온다.
     @Transactional(readOnly = true)
     public User getMyUserWithAuthorities() throws BaseException {
-        try {
-            return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByEmail).orElseThrow(
-                    () -> new BaseException(USERS_NOT_FOUND)
-            );
-        } catch (Exception exception) {
-            throw new BaseException(GET_FAIL_USERINFO);
-        }
+
+        return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByEmail).orElseThrow(
+                () -> new BaseException(USERS_NOT_FOUND)
+        );
+
     }
 
 }
