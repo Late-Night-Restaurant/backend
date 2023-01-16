@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ProfileRepository profileRepository;
 
     @Transactional
     public ReviewResponseDto postReview(User currentUser,
@@ -47,6 +46,20 @@ public class ReviewService {
 
     public List<ReviewResponseDto> getHouseReviewList(House house) {
         return reviewRepository.findReviewsByHouse(house).stream()
+                .filter(Review::isActivated)
+                .map(ReviewResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReviewResponseDto> getMyReviewList(User currentUser) {
+        return reviewRepository.findReviewsByUserId(currentUser.getUserId()).stream()
+                .filter(Review::isActivated)
+                .map(ReviewResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReviewResponseDto> getCurrentProfileReviewList(User currentUser) {
+        return reviewRepository.findReviewsByProfileId(currentUser.getProfileList().get(currentUser.getMainProfile()).getProfileId()).stream()
                 .filter(Review::isActivated)
                 .map(ReviewResponseDto::toDto)
                 .collect(Collectors.toList());
@@ -78,19 +91,4 @@ public class ReviewService {
                 orElseThrow(() -> new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW));
     }
 
-
-    // 리뷰를 썼을 때의 프로필을 포함한 현재 사용자의 리뷰찾기
-    // 현재 사용자의 프로필을 전부 가져온 뒤, 각 프로필의 리뷰들을 가져와 리스트화 한다
-//    public List<ReviewResponseDto> getMyReviewList(User currentUser) {
-//        List<Review> currentUsersReviewList = new ArrayList<>();
-//        currentUsersReviewList.addAll
-//
-//        profileRepository.findProfilesByUser(currentUser).stream()
-//                .map(Profile::getReviewList)
-//                .filter(Objects::nonNull)
-//                .map()
-//                .collect(Collectors.toList())
-//
-//        return null;
-//    }
 }

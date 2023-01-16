@@ -59,6 +59,37 @@ public class ReviewController {
         }
     }
 
+    @GetMapping("/all")
+    public BaseResponse<List<ReviewResponseDto>> getMyReviewList() {
+        try {
+            User currentUser = userService.getMyUserWithAuthorities();
+            List<ReviewResponseDto> myReviewList = reviewService.getMyReviewList(currentUser);
+            if (myReviewList.isEmpty()) {
+                return new BaseResponse<>(NO_REVIEWS_YET);
+            } else {
+                return new BaseResponse<>(myReviewList);
+            }
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/profile")
+    public BaseResponse<List<ReviewResponseDto>> getCurrentProfileReviewList() {
+        try {
+            User currentUser = userService.getMyUserWithAuthorities();
+            List<ReviewResponseDto> myReviewList = reviewService.getCurrentProfileReviewList(currentUser);
+            if (myReviewList.isEmpty()) {
+                return new BaseResponse<>(NO_REVIEWS_YET);
+            } else {
+                return new BaseResponse<>(myReviewList);
+            }
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
 
     @PatchMapping("/{review-id}")
     public BaseResponse<ReviewResponseDto> updateReview(@PathVariable("review-id") Long reviewId,
@@ -81,18 +112,4 @@ public class ReviewController {
         }
     }
 
-
-//    @GetMapping("")
-//    public BaseResponse<List<ReviewResponseDto>> getMyReviewList() throws BaseException {
-//        User currentUser = userService.getMyUserWithAuthorities();
-//        List<ReviewResponseDto> reviewResponseDtoList = reviewService.getMyReviewList(currentUser);
-//
-//        return null;
-//    }
-
-//    @GetMapping("")
-//    public BaseResponse<List<ReviewResponseDto>> getChattingRoomReviewList(@Valid @RequestBody ReviewResponseDto reviewDto) {
-//
-//        return null;
-//    }
 }
