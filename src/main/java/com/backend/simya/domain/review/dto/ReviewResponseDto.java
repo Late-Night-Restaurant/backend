@@ -1,8 +1,6 @@
 package com.backend.simya.domain.review.dto;
 
-import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.review.entity.Review;
-import com.backend.simya.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,11 +27,11 @@ public class ReviewResponseDto {
 
     private String content;
 
-    public static ReviewResponseDto toDto(Profile profile, Review review) {
+    public static ReviewResponseDto toDto(Review review) {
         return ReviewResponseDto.builder()
-                .profileId(profile.getProfileId())
-                .nickname(profile.getNickname())
-                .comment(profile.getComment())
+                .profileId(review.getProfile().getProfileId())
+                .nickname(review.getProfile().getNickname())
+                .comment(review.getProfile().getComment())
                 .reviewId(review.getReviewId())
                 .rate(review.getRate())
                 .content(review.getContent())

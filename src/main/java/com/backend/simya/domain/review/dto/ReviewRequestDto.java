@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewRequestDto {
 
-
     private int rate;
 
     private String content;
