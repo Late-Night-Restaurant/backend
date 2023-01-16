@@ -2,14 +2,20 @@ package com.backend.simya.domain.chattingroom.entity;
 
 import com.backend.simya.domain.chattingroom.dto.request.ChattingUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "chatting_room")
@@ -28,6 +34,11 @@ public class ChattingRoom extends BaseTimeEntity {
     @JoinColumn(name = "profile_id")
     @JsonBackReference
     private Profile profile;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "chattingRoom", cascade = ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Review> reviewList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
@@ -61,11 +72,15 @@ public class ChattingRoom extends BaseTimeEntity {
         this.comment = chattingUpdateRequestDto.getComment();
 
         return this;
-
     }
 
     public ChattingRoom delete() {
         this.activated = false;
         return this;
+    }
+
+    public void addReview(Review review) {
+        reviewList.add(review);
+        review.setChattingRoomToReview(this);
     }
 }
