@@ -1,18 +1,18 @@
-package com.backend.simya.domain.chattingroom.dto.response;
+package com.backend.simya.domain.house.dto.response;
 
-import com.backend.simya.domain.chattingroom.entity.Category;
+import com.backend.simya.domain.house.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChattingResponseDto {
+public class HouseResponseDto {
 
-    private Long chattingRoomId;
+    private Long houseId;
     private Long profileId;
     private Category category;
     private String signboardImageUrl;
-    private String chattingRoomName;
+    private String houseName;
     private String comment;
     private boolean open;
 

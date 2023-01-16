@@ -1,9 +1,9 @@
-package com.backend.simya.domain.chattingroom.service;
+package com.backend.simya.domain.house.service;
 
-import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
-import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
-import com.backend.simya.domain.chattingroom.entity.Topic;
-import com.backend.simya.domain.chattingroom.repository.TopicRepository;
+import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
+import com.backend.simya.domain.house.entity.House;
+import com.backend.simya.domain.house.entity.Topic;
+import com.backend.simya.domain.house.repository.TopicRepository;
 import com.backend.simya.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +20,16 @@ public class TopicService {
     private final TopicRepository topicRepository;
 
     @Transactional
-    public void createTopic(ChattingRoom chattingRoom, ChattingOpenRequestDto chattingOpenRequestDto) throws BaseException {
+    public void createTopic(House house, HouseOpenRequestDto houseOpenRequestDto) throws BaseException {
         try {
             Topic topic = Topic.builder()
-                    .title(chattingOpenRequestDto.getTitle())
-                    .content(chattingOpenRequestDto.getContent())
-                    .chattingRoom(chattingRoom)
+                    .title(houseOpenRequestDto.getTitle())
+                    .content(houseOpenRequestDto.getContent())
+                    .house(house)
                     .isTodayTopic(false)
                     .activated(true)
                     .build();
-            log.info("{} 메뉴가 생성되었습니다.", chattingOpenRequestDto.getContent());
+            log.info("{} 메뉴가 생성되었습니다.", houseOpenRequestDto.getContent());
             topicRepository.save(topic);
 
         } catch (Exception ignored) {

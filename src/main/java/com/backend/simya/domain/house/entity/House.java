@@ -1,6 +1,6 @@
-package com.backend.simya.domain.chattingroom.entity;
+package com.backend.simya.domain.house.entity;
 
-import com.backend.simya.domain.chattingroom.dto.request.ChattingUpdateRequestDto;
+import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -12,17 +12,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "chatting_room")
+@Table(name = "house")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChattingRoom extends BaseTimeEntity {
+public class House extends BaseTimeEntity {
 
     @Id
-    @Column(name = "chatting_room_id")
+    @Column(name = "house_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chattingRoomId;
+    private Long houseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
@@ -33,8 +33,8 @@ public class ChattingRoom extends BaseTimeEntity {
     @Column(name = "category")
     private Category category;
 
-    @Column(name = "chatting_room_name")
-    private String chattingRoomName;
+    @Column(name = "house_name")
+    private String houseName;
 
     @Column(name = "comment")
     private String comment;
@@ -51,20 +51,20 @@ public class ChattingRoom extends BaseTimeEntity {
     @Column(name = "activated")
     private boolean activated;
 
-    public void openChatting() {
+    public void openHouse() {
         this.open = true;
     }
 
-    public ChattingRoom update(ChattingUpdateRequestDto chattingUpdateRequestDto) {
-        this.signboardImageUrl = chattingUpdateRequestDto.getSignboardImageUrl();
-        this.chattingRoomName = chattingUpdateRequestDto.getChattingRoomName();
-        this.comment = chattingUpdateRequestDto.getComment();
+    public House update(HouseUpdateRequestDto houseUpdateRequestDto) {
+        this.signboardImageUrl = houseUpdateRequestDto.getSignboardImageUrl();
+        this.houseName = houseUpdateRequestDto.getHouseName();
+        this.comment = houseUpdateRequestDto.getComment();
 
         return this;
 
     }
 
-    public ChattingRoom delete() {
+    public House delete() {
         this.activated = false;
         return this;
     }
