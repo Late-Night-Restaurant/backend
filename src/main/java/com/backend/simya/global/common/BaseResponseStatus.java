@@ -13,6 +13,7 @@ public enum BaseResponseStatus {
     SUCCESS(true, 200, "요청에 성공하였습니다."),
     SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공하였습니다"),
     SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
+    NO_REVIEWS_YET(true, 200, "아직 리뷰가 없습니다"),
 
 
     // 400 ~ :  클라이언트 Request 오류
