@@ -33,6 +33,7 @@ public class ReviewService {
     public ReviewResponseDto postReview(User currentUser, ReviewRequestDto reviewRequestDto) {
         Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
         Review savedReview = reviewRepository.save(reviewRequestDto.toEntity(mainProfile));
+        mainProfile.addReview(savedReview);
 
        return ReviewResponseDto.builder()
                .profileId(mainProfile.getProfileId())

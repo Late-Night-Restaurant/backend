@@ -96,6 +96,6 @@ public class Profile extends BaseTimeEntity {
 
     public void addReview(Review review) {
         reviewList.add(review);
-        review.setProfile(this);
+        review.setReviewersProfile(this);
     }
 }
