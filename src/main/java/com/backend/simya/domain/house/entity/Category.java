@@ -1,4 +1,4 @@
-package com.backend.simya.domain.chattingroom.entity;
+package com.backend.simya.domain.house.entity;
 
 public enum Category {
     사랑,

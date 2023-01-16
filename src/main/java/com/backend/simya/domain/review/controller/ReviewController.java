@@ -1,7 +1,7 @@
 package com.backend.simya.domain.review.controller;
 
-import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
-import com.backend.simya.domain.chattingroom.service.ChattingRoomService;
+import com.backend.simya.domain.house.entity.House;
+import com.backend.simya.domain.house.service.HouseService;
 import com.backend.simya.domain.review.dto.ReviewRequestDto;
 import com.backend.simya.domain.review.dto.ReviewResponseDto;
 import com.backend.simya.domain.review.service.ReviewService;
@@ -28,15 +28,15 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final UserService userService;
-    private final ChattingRoomService chattingRoomService;
+    private final HouseService houseService;
 
-    @PostMapping("/{chatting-room-id}")
-    public BaseResponse<ReviewResponseDto> postReview(@PathVariable("chatting-room-id") Long chattingRoomId,
+    @PostMapping("/{house-id}")
+    public BaseResponse<ReviewResponseDto> postReview(@PathVariable("house-id") Long houseId,
                                                       @RequestBody ReviewRequestDto reviewRequestDto) {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
-            ChattingRoom chattingRoomToReview = chattingRoomService.getChattingRoom(chattingRoomId);
-            ReviewResponseDto reviewResponseDto = reviewService.postReview(currentUser, chattingRoomToReview, reviewRequestDto);
+            House houseToReview = houseService.getHouse(houseId);
+            ReviewResponseDto reviewResponseDto = reviewService.postReview(currentUser, houseToReview, reviewRequestDto);
             return new BaseResponse<>(reviewResponseDto);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
@@ -45,15 +45,15 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/{chatting-room-id}")
-    public BaseResponse<List<ReviewResponseDto>> getChattingRoomReviewList(@PathVariable("chatting-room-id") Long chattingRoomId) {
+    @GetMapping("/{house-id}")
+    public BaseResponse<List<ReviewResponseDto>> getHouseReviewList(@PathVariable("house-id") Long houseId) {
         try {
-            ChattingRoom findChattingRoom = chattingRoomService.getChattingRoom(chattingRoomId);
-            List<ReviewResponseDto> chattingRoomReviewList = reviewService.getChattingRoomReviewList(findChattingRoom);
-            if (chattingRoomReviewList.isEmpty()) {
+            House findHouse = houseService.getHouse(houseId);
+            List<ReviewResponseDto> houseReviewList = reviewService.getHouseReviewList(findHouse);
+            if (houseReviewList.isEmpty()) {
                 return new BaseResponse<>(NO_REVIEWS_YET);
             } else {
-                return new BaseResponse<>(chattingRoomReviewList);
+                return new BaseResponse<>(houseReviewList);
             }
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());

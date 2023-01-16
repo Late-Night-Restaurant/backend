@@ -1,6 +1,6 @@
 package com.backend.simya.domain.review.entity;
 
-import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
+import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import com.backend.simya.domain.user.entity.User;
@@ -34,9 +34,9 @@ public class Review extends BaseTimeEntity {
     private Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chattingRoom_id")
+    @JoinColumn(name = "house_id")
     @JsonBackReference
-    private ChattingRoom chattingRoom;
+    private House house;
 
     @Column(name = "rate")
     private int rate;
@@ -51,8 +51,8 @@ public class Review extends BaseTimeEntity {
         this.profile = profile;
     }
 
-    public void setChattingRoomToReview(ChattingRoom chattingRoom) {
-        this.chattingRoom = chattingRoom;
+    public void setHouseToReview(House house) {
+        this.house = house;
     }
     
     public void setRate(int rate) {

@@ -1,4 +1,4 @@
-package com.backend.simya.domain.chattingroom.entity;
+package com.backend.simya.domain.house.entity;
 
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class Topic extends BaseTimeEntity {
     private String content;
 
     @OneToOne
-    @JoinColumn(name = "chatting_room_id")
-    private ChattingRoom chattingRoom;
+    @JoinColumn(name = "house_id")
+    private House house;
 
     @Column(name = "is_today_topic")
     private boolean isTodayTopic;
