@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Map;
+
 import static com.backend.simya.global.common.BaseResponseStatus.SUCCESS;
 
 @Getter
@@ -39,4 +41,20 @@ public class BaseResponse<T> {
         this.code = status.getCode();
         this.message = status.getMessage();
     }
+
+    /**
+     * 형식적 Validation 용 Response
+     */
+    public BaseResponse(BaseResponseStatus status, T result) {
+        this.isSuccess = status.isSuccess();
+        this.code = status.getCode();
+        this.message = status.getMessage();
+        this.result = result;
+    }
+//    public BaseResponse(Map<String, String> result) {
+//        this.isSuccess = false;
+//        this.code = 400;
+//        this.message = "입력값을 확인해주세요.";
+//        this.result = (T) result;
+//    }
 }

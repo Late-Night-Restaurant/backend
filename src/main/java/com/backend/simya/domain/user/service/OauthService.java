@@ -5,12 +5,16 @@ import com.backend.simya.domain.jwt.entity.RefreshToken;
 import com.backend.simya.domain.jwt.repository.RefreshTokenRepository;
 import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.user.dto.response.KakaoAccountDto;
 import com.backend.simya.domain.user.dto.response.KakaoTokenDto;
 import com.backend.simya.domain.user.entity.LoginType;
 import com.backend.simya.domain.user.entity.Role;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
+import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponseStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import static com.backend.simya.global.common.BaseResponseStatus.POST_USERS_EXISTS_EMAIL;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +37,7 @@ public class OauthService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final RefreshTokenRepository tokenRepository;
     private final AuthService authService;
     private final TokenProvider tokenProvider;
@@ -130,18 +137,28 @@ public class OauthService {
         KakaoAccountDto kakaoAccount = getKakaoInfo(token);
         String email = kakaoAccount.getKakao_account().getEmail();
 
-        if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("중복된 이메일의 유저가 있습니다");
-        } else {
-            User newKakaoUser = User.builder()
-                    .email(kakaoAccount.getKakao_account().getEmail())
-                    .pw("change your password!")
-                    .loginType(LoginType.KAKAO)
-                    .role(Role.ROLE_USER)
-                    .activated(true)
-                    .build();
-            userRepository.save(newKakaoUser);
-        }
+
+        User newKakaoUser = User.builder()
+                .email(kakaoAccount.getKakao_account().getEmail())
+                .pw("change your password!")
+                .loginType(LoginType.KAKAO)
+                .role(Role.ROLE_USER)
+                .activated(true)
+                .build();
+
+        Profile mainProfile = Profile.builder()
+                .nickname("simya")
+                .user(newKakaoUser)
+                .comment(null)
+                .picture(null)
+                .isRepresent(true)
+                .activated(true)
+                .build();
+        newKakaoUser.addProfile(mainProfile);
+        profileRepository.save(mainProfile);
+
+        userRepository.save(newKakaoUser);
+
         return tokenProvider.createToken(email);
     }
 

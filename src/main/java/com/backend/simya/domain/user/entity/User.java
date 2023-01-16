@@ -1,6 +1,7 @@
 package com.backend.simya.domain.user.entity;
 
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 import static javax.persistence.CascadeType.ALL;
 
 @Entity    // @Entity 어노테이션: 자동으로 JPA 연동
-@Table(name = "`user`")
+@Table(name = "`USER`")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -51,7 +52,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Profile> profileList = new ArrayList<>();
-
 
     //== Spring Security 사용자 인증 필드 ==//
 
@@ -124,6 +124,7 @@ public class User extends BaseTimeEntity implements UserDetails {
         profileList.add(profile);
         profile.setUserProfile(this);
     }
+
 
     public int getMainProfile() {
         for (int i=0; i<profileList.size(); i++) {
