@@ -1,5 +1,6 @@
 package com.backend.simya.domain.profile.entity;
 
+import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
 import com.backend.simya.domain.profile.dto.request.ProfileUpdateDto;
 import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;

@@ -34,7 +34,6 @@ public enum BaseResponseStatus {
     USERS_EMPTY_USER_ID(false, 400, "유저 아이디 값을 확인해주세요"),
 
     POST_USERS_EXISTS_EMAIL(false, 400, "중복된 이메일입니다."),
-
     POST_USERS_EMPTY_PASSWORD(false, 400, "비밀번호를 입력해주세요."),
     USERS_PASSWORD_FORMAT(false, 400, "비밀번호는 8자 이상의 영문 대소문자와 특수문자로 구성해야 합니다."),
 
@@ -47,7 +46,14 @@ public enum BaseResponseStatus {
 
     USERS_NEED_ONE_MORE_PROFILE(false, 400, "모든 회원은 하나 이상의 프로필이 존재해야 합니다."),
     ALREADY_DELETE_PROFILE(false, 400, "이미 삭제된 프로필입니다."),
+    PROFILE_NOT_FOUND(false, 404, "존재하지 않는 프로필입니다."),
 
+
+    // chattingRoom 관련
+    FAILED_TO_OPEN(false, 403, "이야기 집 방장만 오픈이 가능합니다."),
+    FAILED_TO_UPDATE(false, 403, "이야기 집 방장만 수정이 가능합니다."),
+    CHATTING_ROOM_NOT_FOUND(false, 404, "존재하지 않는 이야기 집 입니다."),
+    CHATTING_ROOM_ALREADY_OPENED(false, 405, "이미 오픈된 이야기 집 입니다."),
 
 
     // 500 ~ : Database, Server 오류
@@ -71,6 +77,12 @@ public enum BaseResponseStatus {
     UPDATE_FAIL_PROFILE(false, 500, "프로필 수정에 실패했습니다."),
     SET_FAIL_MAIN_PROFILE(false, 500, "메인 프로필 지정에 실패했습니다."),
 
+
+    // chattingRoom 관련
+    CHATTING_ROOM_OPEN_FAILED(false, 504, "이야기 집 오픈에 실패했습니다."),
+    FAILED_TO_CREATE_TOPIC(false, 504, "이야기 집 메뉴 생성에 실패했습니다"),
+    UPDATE_FAIL_CHATTING_ROOM(false, 505, "이야기 집 간판 수정에 실패했습니다"),
+    DELETE_FAIL_CHATTING_ROOM(false, 506, "이야기 집 폐점에 실패했습니다."),
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다.");
 
