@@ -81,6 +81,6 @@ public class House extends BaseTimeEntity {
 
     public void addReview(Review review) {
         reviewList.add(review);
-        review.setHouseToReview(this);
+        review.setReviewedHouse(this);
     }
 }
