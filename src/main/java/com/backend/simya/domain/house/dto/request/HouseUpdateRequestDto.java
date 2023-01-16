@@ -1,14 +1,14 @@
-package com.backend.simya.domain.chattingroom.dto.request;
+package com.backend.simya.domain.house.dto.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ChattingUpdateRequestDto {
-    private Long chattingRoomId;
+public class HouseUpdateRequestDto {
+    private Long houseId;
     private Long userId;
     private String signboardImageUrl;
-    private String chattingRoomName;
+    private String houseName;
     private String comment;
 }
