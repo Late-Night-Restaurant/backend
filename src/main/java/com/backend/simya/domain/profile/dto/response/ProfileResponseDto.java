@@ -1,6 +1,5 @@
 package com.backend.simya.domain.profile.dto.response;
 
-import com.backend.simya.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,5 +11,5 @@ public class ProfileResponseDto {
 
     private String nickname;
 
-    private User user;
+    private String username;
 }

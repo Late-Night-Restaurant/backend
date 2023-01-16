@@ -18,7 +18,7 @@ import java.util.List;
 import static javax.persistence.CascadeType.ALL;
 
 @Entity    // @Entity 어노테이션: 자동으로 JPA 연동
-@Table(name = "`user`")
+@Table(name = "`USER`")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -122,6 +122,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     //== 연관관계 매핑 메서드 ==//
     public void addProfile(Profile profile) {
         profileList.add(profile);
+        profile.setUserProfile(this);
     }
 
 
@@ -133,4 +134,9 @@ public class User extends BaseTimeEntity implements UserDetails {
         }
         return -1;
     }
+
+    /*public User toEntity() {
+        return User.builder()
+                .
+    }*/
 }

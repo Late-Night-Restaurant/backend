@@ -8,14 +8,21 @@ import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.common.BaseResponseStatus;
+import com.backend.simya.global.common.ValidErrorDetails;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
+
+@Slf4j
 @RestController
 @RequestMapping("/simya")
 @RequiredArgsConstructor
@@ -26,39 +33,64 @@ public class UserController {
 
 
     @PostMapping("/form-signup")
-    public BaseResponse<UserDto> signup(@Valid @RequestBody UserDto userDto) {
+    public BaseResponse signup(@Valid @RequestBody UserDto userDto, Errors errors) {
+
+        if (errors.hasErrors()) {
+            log.info("ValidError: {}", errors);
+            ValidErrorDetails errorDetails = new ValidErrorDetails();
+            return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
+        }
+
         try {
             return new BaseResponse<>(userService.formSignup(userDto));
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
     @GetMapping("/form-login")
-    public BaseResponse<TokenDto> formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
+
+        if (errors.hasErrors()) {
+            ValidErrorDetails errorDetails = new ValidErrorDetails();
+            return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
+        }
+
         try{
             TokenDto tokenDto = authService.login(loginDto);
             String accessToken = tokenDto.getAccessToken();
             String refreshToken = tokenDto.getRefreshToken();
+
+            // 헤더에 토큰 추가
             response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
-//            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);// 토큰 헤더에 넣기
+            response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Refresh  " + refreshToken);
+
             return new BaseResponse<>(tokenDto);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/mypage")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")  // USER, ADMIN 권한 모두 허용
     public BaseResponse<User> getMyUserInfo() {
-        User userResponse = userService.getMyUserWithAuthorities().get();
-        return new BaseResponse<>(userResponse);
+        try {
+            User userResponse = userService.getMyUserWithAuthorities();
+            return new BaseResponse<>(userResponse);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     @GetMapping("/user/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')")   // ADMIN 권한만 허용 -> API를 호출 가능한 권한을 제한함
     public BaseResponse<User> getUserInfo(@PathVariable String username) {
-        User userResponse = userService.getUserWithAuthorities(username).get();
-        return new BaseResponse<>(userResponse);
+        try {
+            User userResponse = userService.getUserWithAuthorities(username);
+            return new BaseResponse<>(userResponse);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
     }
 }

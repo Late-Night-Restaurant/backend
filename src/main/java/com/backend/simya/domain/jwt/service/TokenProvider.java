@@ -1,6 +1,7 @@
 package com.backend.simya.domain.jwt.service;
 
 import com.backend.simya.domain.jwt.dto.response.TokenDto;
+import com.backend.simya.global.common.BaseException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
