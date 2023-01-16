@@ -1,5 +1,7 @@
 package com.backend.simya.domain.user.dto.request;
 
+import com.backend.simya.domain.profile.dto.request.ProfileRequestDto;
+import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -23,11 +25,16 @@ public class UserDto {
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
     private String password;
 
+    private ProfileRequestDto profile;
+
     public static UserDto from(User user) {
         if (user == null) return null;
+        Profile profile = user.getProfileList().get(0);
+        ProfileRequestDto profileRequestDto = new ProfileRequestDto(profile.getNickname(), profile.getComment(), profile.getPicture());
 
         return UserDto.builder()
                 .email(user.getEmail())
+                .profile(profileRequestDto)
                 .build();
     }
 
