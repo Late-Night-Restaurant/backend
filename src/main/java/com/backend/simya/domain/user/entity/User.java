@@ -135,8 +135,4 @@ public class User extends BaseTimeEntity implements UserDetails {
         return -1;
     }
 
-    /*public User toEntity() {
-        return User.builder()
-                .
-    }*/
 }

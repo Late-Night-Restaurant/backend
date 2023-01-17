@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.backend.simya.global.common.BaseResponseStatus.DATABASE_ERROR;
 import static com.backend.simya.global.common.BaseResponseStatus.FAILED_TO_CREATE_TOPIC;
 
 @Slf4j
