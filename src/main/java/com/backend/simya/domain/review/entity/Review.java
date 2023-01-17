@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -39,10 +40,6 @@ public class Review extends BaseTimeEntity {
 
     @Column(name = "activated")
     private boolean activated;
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
 
     public void setRate(int rate) {
         this.rate = rate;
