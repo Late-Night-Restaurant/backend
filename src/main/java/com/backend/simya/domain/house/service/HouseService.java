@@ -121,7 +121,9 @@ public class HouseService {
             house.delete();
             log.info("{}의 이야기 집이 폐점되었습니다.", house.getHouseName());
 
-        } catch (Exception ignored) {
+            topicService.deleteAllTopic(house.getHouseId());  // 해당 이야기집의 topic 모두 삭제
+
+        }catch (Exception ignored) {
             throw new BaseException(FAILED_TO_OPEN_HOUSE);
         }
 
