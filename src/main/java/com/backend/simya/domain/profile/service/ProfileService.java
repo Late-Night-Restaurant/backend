@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 
@@ -102,5 +104,14 @@ public class ProfileService {
         return profileRepository.findById(profileId).orElseThrow(
                 () -> new BaseException(DATABASE_ERROR)
         );
+    }
+
+    public Optional<Profile> findProfile(Long profileId) throws BaseException {
+        try {
+            return profileRepository.findById(profileId);
+        } catch (Exception ignored) {
+            throw new BaseException(PROFILE_NOT_FOUND);
+        }
+
     }
 }

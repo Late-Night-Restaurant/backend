@@ -20,6 +20,7 @@ public class ChattingRoom extends BaseTimeEntity {
 
     @Id
     @Column(name = "chatting_room_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chattingRoomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
