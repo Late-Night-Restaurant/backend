@@ -1,6 +1,5 @@
 package com.backend.simya.domain.house.dto.response;
 
-import com.backend.simya.domain.house.entity.Category;
 import com.backend.simya.domain.house.entity.House;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class HouseResponseDto {
 
     private Long houseId;
-    private Category category;
+    private String category;
     private String signboardImageUrl;
     private String houseName;
     private String comment;
@@ -25,7 +24,7 @@ public class HouseResponseDto {
         return HouseResponseDto.builder()
                 .houseId(house.getHouseId())
                 .houseName(house.getHouseName())
-                .category(house.getCategory())
+                .category(house.getCategory().toString())
                 .comment(house.getComment())
                 .build();
     }
