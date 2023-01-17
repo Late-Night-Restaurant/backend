@@ -68,8 +68,9 @@ public class House extends BaseTimeEntity {
     @Column(name = "activated")
     private boolean activated;
 
-    public void openHouse() {
+    public void openHouse(int capacity) {
         this.open = true;
+        this.capacity = capacity;
     }
 
     public House update(HouseUpdateRequestDto houseUpdateRequestDto) {
@@ -80,9 +81,8 @@ public class House extends BaseTimeEntity {
         return this;
     }
 
-    public House delete() {
+    public void delete() {
         this.activated = false;
-        return this;
     }
 
     public void addReview(Review review) {
