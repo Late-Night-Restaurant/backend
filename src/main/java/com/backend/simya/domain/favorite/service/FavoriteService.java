@@ -50,7 +50,7 @@ public class FavoriteService {
         Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
         return favoriteRepository.findFavoriteListByProfileId(mainProfile.getProfileId()).stream()
                 .filter(Favorite::isActivated)
-                .map(MyFavoriteHouseResponseDto::toDto)
+                .map(MyFavoriteHouseResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class FavoriteService {
         return favoriteRepository.findFavoriteListByHouseId(house.getHouseId()).stream()
                 .filter(Favorite::isActivated)
                 .map(Favorite::getProfile)
-                .map(ProfileResponseDto::toDto)
+                .map(ProfileResponseDto::from)
                 .collect(Collectors.toList());
     }
 

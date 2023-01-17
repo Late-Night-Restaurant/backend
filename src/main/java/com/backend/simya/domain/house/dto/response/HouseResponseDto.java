@@ -21,7 +21,7 @@ public class HouseResponseDto {
     private String houseName;
     private String comment;
 
-    public static HouseResponseDto toDto(House house) {
+    public static HouseResponseDto from(House house) {
         return HouseResponseDto.builder()
                 .houseId(house.getHouseId())
                 .houseName(house.getHouseName())

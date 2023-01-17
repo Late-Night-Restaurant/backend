@@ -19,10 +19,10 @@ public class MyFavoriteHouseResponseDto {
     private Long favoriteId;
     private HouseIntroductionResponseDto houseIntroduction;
 
-    public static MyFavoriteHouseResponseDto toDto(Favorite favorite) {
+    public static MyFavoriteHouseResponseDto from(Favorite favorite) {
         return MyFavoriteHouseResponseDto.builder()
                 .favoriteId(favorite.getFavoriteId())
-                .houseIntroduction(HouseIntroductionResponseDto.toDto(
+                .houseIntroduction(HouseIntroductionResponseDto.from(
                         favorite.getHouse().getProfile(),
                         favorite.getHouse(),
                         favorite.getHouse().getReviewList()))

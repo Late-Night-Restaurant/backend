@@ -26,13 +26,13 @@ public class HouseIntroductionResponseDto {
     private HouseResponseDto houseInfo;
     private List<ReviewResponseDto> houseReviewList;
 
-    public static HouseIntroductionResponseDto toDto(Profile profile, House house, List<Review> reviewList) {
+    public static HouseIntroductionResponseDto from(Profile profile, House house, List<Review> reviewList) {
         return HouseIntroductionResponseDto.builder()
-                .masterProfile(ProfileResponseDto.toDto(profile))
-                .houseInfo(HouseResponseDto.toDto(house))
+                .masterProfile(ProfileResponseDto.from(profile))
+                .houseInfo(HouseResponseDto.from(house))
                 .houseReviewList(reviewList.stream()
                         .filter(Review::isActivated)
-                        .map(ReviewResponseDto::toDto)
+                        .map(ReviewResponseDto::from)
                         .collect(Collectors.toList()))
                 .build();
     }

@@ -39,20 +39,20 @@ public class ReviewService {
         mainProfile.addReview(savedReview);
         houseToReview.addReview(savedReview);
 
-       return ReviewResponseDto.toDto(savedReview);
+       return ReviewResponseDto.from(savedReview);
     }
 
     public List<ReviewResponseDto> getHouseReviewList(House house) {
         return reviewRepository.findReviewsByHouse(house).stream()
                 .filter(Review::isActivated)
-                .map(ReviewResponseDto::toDto)
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
     }
 
     public List<MyReviewResponseDto> getMyReviewList(User currentUser) {
         return reviewRepository.findReviewsByUserId(currentUser.getUserId()).stream()
                 .filter(Review::isActivated)
-                .map(review -> MyReviewResponseDto.toDto(review.getHouse(), review))
+                .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +60,7 @@ public class ReviewService {
         return reviewRepository.findReviewsByProfileId(currentUser.getProfileList()
                         .get(currentUser.getMainProfile()).getProfileId()).stream()
                 .filter(Review::isActivated)
-                .map(review -> MyReviewResponseDto.toDto(review.getHouse(), review))
+                .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +75,7 @@ public class ReviewService {
         Review findReview = findReview(reviewId);
         Review updatedReview = findReview.updateReview(reviewRequestDto.getRate(), reviewRequestDto.getContent());
 
-        return ReviewResponseDto.toDto(updatedReview);
+        return ReviewResponseDto.from(updatedReview);
     }
 
     private Review findReview(Long reviewId) throws BaseException {

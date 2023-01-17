@@ -19,7 +19,7 @@ public class ProfileResponseDto {
     private String comment;
     private String picture;
 
-    public static ProfileResponseDto toDto(Profile profile) {
+    public static ProfileResponseDto from(Profile profile) {
         return ProfileResponseDto.builder()
                 .profileId(profile.getProfileId())
                 .nickname(profile.getNickname())

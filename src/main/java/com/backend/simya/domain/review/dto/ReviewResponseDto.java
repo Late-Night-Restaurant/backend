@@ -21,9 +21,9 @@ public class ReviewResponseDto {
     private int rate;
     private String content;
 
-    public static ReviewResponseDto toDto(Review review) {
+    public static ReviewResponseDto from(Review review) {
         return ReviewResponseDto.builder()
-                .reviewersProfile(ProfileResponseDto.toDto(review.getProfile()))
+                .reviewersProfile(ProfileResponseDto.from(review.getProfile()))
                 .reviewId(review.getReviewId())
                 .rate(review.getRate())
                 .content(review.getContent())

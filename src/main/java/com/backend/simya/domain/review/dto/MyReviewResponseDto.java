@@ -19,10 +19,10 @@ public class MyReviewResponseDto {
     private HouseResponseDto reviewedHouse;
     private ReviewResponseDto myReview;
 
-    public static MyReviewResponseDto toDto(House house, Review review) {
+    public static MyReviewResponseDto from(House house, Review review) {
         return MyReviewResponseDto.builder()
-                .reviewedHouse(HouseResponseDto.toDto(house))
-                .myReview(ReviewResponseDto.toDto(review))
+                .reviewedHouse(HouseResponseDto.from(house))
+                .myReview(ReviewResponseDto.from(review))
                 .build();
     }
 }
