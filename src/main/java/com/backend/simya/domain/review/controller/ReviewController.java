@@ -2,6 +2,7 @@ package com.backend.simya.domain.review.controller;
 
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.service.HouseService;
+import com.backend.simya.domain.review.dto.MyReviewResponseDto;
 import com.backend.simya.domain.review.dto.ReviewRequestDto;
 import com.backend.simya.domain.review.dto.ReviewResponseDto;
 import com.backend.simya.domain.review.service.ReviewService;
@@ -61,10 +62,10 @@ public class ReviewController {
     }
 
     @GetMapping("/all")
-    public BaseResponse<List<ReviewResponseDto>> getMyReviewList() {
+    public BaseResponse<List<MyReviewResponseDto>> getMyReviewList() {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
-            List<ReviewResponseDto> myReviewList = reviewService.getMyReviewList(currentUser);
+            List<MyReviewResponseDto> myReviewList = reviewService.getMyReviewList(currentUser);
             if (myReviewList.isEmpty()) {
                 return new BaseResponse<>(NO_REVIEWS_YET);
             } else {
@@ -76,10 +77,10 @@ public class ReviewController {
     }
 
     @GetMapping("/profile")
-    public BaseResponse<List<ReviewResponseDto>> getCurrentProfileReviewList() {
+    public BaseResponse<List<MyReviewResponseDto>> getCurrentProfileReviewList() {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
-            List<ReviewResponseDto> myReviewList = reviewService.getCurrentProfileReviewList(currentUser);
+            List<MyReviewResponseDto> myReviewList = reviewService.getCurrentProfileReviewList(currentUser);
             if (myReviewList.isEmpty()) {
                 return new BaseResponse<>(NO_REVIEWS_YET);
             } else {
@@ -89,7 +90,6 @@ public class ReviewController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 
 
     @PatchMapping("/{review-id}")
