@@ -51,7 +51,7 @@ public class Review extends BaseTimeEntity {
         this.profile = profile;
     }
 
-    public void setHouseToReview(House house) {
+    public void setReviewedHouse(House house) {
         this.house = house;
     }
     
