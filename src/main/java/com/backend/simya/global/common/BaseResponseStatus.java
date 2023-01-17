@@ -13,6 +13,8 @@ public enum BaseResponseStatus {
     SUCCESS(true, 200, "요청에 성공하였습니다."),
     SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공하였습니다"),
     SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
+    SUCCESS_TO_REGISTER_FAVORITE(true, 200, "찜 등록에 성공하였습니다."),
+    SUCCESS_TO_CANCEL_FAVORITE(true, 200, "찜 해제에 성공하였습니다."),
     NO_REVIEWS_YET(true, 200, "아직 리뷰가 없습니다"),
 
 
@@ -92,7 +94,10 @@ public enum BaseResponseStatus {
 
     //review 관련
     FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
-    FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다.");
+    FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다."),
+    FAILED_TO_FIND_FAVORITE(false, 500, "찜 목록을 찾을 수 없습니다."),
+    FAILED_TO_CANCEL_FAVORITE(false, 500, "찜 해제에 실패했습니다."),
+    FAILED_TO_REGISTER_FAVORITE(false, 500, "찜 등록에 실패했습니다.");
 
 
 

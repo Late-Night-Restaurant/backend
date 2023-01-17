@@ -1,5 +1,7 @@
 package com.backend.simya.domain.profile.entity;
 
+
+import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.dto.request.ProfileUpdateDto;
 import com.backend.simya.domain.review.entity.Review;
@@ -41,6 +43,11 @@ public class Profile extends BaseTimeEntity {
     @OneToMany(mappedBy = "profile", cascade = ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Review> reviewList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "profile", cascade = ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Favorite> favoriteList = new ArrayList<>();
 
     @Column(name = "nickname", length = 50)
     private String nickname;
@@ -97,5 +104,14 @@ public class Profile extends BaseTimeEntity {
     public void addReview(Review review) {
         reviewList.add(review);
         review.setReviewersProfile(this);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favoriteList.add(favorite);
+        favorite.setProfile(this);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favoriteList.remove(favorite);
     }
 }
