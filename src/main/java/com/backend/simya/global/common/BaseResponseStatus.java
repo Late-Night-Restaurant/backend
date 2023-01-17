@@ -95,6 +95,7 @@ public enum BaseResponseStatus {
     FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다.");
 
 
+
     /**
      * 5000, 6000 : 필요 시 추가 구현
      */

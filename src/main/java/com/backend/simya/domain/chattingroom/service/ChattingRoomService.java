@@ -74,7 +74,6 @@ public class ChattingRoomService {
         try {
             ChattingRoom chattingRoom = getChattingRoom(chattingRoomId);
             Profile profileInfo = profileService.getProfileInfo(chattingRoom.getProfile().getProfileId());
-
             return ChattingShowResponseDto.builder()
                     .chattingId(chattingRoom.getChattingRoomId())
                     .chattingRoomName(chattingRoom.getChattingRoomName())
@@ -100,6 +99,17 @@ public class ChattingRoomService {
         } catch (Exception ignored) {
             throw new BaseException(UPDATE_FAIL_CHATTING_ROOM);
         }
+    }
+
+    @Transactional
+    public void closeChattingRoom(Long chattingRoomId) throws BaseException {
+        try {
+            ChattingRoom chattingRoom = getChattingRoom(chattingRoomId);
+            chattingRoom.delete();
+        } catch (Exception ignored) {
+            throw new BaseException(DELETE_FAIL_CHATTING_ROOM);
+        }
+
     }
 
 

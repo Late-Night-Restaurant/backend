@@ -63,4 +63,9 @@ public class ChattingRoom extends BaseTimeEntity {
         return this;
 
     }
+
+    public ChattingRoom delete() {
+        this.activated = false;
+        return this;
+    }
 }

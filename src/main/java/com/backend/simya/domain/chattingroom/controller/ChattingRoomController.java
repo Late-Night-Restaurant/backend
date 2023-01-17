@@ -9,6 +9,7 @@ import com.backend.simya.domain.chattingroom.service.ChattingRoomService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,6 +52,16 @@ public class ChattingRoomController {
         try {
             chattingRoomService.updateMain(chattingRoomId, chattingUpdateRequestDto);
             return new BaseResponse<>("이야기 집 간판이 수정되었습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PatchMapping("/close/{chattingRoomId}")
+    public BaseResponse<String> closeChattingRoom(@PathVariable("chattingRoomId") Long chattingRoomId) {
+        try {
+            chattingRoomService.closeChattingRoom(chattingRoomId);
+            return new BaseResponse<>("이야기 집이 폐점되었습니다.");
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
