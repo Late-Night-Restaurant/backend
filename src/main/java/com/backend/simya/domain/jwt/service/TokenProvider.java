@@ -1,19 +1,30 @@
 package com.backend.simya.domain.jwt.service;
 
+import com.backend.simya.domain.jwt.dto.request.TokenRequestDto;
 import com.backend.simya.domain.jwt.dto.response.TokenDto;
+import com.backend.simya.domain.jwt.entity.RefreshToken;
+import com.backend.simya.domain.jwt.repository.RefreshTokenRepository;
 import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.config.jwt.JwtFilter;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +32,8 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import static com.backend.simya.domain.user.entity.Role.ROLE_USER;
+import static com.backend.simya.global.common.BaseResponseStatus.FAILED_TO_JWT;
+import static com.backend.simya.global.common.BaseResponseStatus.INVALID_JWT;
 
 /**
  * JWT 토큰에 관련된 암호화, 복호화, 검증 로직이 이루어지는 클래스
@@ -31,12 +44,15 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;   // Access Token 만료 기한: 1일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 1;   // Access Token 만료 기한: 1일
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // Refresh Token 만료 기한: 7일
     private Key key;
 
+    @Autowired private final RefreshTokenRepository refreshTokenRepository;
+
     public TokenProvider(
-            @Value("${jwt.secret}") String secretKey) {
+            @Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
         // JWT 토큰 생성 시 사용될 암호화 키 값 생성자에서 지정
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -108,6 +124,11 @@ public class TokenProvider {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
+            try {
+                TokenDto newToken = reissue(token);
+            } catch (BaseException exception) {
+                log.info("JWT 만료 이슈 예외 - {}", exception.getStatus());
+            }
         } catch (UnsupportedJwtException e) {
             log.info("지원하지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
@@ -127,6 +148,65 @@ public class TokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        }
+    }
+
+    // 로그인한 사용자 여부에 대한 검증 시 Header 에서 토큰 값을 가져온다.
+    public TokenRequestDto getJwt() throws BaseException {
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+            log.info("AuthService -> TokenProvider - getJwt() : header에 저장된 Access Token {}", request.getHeader("Access-Token"));
+            log.info("AuthService -> TokenProvider - getJwt() : header에 저장된 Access Token {}", request.getHeader("Refresh-Token"));
+            String accessToken = request.getHeader("Access-Token").substring(7);
+            String refreshToken = request.getHeader("Refresh-Token").substring(8);
+
+            return new TokenRequestDto(accessToken, refreshToken);
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+    }
+
+    public TokenDto reissue(String accessToken) throws BaseException {
+
+        try {
+            TokenRequestDto tokenRequestDto = getJwt();
+            // 1. Refresh Token 검증
+            if (!validateToken(tokenRequestDto.getRefreshToken())) {
+                log.debug("Refresh Token 이 유효하지 않습니다.");
+            }
+
+            // 2. Access Token 에서 유저 정보 가져오기
+            Authentication authentication = getAuthentication(accessToken);
+
+            // 3. 저장소에서 유저 ID 를 기반으로 Refresh Token 값을 가져오기
+            RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("로그아웃된 사용자입니다."));
+
+            // 4. Refresh Token 일치하는지 검사
+            if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+                log.debug("토큰의 유저 정보가 일치하지 않습니다.");
+            }
+
+            // 5. 새로운 토큰 생성
+            TokenDto tokenDto = createToken(authentication.getName());
+
+            // 6. Repository 정보 업데이트
+            RefreshToken newRefreshToken = refreshToken.updateToken(tokenDto.getRefreshToken());
+            refreshTokenRepository.save(newRefreshToken);
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Access " + tokenDto.getAccessToken());
+            httpHeaders.add(JwtFilter.REFRESH_HEADER, "Refresh " + tokenDto.getRefreshToken());
+
+            log.info("토큰 재발급이 완료되었습니다.");
+            return tokenDto;
+
+        } catch (BaseException e) {
+            log.info("JWT 토큰 정보를 읽어오지 못했습니다.");
+            return null;
+        } catch (Exception ignored) {
+            throw new BaseException(FAILED_TO_JWT);
         }
     }
 

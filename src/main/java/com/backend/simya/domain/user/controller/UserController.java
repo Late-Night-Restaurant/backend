@@ -64,7 +64,7 @@ public class UserController {
 
             // 헤더에 토큰 추가
             response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Access " + accessToken);
-            response.addHeader(JwtFilter.REFRESH_HEADER, "Refresh  " + refreshToken);
+            response.addHeader(JwtFilter.REFRESH_HEADER, "Refresh " + refreshToken);
 
             return new BaseResponse<>(tokenDto);
         } catch (BaseException e) {
