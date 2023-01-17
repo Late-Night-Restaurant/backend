@@ -1,5 +1,6 @@
 package com.backend.simya.domain.profile.entity;
 
+import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.dto.request.ProfileUpdateDto;
 import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
@@ -11,8 +12,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
@@ -55,12 +58,18 @@ public class Profile extends BaseTimeEntity {
     private boolean activated;
 
 
-    public void setUserProfile(User user) {
-        this.user = user;
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "profile", cascade = ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<House> houseList = new ArrayList<>();
+
 
     public void selectMainProfile() {
         this.isRepresent = true;
+    }
+
+    public void setUserProfile(User user) {
+        this.user = user;
     }
 
     public void autoSetMainProfile() {

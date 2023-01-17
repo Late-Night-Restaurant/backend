@@ -106,27 +106,18 @@ public class AuthService {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Access " + tokenDto.getAccessToken());
+            httpHeaders.add(JwtFilter.REFRESH_HEADER, "Refresh " + tokenDto.getRefreshToken());
             return httpHeaders;
         } catch (Exception exception) {
             throw new BaseException(FAILED_JWT_IN_HEADER);
         }
     }
 
-    // 로그인한 사용자 여부에 대한 검증 시 Header 에서 토큰 값을 가져온다.
-    public String getJwt() throws BaseException {
-        try {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            log.info("AuthService - getJwt() : header에 저장된 Access Token {}", request.getHeader("Access-Token"));
-            return request.getHeader("Access-Token").substring(7);
 
-        } catch (Exception exception) {
-            throw new BaseException(INVALID_JWT);
-        }
-    }
 
     public String getUsername() throws BaseException {
         try {
-            String accessToken = getJwt();
+            String accessToken = tokenProvider.getJwt().getAccessToken();
             if (accessToken == null) {
                 throw new BaseException(EMPTY_JWT);
             }
@@ -146,62 +137,6 @@ public class AuthService {
         return userRepository.findByEmail(username).orElseThrow(
                 () -> new BaseException(USERS_NOT_FOUND)
         );
-    }
-
-    public boolean validateClaim(String accessToken) throws BaseException {
-        try {
-            Claims claims = tokenProvider.parseClaims(accessToken);
-            return true;
-        } catch (ExpiredJwtException e) {
-            // TODO 토큰 만료 시, TokenRequestDto (AccessToken, RefreshToken 넘겨서 갱신)
-
-            return false;
-        } /*catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-            throw new BaseException(MALFORMED_JWT);
-        } catch (UnsupportedJwtException e) {
-            log.info("지원하지 않는 JWT 토큰입니다.");
-            throw new BaseException(UNSUPPORTED_JWT);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-            throw new BaseException(INVALID_JWT);
-        }*/
-
-    }
-
-
-
-    // TODO validateClaim -> reissue 에 넣어서 만료여부 체크 TokenProvider 거치지 않도록
-    /**
-     * 토큰 만료 시 재발급하는 메소드
-     */
-    @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-        // 1. Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            log.debug("Refresh Token 이 유효하지 않습니다.");
-        }
-
-        // 2. Access Token 에서 유저 정보 가져오기
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-
-        // 3. 저장소에서 유저 ID 를 기반으로 Refresh Token 값을 가져오기
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃된 사용자입니다."));
-
-        // 4. Refresh Token 일치하는지 검사
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            log.debug("토큰의 유저 정보가 일치하지 않습니다.");
-        }
-
-        // 5. 새로운 토큰 생성
-        TokenDto tokenDto = tokenProvider.createToken(authentication.getName());
-
-        // 6. Repository 정보 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateToken(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
-
-        return tokenDto;
     }
 
 }
