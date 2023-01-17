@@ -3,6 +3,7 @@ package com.backend.simya.domain.review.entity;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
+import com.backend.simya.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
