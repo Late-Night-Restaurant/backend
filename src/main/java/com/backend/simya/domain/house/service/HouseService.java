@@ -31,13 +31,17 @@ public class HouseService {
 
     @Transactional
     public HouseResponseDto createHouse(HouseRequestDto houseRequestDto) throws BaseException {
-
         try {
             Optional<Profile> profile = profileService.findProfile(houseRequestDto.getProfileId());
-            House house = houseRequestDto.toEntity(profile.get());
+            House savedHouse = houseRepository.save(houseRequestDto.toEntity(profile.get()));
 
-            Long houseId = houseRepository.save(house).getHouseId();
-            return new HouseResponseDto(houseId, profile.get().getProfileId(), house.getCategory(), house.getSignboardImageUrl(), house.getHouseName(), house.getComment(), false);
+            return HouseResponseDto.builder()
+                    .houseId(savedHouse.getHouseId())
+                    .category(savedHouse.getCategory())
+                    .houseName(savedHouse.getHouseName())
+                    .comment(savedHouse.getComment())
+                    .signboardImageUrl(savedHouse.getSignboardImageUrl())
+                    .build();
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
         }
