@@ -58,7 +58,6 @@ public enum BaseResponseStatus {
     HOUSE_NOT_FOUND(false, 404, "존재하지 않는 이야기 집 입니다."),
     HOUSE_ALREADY_OPENED(false, 405, "이미 오픈된 이야기 집 입니다."),
 
-
     // 500 ~ : Database, Server 오류
     // 500 : Internal Server Error
     // 503 : Service Unavailable
@@ -93,8 +92,6 @@ public enum BaseResponseStatus {
     //review 관련
     FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
     FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다.");
-
-
 
     /**
      * 5000, 6000 : 필요 시 추가 구현
