@@ -3,6 +3,7 @@ package com.backend.simya.domain.chattingroom.service;
 
 import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
 import com.backend.simya.domain.chattingroom.dto.request.ChattingRequestDto;
+import com.backend.simya.domain.chattingroom.dto.request.ChattingUpdateRequestDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingResponseDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingShowResponseDto;
 import com.backend.simya.domain.chattingroom.entity.ChattingRoom;
@@ -83,6 +84,21 @@ public class ChattingRoomService {
                     .build();
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void updateMain(Long chattingRoomId, ChattingUpdateRequestDto chattingUpdateRequestDto) throws BaseException {
+        try {
+            ChattingRoom chattingRoom = getChattingRoom(chattingRoomId);
+            if (!chattingUpdateRequestDto.getUserId().equals(chattingRoom.getProfile().getProfileId())) {  // 이야기 집 생성자가 수정하려는지 확인
+                throw new BaseException(FAILED_TO_UPDATE);
+            }
+            chattingRoom.update(chattingUpdateRequestDto);
+            log.info("{}의 이야기 집 간판이 수정되었습니다.", chattingRoom.getChattingRoomName());
+
+        } catch (Exception ignored) {
+            throw new BaseException(UPDATE_FAIL_CHATTING_ROOM);
         }
     }
 

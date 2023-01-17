@@ -1,8 +1,9 @@
 package com.backend.simya.domain.chattingroom.controller;
 
 import com.backend.simya.domain.chattingroom.dto.request.ChattingOpenRequestDto;
-import com.backend.simya.domain.chattingroom.dto.request.ChattingRoomRequestDto;
-import com.backend.simya.domain.chattingroom.dto.response.ChattingRoomResponseDto;
+import com.backend.simya.domain.chattingroom.dto.request.ChattingRequestDto;
+import com.backend.simya.domain.chattingroom.dto.request.ChattingUpdateRequestDto;
+import com.backend.simya.domain.chattingroom.dto.response.ChattingResponseDto;
 import com.backend.simya.domain.chattingroom.dto.response.ChattingShowResponseDto;
 import com.backend.simya.domain.chattingroom.service.ChattingRoomService;
 import com.backend.simya.global.common.BaseException;
@@ -18,7 +19,7 @@ public class ChattingRoomController {
     private final ChattingRoomService chattingRoomService;
 
     @PostMapping("")
-    public BaseResponse<ChattingRoomResponseDto> createChattingRoom(@RequestBody ChattingRoomRequestDto chattingRequestDto) {
+    public BaseResponse<ChattingResponseDto> createChattingRoom(@RequestBody ChattingRequestDto chattingRequestDto) {
         try {
             return new BaseResponse(chattingRoomService.createChattingRoom(chattingRequestDto));
         } catch (BaseException e) {
@@ -40,6 +41,16 @@ public class ChattingRoomController {
     public BaseResponse<ChattingShowResponseDto> showChattingRoom(@PathVariable("chattingRoomId") Long chattingRoomId) {
         try {
             return new BaseResponse<>(chattingRoomService.showChattingRoom(chattingRoomId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PatchMapping("/main/{chattingRoomId}")
+    public BaseResponse<String> updateMain(@PathVariable("chattingRoomId") Long chattingRoomId, @RequestBody ChattingUpdateRequestDto chattingUpdateRequestDto) {
+        try {
+            chattingRoomService.updateMain(chattingRoomId, chattingUpdateRequestDto);
+            return new BaseResponse<>("이야기 집 간판이 수정되었습니다.");
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

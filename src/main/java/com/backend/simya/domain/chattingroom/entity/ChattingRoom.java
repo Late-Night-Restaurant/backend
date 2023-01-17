@@ -1,5 +1,6 @@
 package com.backend.simya.domain.chattingroom.entity;
 
+import com.backend.simya.domain.chattingroom.dto.request.ChattingUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -52,5 +53,14 @@ public class ChattingRoom extends BaseTimeEntity {
 
     public void openChatting() {
         this.open = true;
+    }
+
+    public ChattingRoom update(ChattingUpdateRequestDto chattingUpdateRequestDto) {
+        this.signboardImageUrl = chattingUpdateRequestDto.getSignboardImageUrl();
+        this.chattingRoomName = chattingUpdateRequestDto.getChattingRoomName();
+        this.comment = chattingUpdateRequestDto.getComment();
+
+        return this;
+
     }
 }
