@@ -1,8 +1,10 @@
 package com.backend.simya.domain.chat.dto;
 
 import com.backend.simya.domain.chat.service.ChatService;
+import com.backend.simya.global.common.BaseException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashSet;
@@ -11,6 +13,7 @@ import java.util.Set;
 /**
  * 채팅방 DTO
  */
+@Slf4j
 @Getter
 public class ChatRoom {
 
@@ -34,6 +37,12 @@ public class ChatRoom {
 
     private <T> void sendMessage(T message, ChatService chatService) {
         sessions.parallelStream()
-                .forEach(session -> chatService.sendMessage(session, message));
+                .forEach(session -> {
+                    try {
+                        chatService.sendMessage(session, message);
+                    } catch (BaseException e) {
+                        log.info("메시지 전송에 실패했습니다.");
+                    }
+                });
     }
 }

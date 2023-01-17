@@ -29,6 +29,9 @@ public class ChatService {
         chatRooms = new LinkedHashMap<>();
     }
 
+    /**
+     * 채팅방 조회 - 채팅방 Map에 담긴 정보를 조회
+     */
     public List<ChatRoom> findAllRoom() {
         return new ArrayList<>(chatRooms.values());
     }
@@ -37,6 +40,10 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
+    /**
+     * 채팅방 생성 - Random UUID 를 ID 로 가지는 채팅방 객체 생성 -> chatRooms 에 추가
+     * **ID는 식별자로, 조회 시 사용
+     */
     public ChatRoom createRoom(String name) {
         String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
@@ -47,6 +54,10 @@ public class ChatService {
         return chatRoom;
     }
 
+    /**
+     * 메시지 발송 - 지정한 웹 소켓 세션으로 메시지 발송
+     * TALK 상태일 때 실행
+     */
     public <T> void sendMessage(WebSocketSession session, T message) throws BaseException {
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
