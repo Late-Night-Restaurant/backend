@@ -1,5 +1,6 @@
 package com.backend.simya.domain.profile.entity;
 
+import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.dto.request.ProfileUpdateDto;
 import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
@@ -61,7 +62,7 @@ public class Profile extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "profile", cascade = ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ChattingRoom> chattingRoomList = new ArrayList<>();
+    private List<House> houseList = new ArrayList<>();
 
 
     public void selectMainProfile() {

@@ -36,7 +36,7 @@ public class House extends BaseTimeEntity {
     private Profile profile;
 
     @Builder.Default
-    @OneToMany(mappedBy = "chattingRoom", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "house", cascade = ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Review> reviewList = new ArrayList<>();
 
@@ -81,6 +81,6 @@ public class House extends BaseTimeEntity {
 
     public void addReview(Review review) {
         reviewList.add(review);
-        review.setChattingRoomToReview(this);
+        review.setHouseToReview(this);
     }
 }
