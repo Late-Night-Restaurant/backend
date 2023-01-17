@@ -92,8 +92,11 @@ public enum BaseResponseStatus {
 
     //review 관련
     FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
-    FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다.");
+    FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다."),
 
+
+    // chat 관련
+    FAILED_TO_SEND_MESSAGE(false, 500, "메시지 전송에 실패했습니다.");
 
 
     /**

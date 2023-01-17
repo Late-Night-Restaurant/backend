@@ -1,5 +1,6 @@
 package com.backend.simya.domain.chat.dto;
 
+import com.backend.simya.domain.chat.service.ChatService;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.socket.WebSocketSession;
