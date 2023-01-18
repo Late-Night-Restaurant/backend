@@ -10,13 +10,24 @@ import lombok.Getter;
 public enum BaseResponseStatus {
 
     // 200 ~ : 성공
-    SUCCESS(true, 200, "요청에 성공하였습니다."),
-    SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공하였습니다"),
-    SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
-    SUCCESS_TO_REGISTER_FAVORITE(true, 200, "찜 등록에 성공하였습니다."),
-    SUCCESS_TO_CANCEL_FAVORITE(true, 200, "찜 해제에 성공하였습니다."),
-    NO_HOUSE_YET(true, 200, "아직 오픈한 이야기 집이 없습니다."),
+    SUCCESS(true, 200, "요청에 성공했습니다."),
+    SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공했습니다"),
+    SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공했습니다."),
+    SUCCESS_TO_REGISTER_FAVORITE(true, 200, "찜 등록에 성공했습니다."),
+    SUCCESS_TO_CANCEL_FAVORITE(true, 200, "찜 해제에 성공했습니다."),
+    NO_OPENED_HOUSE_YET(true, 200, "아직 오픈한 이야기 집이 없습니다."),
+    NO_HOUSE_YET(true, 200, "이야기 집이 없습니다."),
     NO_REVIEWS_YET(true, 200, "아직 리뷰가 없습니다"),
+    SUCCESS_TO_DELETE_TOPIC(true, 200, "오늘의 메뉴 삭제에 성공했습니다"),
+    SUCCESS_TO_CLOSE_HOUSE(true, 200, "이야기 집을 마감했습니다"),
+    SUCCESS_TO_DELETE_HOUSE(true, 200, "이야기 집을 폐점했습니다"),
+    SUCCESS_TO_UPDATE_HOUSE_SIGNBOARD(true, 200, "이야기 집 간판을 수정했습니다."),
+    NEVER_REVIEWED_BEFORE(true, 200, "리뷰를 쓴 적이 없는 유저입니다."),
+    HAVE_REVIEWED_BEFORE(true, 200, "리뷰를 쓴 적이 있는 유저입니다."),
+
+
+
+
 
 
     // 400 ~ :  클라이언트 Request 오류
