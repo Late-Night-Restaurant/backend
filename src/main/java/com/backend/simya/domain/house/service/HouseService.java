@@ -7,6 +7,7 @@ import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.house.dto.response.HouseIntroductionResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseShowResponseDto;
+import com.backend.simya.domain.house.entity.Category;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.repository.HouseRepository;
 import com.backend.simya.domain.profile.entity.Profile;
@@ -126,6 +127,24 @@ public class HouseService {
         }catch (Exception ignored) {
             throw new BaseException(FAILED_TO_OPEN_HOUSE);
         }
+
+    }
+
+    @Transactional
+    public void updateMainMenu(Long houseId, User user, String menu) throws BaseException{
+        House house = getHouse(houseId);
+
+        if(!house.getProfile().getProfileId().equals(user.getUserId())) {
+            throw new BaseException(FAILED_TO_UPDATE_MENU);
+        }
+
+        try {
+            house.updateMenu(menu);
+            log.info("이야기집의 전문메뉴가 {}로 수정되었습니다.", menu);
+        } catch (Exception ignored) {
+            throw new BaseException(FAILED_TO_UPDATE_MAIN_MENU);
+        }
+
 
     }
 

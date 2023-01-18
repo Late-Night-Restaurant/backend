@@ -58,8 +58,9 @@ public enum BaseResponseStatus {
     FAILED_TO_OPEN(false, 403, "이야기 집 방장만 오픈이 가능합니다."),
     FAILED_TO_UPDATE(false, 403, "이야기 집 방장만 수정이 가능합니다."),
     FAILED_TO_CLOSE(false, 403, "이야기 집 방장만 폐점이 가능합니다."),
+    FAILED_TO_UPDATE_MENU(false, 403, "이야기 집 방장만 메뉴 수정이 가능합니다."),
     HOUSE_NOT_FOUND(false, 404, "존재하지 않는 이야기 집 입니다."),
-    HOUSE_ALREADY_OPENED(false, 405, "이미 오픈된 이야기 집 입니다."),
+    HOUSE_ALREADY_OPENED(false, 400, "이미 오픈된 이야기 집 입니다."),
 
 
     // 500 ~ : Database, Server 오류
@@ -85,10 +86,11 @@ public enum BaseResponseStatus {
 
 
     // house 관련
-    HOUSE_OPEN_FAILED(false, 504, "이야기 집 오픈에 실패했습니다."),
-    FAILED_TO_CREATE_TOPIC(false, 504, "이야기 집 메뉴 생성에 실패했습니다"),
-    HOUSE_UPDATE_FAILED(false, 505, "이야기 집 간판 수정에 실패했습니다"),
-    FAILED_TO_OPEN_HOUSE(false, 506, "이야기 집 폐점에 실패했습니다."),
+    HOUSE_OPEN_FAILED(false, 500, "이야기 집 오픈에 실패했습니다."),
+    FAILED_TO_CREATE_TOPIC(false, 500, "이야기 집 메뉴 생성에 실패했습니다"),
+    HOUSE_UPDATE_FAILED(false, 500, "이야기 집 간판 수정에 실패했습니다"),
+    FAILED_TO_OPEN_HOUSE(false, 500, "이야기 집 폐점에 실패했습니다."),
+    FAILED_TO_UPDATE_MAIN_MENU(false, 500, "이야기 집 메인 메뉴 수정에 실패했습니다."),
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다."),
 
