@@ -3,6 +3,7 @@ package com.backend.simya.domain.house.entity;
 import com.backend.simya.domain.user.entity.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "topic")
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Topic extends BaseTimeEntity {
@@ -25,7 +27,7 @@ public class Topic extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
     private House house;
 
@@ -34,4 +36,12 @@ public class Topic extends BaseTimeEntity {
 
     @Column(name = "activated")
     private boolean activated;
+
+    public boolean isTodayTopic() {
+        return this.isTodayTopic;
+    }
+
+    public void setHouseToRegisterTopic(House house) {
+        this.house = house;
+    }
 }
