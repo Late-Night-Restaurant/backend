@@ -18,7 +18,7 @@ public class ChatHandler extends TextWebSocketHandler {
 
     /* private final ObjectMapper objectMapper;
     private final ChatService chatService;*/
-    private static List<WebSocketSession> list = new ArrayList<>();
+    private List<WebSocketSession> list = new ArrayList<>();
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {

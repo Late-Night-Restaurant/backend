@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
 @Controller
-public class ChatPubController {
+public class StompChatController {
 
     private final SimpMessageSendingOperations messagingTemplate;  // 특정 Broker 로 메시지 전달
 
