@@ -68,7 +68,7 @@ public class HouseController {
     }
 
     @PatchMapping("/close/{houseId}")
-    public BaseResponse<String> closeHouseRoom(@PathVariable("houseId") Long houseId) {
+    public BaseResponse<String> deleteHouseRoom(@PathVariable("houseId") Long houseId) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
             houseService.closeHouseRoom(loginUser, houseId);
