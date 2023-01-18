@@ -1,7 +1,6 @@
 package com.backend.simya.domain.chat.dto;
 
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
@@ -15,14 +14,15 @@ import java.util.UUID;
  */
 @Slf4j
 @Getter
-public class ChatRoom {
+public class ChatRoomDto {
 
     private String roomId;
     private String name;   // 이야기 집(House)과 연결
-//    private Set<WebSocketSession> sessions = new HashSet<>();
+    private Set<WebSocketSession> sessions = new HashSet<>();  // WebSocketSession : Spring 에서 WebSocket Connection 이 맺어진 세션
 
-    public static ChatRoom create(String name) {
-        ChatRoom chatRoom = new ChatRoom();
+    public static ChatRoomDto create(String name) {
+        ChatRoomDto chatRoom = new ChatRoomDto();
+
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.name = name;
         return chatRoom;

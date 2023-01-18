@@ -9,7 +9,7 @@ import lombok.Setter;
  * - TALK : 이미 세션에 연결되어 있고 채팅중인 상태
  */
 @Getter @Setter
-public class ChatMessage {
+public class ChatMessageDto {
 
     public enum MessageType {
         ENTER, TALK
