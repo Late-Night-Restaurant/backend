@@ -106,6 +106,6 @@ public class ProfileService {
         return profileRepository.findById(profileId).orElseThrow(
                 () -> new BaseException(PROFILE_NOT_FOUND)
         );
-
     }
+
 }

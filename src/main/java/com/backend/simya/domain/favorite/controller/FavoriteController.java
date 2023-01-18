@@ -32,7 +32,7 @@ public class FavoriteController {
     public BaseResponse<BaseResponseStatus> registerFavorite(@PathVariable("house-id") Long houseId) {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
-            House houseToRegisterFavorite = houseService.getHouse(houseId);
+            House houseToRegisterFavorite = houseService.findHouse(houseId);
             favoriteService.registerFavorite(currentUser, houseToRegisterFavorite);
             return new BaseResponse<>(SUCCESS_TO_REGISTER_FAVORITE);
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class FavoriteController {
     @GetMapping("/{house-id}")
     public BaseResponse<List<ProfileResponseDto>> getProfilesLikeMyHouse(@PathVariable("house-id") Long houseId) {
         try{
-            House findHouse = houseService.getHouse(houseId);
+            House findHouse = houseService.findHouse(houseId);
             return new BaseResponse<>(favoriteService.findProfilesLikeMyHouse(findHouse));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
