@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/", "/h2/**", "/simya/form-login", "/simya/auth", "/simya/form-signup", "/api/**").permitAll()
+                .antMatchers("/", "/h2/**", "/simya/form-login", "/simya/auth", "/simya/form-signup", "/api/**", "/simya/chat/**", "/ws/chat", "/ws-stomp", "/pub/**", "/sub/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 로그아웃 설정
