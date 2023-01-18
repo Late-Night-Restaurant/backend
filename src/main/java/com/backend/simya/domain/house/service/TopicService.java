@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.backend.simya.global.common.BaseResponseStatus.DATABASE_ERROR;
 import static com.backend.simya.global.common.BaseResponseStatus.FAILED_TO_CREATE_TOPIC;
 
@@ -36,6 +38,17 @@ public class TopicService {
         } catch (Exception ignored) {
             throw new BaseException(FAILED_TO_CREATE_TOPIC);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Topic> findAllTopic(Long houseId) {
+        return topicRepository.findAllByHouseId(houseId);
+    }
+
+    @Transactional
+    public void deleteAllTopic(Long houseId) {
+        List<Topic> allTopic = findAllTopic(houseId);
+        topicRepository.deleteAll(allTopic);
     }
 
 }

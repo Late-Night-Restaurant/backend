@@ -3,6 +3,7 @@ package com.backend.simya.domain.review.service;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.repository.ProfileRepository;
+import com.backend.simya.domain.review.dto.MyReviewResponseDto;
 import com.backend.simya.domain.review.dto.ReviewRequestDto;
 import com.backend.simya.domain.review.dto.ReviewResponseDto;
 import com.backend.simya.domain.review.entity.Review;
@@ -39,34 +40,32 @@ public class ReviewService {
         mainProfile.addReview(savedReview);
         houseToReview.addReview(savedReview);
 
-       return ReviewResponseDto.builder()
-               .profileId(mainProfile.getProfileId())
-               .nickname(mainProfile.getNickname())
-               .comment(mainProfile.getComment())
-               .reviewId(savedReview.getReviewId())
-               .rate(savedReview.getRate())
-               .content(savedReview.getContent())
-               .build();
+       return ReviewResponseDto.from(savedReview);
     }
 
     public List<ReviewResponseDto> getHouseReviewList(House house) {
         return reviewRepository.findReviewsByHouse(house).stream()
                 .filter(Review::isActivated)
-                .map(ReviewResponseDto::toDto)
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
     }
 
-    public List<ReviewResponseDto> getMyReviewList(User currentUser) {
+    public List<Review> getReviewList(House house) {
+        return reviewRepository.findReviewsByHouse(house);
+    }
+
+    public List<MyReviewResponseDto> getMyReviewList(User currentUser) {
         return reviewRepository.findReviewsByUserId(currentUser.getUserId()).stream()
                 .filter(Review::isActivated)
-                .map(ReviewResponseDto::toDto)
+                .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
                 .collect(Collectors.toList());
     }
 
-    public List<ReviewResponseDto> getCurrentProfileReviewList(User currentUser) {
-        return reviewRepository.findReviewsByProfileId(currentUser.getProfileList().get(currentUser.getMainProfile()).getProfileId()).stream()
+    public List<MyReviewResponseDto> getCurrentProfileReviewList(User currentUser) {
+        return reviewRepository.findReviewsByProfileId(currentUser.getProfileList()
+                        .get(currentUser.getMainProfile()).getProfileId()).stream()
                 .filter(Review::isActivated)
-                .map(ReviewResponseDto::toDto)
+                .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
                 .collect(Collectors.toList());
     }
 
@@ -81,14 +80,7 @@ public class ReviewService {
         Review findReview = findReview(reviewId);
         Review updatedReview = findReview.updateReview(reviewRequestDto.getRate(), reviewRequestDto.getContent());
 
-        return ReviewResponseDto.builder()
-                .profileId(findReview.getProfile().getProfileId())
-                .nickname(findReview.getProfile().getNickname())
-                .comment(findReview.getProfile().getComment())
-                .reviewId(reviewId)
-                .rate(updatedReview.getRate())
-                .content(updatedReview.getContent())
-                .build();
+        return ReviewResponseDto.from(updatedReview);
     }
 
     private Review findReview(Long reviewId) throws BaseException {

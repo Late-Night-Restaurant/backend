@@ -1,5 +1,6 @@
 package com.backend.simya.domain.house.entity;
 
+import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.review.entity.Review;
@@ -36,9 +37,14 @@ public class House extends BaseTimeEntity {
     private Profile profile;
 
     @Builder.Default
-    @OneToMany(mappedBy = "house", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "house", cascade = ALL)
     @JsonManagedReference
     private List<Review> reviewList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "house", cascade = ALL)
+    @JsonManagedReference
+    private List<Favorite> favoriteList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
@@ -62,8 +68,9 @@ public class House extends BaseTimeEntity {
     @Column(name = "activated")
     private boolean activated;
 
-    public void openHouse() {
+    public void openHouse(int capacity) {
         this.open = true;
+        this.capacity = capacity;
     }
 
     public House update(HouseUpdateRequestDto houseUpdateRequestDto) {
@@ -74,13 +81,21 @@ public class House extends BaseTimeEntity {
         return this;
     }
 
-    public House delete() {
+    public void delete() {
         this.activated = false;
-        return this;
     }
 
     public void addReview(Review review) {
         reviewList.add(review);
         review.setReviewedHouse(this);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favoriteList.add(favorite);
+        favorite.setHouse(this);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favoriteList.remove(favorite);
     }
 }

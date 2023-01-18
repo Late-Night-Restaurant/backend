@@ -13,6 +13,8 @@ public enum BaseResponseStatus {
     SUCCESS(true, 200, "요청에 성공하였습니다."),
     SUCCESS_TO_UPDATE_REVIEW(true, 200, "리뷰 업데이트에 성공하였습니다"),
     SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
+    SUCCESS_TO_REGISTER_FAVORITE(true, 200, "찜 등록에 성공하였습니다."),
+    SUCCESS_TO_CANCEL_FAVORITE(true, 200, "찜 해제에 성공하였습니다."),
     NO_REVIEWS_YET(true, 200, "아직 리뷰가 없습니다"),
 
 
@@ -55,6 +57,7 @@ public enum BaseResponseStatus {
     // house 관련
     FAILED_TO_OPEN(false, 403, "이야기 집 방장만 오픈이 가능합니다."),
     FAILED_TO_UPDATE(false, 403, "이야기 집 방장만 수정이 가능합니다."),
+    FAILED_TO_CLOSE(false, 403, "이야기 집 방장만 폐점이 가능합니다."),
     HOUSE_NOT_FOUND(false, 404, "존재하지 않는 이야기 집 입니다."),
     HOUSE_ALREADY_OPENED(false, 405, "이미 오픈된 이야기 집 입니다."),
 
@@ -93,6 +96,10 @@ public enum BaseResponseStatus {
     //review 관련
     FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
     FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다."),
+
+    FAILED_TO_FIND_FAVORITE(false, 500, "찜 목록을 찾을 수 없습니다."),
+    FAILED_TO_CANCEL_FAVORITE(false, 500, "찜 해제에 실패했습니다."),
+    FAILED_TO_REGISTER_FAVORITE(false, 500, "찜 등록에 실패했습니다."),
 
 
     // chat 관련

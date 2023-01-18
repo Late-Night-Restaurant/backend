@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class HouseRequestDto {
 
     private Long profileId;  // 방장 프로필_id
-    private Category category;
+    private String category;
     private String signboardImageUrl;
     private String houseName;
     private String comment;
@@ -19,7 +19,7 @@ public class HouseRequestDto {
     public House toEntity(Profile profile) {
         return House.builder()
                 .profile(profile)
-                .category(category)
+                .category(Category.nameOf(category))
                 .houseName(houseName)
                 .comment(comment)
                 .capacity(0)

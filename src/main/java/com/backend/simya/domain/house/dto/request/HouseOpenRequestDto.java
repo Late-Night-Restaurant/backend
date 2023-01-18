@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public class HouseOpenRequestDto {
 
     private Long houseId;
-    private Long userId;
     private int capacity;
     private String title;
     private String content;
