@@ -46,6 +46,11 @@ public class House extends BaseTimeEntity {
     @JsonManagedReference
     private List<Favorite> favoriteList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "house", cascade = ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Topic> topicList = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private Category category;
@@ -90,6 +95,11 @@ public class House extends BaseTimeEntity {
         review.setReviewedHouse(this);
     }
 
+    public void removeReview(Review review) {
+        reviewList.remove(review);
+    }
+
+
     public void addFavorite(Favorite favorite) {
         favoriteList.add(favorite);
         favorite.setHouse(this);
@@ -98,4 +108,10 @@ public class House extends BaseTimeEntity {
     public void removeFavorite(Favorite favorite) {
         favoriteList.remove(favorite);
     }
+
+    public void addTopic(Topic topic) {
+        topicList.add(topic);
+        topic.setHouseToRegisterTopic(this);
+    }
+
 }

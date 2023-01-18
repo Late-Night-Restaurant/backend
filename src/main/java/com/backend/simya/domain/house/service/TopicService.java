@@ -1,6 +1,6 @@
 package com.backend.simya.domain.house.service;
 
-import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
+import com.backend.simya.domain.house.dto.request.TopicRequestDto;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.repository.TopicRepository;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.backend.simya.global.common.BaseResponseStatus.DATABASE_ERROR;
 import static com.backend.simya.global.common.BaseResponseStatus.FAILED_TO_CREATE_TOPIC;
 
 @Slf4j
@@ -23,18 +22,10 @@ public class TopicService {
     private final TopicRepository topicRepository;
 
     @Transactional
-    public void createTopic(House house, HouseOpenRequestDto houseOpenRequestDto) throws BaseException {
+    public Topic createTopic(House houseToRegisterTopic, TopicRequestDto topicToRegisterRequestDto) throws BaseException {
         try {
-            Topic topic = Topic.builder()
-                    .title(houseOpenRequestDto.getTitle())
-                    .content(houseOpenRequestDto.getContent())
-                    .house(house)
-                    .isTodayTopic(false)
-                    .activated(true)
-                    .build();
-            log.info("{} 메뉴가 생성되었습니다.", houseOpenRequestDto.getContent());
-            topicRepository.save(topic);
-
+            Topic newTopic = topicToRegisterRequestDto.toEntity(houseToRegisterTopic);
+            return topicRepository.save(newTopic);
         } catch (Exception ignored) {
             throw new BaseException(FAILED_TO_CREATE_TOPIC);
         }

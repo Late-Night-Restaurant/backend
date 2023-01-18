@@ -22,7 +22,7 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
 @RestController
-@RequestMapping("simya/users/review")
+@RequestMapping("simya/review")
 @RequiredArgsConstructor
 public class ReviewController {
 
@@ -35,7 +35,7 @@ public class ReviewController {
                                                       @RequestBody ReviewRequestDto reviewRequestDto) {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
-            House houseToReview = houseService.getHouse(houseId);
+            House houseToReview = houseService.findHouse(houseId);
             ReviewResponseDto reviewResponseDto = reviewService.postReview(currentUser, houseToReview, reviewRequestDto);
             return new BaseResponse<>(reviewResponseDto);
         } catch (BaseException e) {
@@ -48,7 +48,7 @@ public class ReviewController {
     @GetMapping("/{house-id}")
     public BaseResponse<List<ReviewResponseDto>> getHouseReviewList(@PathVariable("house-id") Long houseId) {
         try {
-            House findHouse = houseService.getHouse(houseId);
+            House findHouse = houseService.findHouse(houseId);
             List<ReviewResponseDto> houseReviewList = reviewService.getHouseReviewList(findHouse);
             if (houseReviewList.isEmpty()) {
                 return new BaseResponse<>(NO_REVIEWS_YET);
@@ -60,22 +60,7 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/all")
-    public BaseResponse<List<MyReviewResponseDto>> getMyReviewList() {
-        try {
-            User currentUser = userService.getMyUserWithAuthorities();
-            List<MyReviewResponseDto> myReviewList = reviewService.getMyReviewList(currentUser);
-            if (myReviewList.isEmpty()) {
-                return new BaseResponse<>(NO_REVIEWS_YET);
-            } else {
-                return new BaseResponse<>(myReviewList);
-            }
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-    }
-
-    @GetMapping("/profile")
+    @GetMapping("")
     public BaseResponse<List<MyReviewResponseDto>> getCurrentProfileReviewList() {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
@@ -90,10 +75,9 @@ public class ReviewController {
         }
     }
 
-
     @PatchMapping("/{review-id}")
     public BaseResponse<ReviewResponseDto> updateReview(@PathVariable("review-id") Long reviewId,
-                                              @RequestBody ReviewRequestDto reviewRequestDto) {
+                                                        @RequestBody ReviewRequestDto reviewRequestDto) {
         try {
             ReviewResponseDto updatedReviewDto = reviewService.updateReview(reviewId, reviewRequestDto);
             return new BaseResponse<>(SUCCESS_TO_UPDATE_REVIEW, updatedReviewDto);

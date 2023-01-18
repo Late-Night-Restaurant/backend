@@ -9,7 +9,5 @@ public class HouseOpenRequestDto {
 
     private Long houseId;
     private int capacity;
-    private String title;
-    private String content;
-
+    private TopicRequestDto topic;
 }

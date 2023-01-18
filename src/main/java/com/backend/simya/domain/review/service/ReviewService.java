@@ -1,6 +1,7 @@
 package com.backend.simya.domain.review.service;
 
 import com.backend.simya.domain.house.entity.House;
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.review.dto.MyReviewResponseDto;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -54,13 +57,6 @@ public class ReviewService {
         return reviewRepository.findReviewsByHouse(house);
     }
 
-    public List<MyReviewResponseDto> getMyReviewList(User currentUser) {
-        return reviewRepository.findReviewsByUserId(currentUser.getUserId()).stream()
-                .filter(Review::isActivated)
-                .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
-                .collect(Collectors.toList());
-    }
-
     public List<MyReviewResponseDto> getCurrentProfileReviewList(User currentUser) {
         return reviewRepository.findReviewsByProfileId(currentUser.getProfileList()
                         .get(currentUser.getMainProfile()).getProfileId()).stream()
@@ -85,7 +81,6 @@ public class ReviewService {
 
     private Review findReview(Long reviewId) throws BaseException {
         return reviewRepository.findById(reviewId).
-                orElseThrow(() -> new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW));
+                orElseThrow(() -> new BaseException(FAILED_TO_FIND_REVIEW));
     }
-
 }
