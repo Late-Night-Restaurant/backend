@@ -2,6 +2,7 @@ package com.backend.simya.domain.chat.dto;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
  * 채팅방 DTO
  */
 @Slf4j
-@Getter
+@Getter @Setter
 public class ChatRoomDto {
 
     private String roomId;
@@ -25,6 +26,8 @@ public class ChatRoomDto {
 
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.name = name;
+
+        log.info("채팅방 생성 성공! roomId: {}, name: {}", chatRoom.roomId, chatRoom.name);
         return chatRoom;
     }
 

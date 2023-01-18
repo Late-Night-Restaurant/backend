@@ -11,11 +11,11 @@ import lombok.Setter;
 @Getter @Setter
 public class ChatMessageDto {
 
-    public enum MessageType {
+    /*public enum MessageType {
         ENTER, TALK
     }
 
-    private MessageType type;   // 메시지 유형
+    private MessageType type;   // 메시지 유형*/
     private String roomId;   // 방 번호
     private String sender;   // 발신자
     private String message;  // 메시지 데이터

@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 /**
  * 웹 소켓 통신을 구현한 채팅 화면 View 구성
  */
 @Slf4j
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/chat")
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -24,13 +23,13 @@ public class ChatRoomController {
     /**
      * 모든 채팅방 리스트 조회
      */
-    @GetMapping("/chat/rooms")
-    public String rooms(Model model) {
+    @GetMapping("/rooms")
+    public ModelAndView rooms(Model model) {
         log.info("# All Chat Rooms");
+        ModelAndView mv = new ModelAndView("chat/rooms");
 
-        model.addAttribute("list", chatRoomRepository.findAllRoom());
-
-        return "chatrooms";
+        mv.addObject("list", chatRoomRepository.findAllRoom());
+        return mv;
     }
 
     /*@PostMapping("/chat/rooms")
@@ -39,23 +38,23 @@ public class ChatRoomController {
     /**
      * 채팅방 개설
      */
-    @PostMapping("/chat/room")
+    @PostMapping("/room")
     public String createRoom(@RequestParam String name, RedirectAttributes rttr) {
         log.info("# Create Chat Room, name: {}", name);
 
-        rttr.addAttribute("roomName", chatRoomRepository.createChatRoom(name));
+        rttr.addAttribute("roomName", chatRoomRepository.createChatRoom(name).getName());
         return "redirect:/chat/rooms";
     }
 
     /**
      * 채팅방 입장 화면
      */
-    @GetMapping("/room/enter/{roomId}")
+    /*@GetMapping("/room/enter/{roomId}")
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
-        return "roomdetail";
+        return "chat/room";
     }
-
+*/
     /**
      * 툭정 채팅방 조회
      */
