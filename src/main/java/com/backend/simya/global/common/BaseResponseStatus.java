@@ -15,6 +15,7 @@ public enum BaseResponseStatus {
     SUCCESS_TO_DELETE_REVIEW(true, 200, "리뷰 삭제에 성공하였습니다."),
     SUCCESS_TO_REGISTER_FAVORITE(true, 200, "찜 등록에 성공하였습니다."),
     SUCCESS_TO_CANCEL_FAVORITE(true, 200, "찜 해제에 성공하였습니다."),
+    NO_HOUSE_YET(true, 200, "아직 오픈한 이야기 집이 없습니다."),
     NO_REVIEWS_YET(true, 200, "아직 리뷰가 없습니다"),
 
 
@@ -93,6 +94,8 @@ public enum BaseResponseStatus {
     FAILED_TO_UPDATE_MAIN_MENU(false, 500, "이야기 집 메인 메뉴 수정에 실패했습니다."),
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다."),
+    FAILED_TO_LOAD_TODAY_TOPIC(false, 500, "오늘의 메뉴를 불러오는데 실패했습니다."),
+
 
 
     //review 관련

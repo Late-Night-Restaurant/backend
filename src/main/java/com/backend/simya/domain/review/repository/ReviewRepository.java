@@ -9,19 +9,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-     @Query(value = "select review " +
-             "from Review review " +
-             "where review.profile.user.userId = :userId")
-     List<Review> findReviewsByUserId(Long userId);
 
      @Query(value = "select review " +
              "from Review review " +
              "where review.profile.profileId = :profileId")
      List<Review> findReviewsByProfileId(Long profileId);
+
 
      List<Review> findReviewsByHouse(House house);
 }
