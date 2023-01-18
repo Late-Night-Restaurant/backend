@@ -1,18 +1,23 @@
 package com.backend.simya.domain.house.controller;
 
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
-import com.backend.simya.domain.house.dto.request.HouseRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
-import com.backend.simya.domain.house.dto.response.HouseIntroductionResponseDto;
-import com.backend.simya.domain.house.dto.response.HouseResponseDto;
-import com.backend.simya.domain.house.dto.response.HouseShowResponseDto;
+import com.backend.simya.domain.house.dto.request.NewHouseRequestDto;
+import com.backend.simya.domain.house.dto.request.TopicRequestDto;
+import com.backend.simya.domain.house.dto.response.*;
+import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.service.HouseService;
+import com.backend.simya.domain.house.service.TopicService;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/simya/house")
@@ -24,20 +29,19 @@ public class HouseController {
 
 
     @PostMapping("")
-    public BaseResponse<HouseResponseDto> createHouseRoom(@RequestBody HouseRequestDto houseRequestDto) {
+    public BaseResponse<HouseResponseDto> createHouseRoom(@RequestBody NewHouseRequestDto newHouseRequestDto) {
         try {
-            return new BaseResponse(houseService.createHouse(houseRequestDto));
+            return new BaseResponse<>(houseService.createHouse(newHouseRequestDto));
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
     @PatchMapping("{houseId}")
-    public BaseResponse<String> openHouse(@PathVariable("houseId") Long houseId, @RequestBody HouseOpenRequestDto houseOpenRequestDto) {
+    public BaseResponse<HouseSignboardResponseDto> openHouse(@PathVariable("houseId") Long houseId, @RequestBody HouseOpenRequestDto houseOpenRequestDto) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
-            houseService.openHouse(loginUser, houseOpenRequestDto);
-            return new BaseResponse<>("이야기 집이 오픈되었습니다.");
+            return new BaseResponse<>(houseService.openHouse(loginUser, houseOpenRequestDto));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -74,5 +78,57 @@ public class HouseController {
         }
     }
 
+    @GetMapping("")
+    public BaseResponse<List<HouseSignboardResponseDto>> getAllHouseSignBoards() {
+        try {
+            List<HouseSignboardResponseDto> houseSignBoardResponseDtoList = houseService.findAllHouseSignBoard();
+            if (houseSignBoardResponseDtoList.isEmpty()) {
+                return new BaseResponse<>(NO_HOUSE_YET);
+            } else {
+                return new BaseResponse<>(houseSignBoardResponseDtoList);
+            }
+        } catch (Exception e) {
+            return new BaseResponse<>(DATABASE_ERROR);
+        }
+    }
+
+    @GetMapping("/my-houses")
+    public BaseResponse<List<HouseResponseDto>> getMyHouses() {
+        try {
+            Long currentUserId = userService.getMyUserWithAuthorities().getUserId();
+            List<HouseResponseDto> houseSignBoardResponseDtoList = houseService.findMyHouses(currentUserId);
+            if (houseSignBoardResponseDtoList.isEmpty()) {
+                return new BaseResponse<>(NO_HOUSE_YET);
+            } else {
+                return new BaseResponse<>(houseSignBoardResponseDtoList);
+            }
+        } catch (Exception e) {
+            return new BaseResponse<>(DATABASE_ERROR);
+        }
+    }
+
+    @GetMapping("/{house-id}/topic")
+    public BaseResponse<List<TopicResponseDto>> getHousesAllTopic(@PathVariable("house-id") Long houseId) {
+        try {
+            List<TopicResponseDto> housesAllTopicResponseDtoList = houseService.findHousesTopic(houseId);
+            if (housesAllTopicResponseDtoList.isEmpty()) {
+                return new BaseResponse<>(FAILED_TO_LOAD_TODAY_TOPIC);
+            } else {
+                return new BaseResponse<>(housesAllTopicResponseDtoList);
+            }
+        } catch (Exception e) {
+            return new BaseResponse<>(DATABASE_ERROR);
+        }
+    }
+
+    @PostMapping("/{house-id}/topic")
+    public BaseResponse<TopicResponseDto> registerNewTopic(@PathVariable("house-id") Long houseId, TopicRequestDto topicRequestDto) {
+        try {
+            House houseToRegisterTopic = houseService.findHouse(houseId);
+            return new BaseResponse<>(houseService.registerTopic(houseToRegisterTopic,topicRequestDto));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
 }

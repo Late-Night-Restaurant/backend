@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class HouseRequestDto {
+public class NewHouseRequestDto {
 
     private Long profileId;  // 방장 프로필_id
     private String category;
@@ -28,5 +28,4 @@ public class HouseRequestDto {
                 .activated(true)
                 .build();
     }
-
 }
