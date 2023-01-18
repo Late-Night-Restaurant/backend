@@ -89,7 +89,7 @@ public class ProfileController {
     @GetMapping("/{profileId}")
     public BaseResponse<Profile> getProfileInfo(@PathVariable("profileId") Long profileId) {
         try {
-            return new BaseResponse<>(profileService.getProfileInfo(profileId));
+            return new BaseResponse<>(profileService.findProfile(profileId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

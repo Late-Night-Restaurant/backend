@@ -50,6 +50,10 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    public List<Review> getReviewList(House house) {
+        return reviewRepository.findReviewsByHouse(house);
+    }
+
     public List<MyReviewResponseDto> getMyReviewList(User currentUser) {
         return reviewRepository.findReviewsByUserId(currentUser.getUserId()).stream()
                 .filter(Review::isActivated)

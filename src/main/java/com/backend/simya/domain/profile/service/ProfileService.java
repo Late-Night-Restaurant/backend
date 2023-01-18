@@ -45,7 +45,7 @@ public class ProfileService {
     public void updateProfile(ProfileUpdateDto profileUpdateDto) throws BaseException {
 
         try {
-            Profile profile = getProfileInfo(profileUpdateDto.getProfileId());
+            Profile profile = findProfile(profileUpdateDto.getProfileId());
             profile.update(profileUpdateDto);
         } catch (Exception ignored) {
             throw new BaseException(UPDATE_FAIL_PROFILE);
@@ -55,7 +55,7 @@ public class ProfileService {
 
     // 대표 프로필은 하나만 지정 가능
     public void setMainProfile(Long profileId) throws BaseException {
-        Profile profile = getProfileInfo(profileId);
+        Profile profile = findProfile(profileId);
 
         try {
             User user = profile.getUser();
@@ -83,7 +83,7 @@ public class ProfileService {
     @Transactional
     public void deleteProfile(Long profileId) throws BaseException {
         try {
-            Profile profile = getProfileInfo(profileId);
+            Profile profile = findProfile(profileId);
             boolean isMain = profile.isRepresent();
             if (profile.isActivated()) {
                 if (profile.getUser().getProfileList().isEmpty()) {
@@ -102,18 +102,10 @@ public class ProfileService {
         }
     }
 
-    public Profile getProfileInfo(Long profileId) throws BaseException {
+    public Profile findProfile(Long profileId) throws BaseException {
         return profileRepository.findById(profileId).orElseThrow(
-                () -> new BaseException(DATABASE_ERROR)
+                () -> new BaseException(PROFILE_NOT_FOUND)
         );
-    }
-
-    public Optional<Profile> findProfile(Long profileId) throws BaseException {
-        try {
-            return profileRepository.findById(profileId);
-        } catch (Exception ignored) {
-            throw new BaseException(PROFILE_NOT_FOUND);
-        }
 
     }
 }
