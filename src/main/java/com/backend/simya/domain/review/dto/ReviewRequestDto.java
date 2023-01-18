@@ -23,7 +23,6 @@ public class ReviewRequestDto {
                 .profile(profile)
                 .rate(this.rate)
                 .content(this.content)
-                .activated(true)
                 .build();
     }
 }

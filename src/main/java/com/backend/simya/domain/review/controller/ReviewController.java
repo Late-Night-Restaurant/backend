@@ -30,6 +30,7 @@ public class ReviewController {
     private final UserService userService;
     private final HouseService houseService;
 
+
     @PostMapping("/{house-id}")
     public BaseResponse<ReviewResponseDto> postReview(@PathVariable("house-id") Long houseId,
                                                       @RequestBody ReviewRequestDto reviewRequestDto) {
@@ -86,11 +87,25 @@ public class ReviewController {
         }
     }
 
-    @PatchMapping("/{review-id}/delete")
+    @PatchMapping("/delete/{review-id}")
     public BaseResponse<BaseResponseStatus> deleteReview(@PathVariable("review-id") Long reviewId) {
         try {
             reviewService.deleteReview(reviewId);
             return new BaseResponse<>(SUCCESS_TO_DELETE_REVIEW);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/check/{house-id}")
+    public BaseResponse<BaseResponseStatus> checkReviewedHouse(@PathVariable("house-id") Long houseId) {
+        try {
+            Long currentUserId = userService.getMyUserWithAuthorities().getUserId();
+            if (reviewService.isReviewedHouse(currentUserId, houseId)) {
+                return new BaseResponse<>(HAVE_REVIEWED_BEFORE);
+            } else {
+                return new BaseResponse<>(NEVER_REVIEWED_BEFORE);
+            }
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

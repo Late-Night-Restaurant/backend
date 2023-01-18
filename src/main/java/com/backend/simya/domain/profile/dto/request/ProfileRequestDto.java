@@ -38,7 +38,6 @@ public class ProfileRequestDto {
                 .picture(picture)
                 .user(null)
                 .isRepresent(false)
-                .activated(true)
                 .build();
     }
 
