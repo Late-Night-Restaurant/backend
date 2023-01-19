@@ -1,8 +1,10 @@
 package com.backend.simya.domain.profile.repository;
 
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

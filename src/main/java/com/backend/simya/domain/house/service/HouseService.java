@@ -9,6 +9,7 @@ import com.backend.simya.domain.house.dto.response.HouseIntroductionResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseSignboardResponseDto;
 import com.backend.simya.domain.house.dto.response.TopicResponseDto;
+import com.backend.simya.domain.house.entity.Category;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.repository.HouseRepository;
@@ -19,6 +20,7 @@ import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.review.service.ReviewService;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,9 +76,10 @@ public class HouseService {
     }
 
     @Transactional(readOnly = true)
-    public HouseIntroductionResponseDto getHouseIntroduction(House findHouse, Profile masterProfile, List<Review> reviewList) throws BaseException {
+    public HouseIntroductionResponseDto getHouseIntroduction(Long houseId) throws BaseException {
         try {
-            return HouseIntroductionResponseDto.from(masterProfile, findHouse, reviewList);
+            House findHouse = findHouse(houseId);
+            return HouseIntroductionResponseDto.from(findHouse);
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -145,29 +148,29 @@ public class HouseService {
 
     @Transactional
     public TopicResponseDto registerNewTopic(House houseToRegisterTopic, Topic topicToRegister) throws BaseException {
-        log.info("service - regisgerNewTopic {}", topicToRegister.getTitle());
         houseToRegisterTopic.addTopic(topicToRegister);
         Topic newTopic = topicService.createTopic(topicToRegister);
         return TopicResponseDto.from(newTopic);
     }
+
     @Transactional
-    public void updateMainMenu(Long houseId, User user, String menu) throws BaseException{
-        House house = findHouse(houseId);
-
-        if(!house.getProfile().getProfileId().equals(user.getUserId())) {
-            throw new BaseException(FAILED_TO_UPDATE_MENU);
+    public void updateCategory(Long houseId, User loginUser, String category) throws BaseException{
+        House houseToUpdateCategory = findHouse(houseId);
+        if (!houseToUpdateCategory.getProfile().getProfileId().equals(loginUser.getUserId())) {
+            throw new BaseException(ONLY_MASTER_CAN_UPDATE);
+        } else {
+            if (houseToUpdateCategory.getCategory().equals(Category.nameOf(category))) {
+                throw new BaseException(ALREADY_CATEGORY);
+            } else {
+                try {
+                    houseToUpdateCategory.updateCategory(category);
+                    log.info("이야기집의 전문메뉴가 {}로 수정되었습니다.", category);
+                } catch (Exception ignored) {
+                    throw new BaseException(DATABASE_ERROR);
+                }
+            }
         }
-
-        try {
-            house.updateMenu(menu);
-            log.info("이야기집의 전문메뉴가 {}로 수정되었습니다.", menu);
-        } catch (Exception ignored) {
-            throw new BaseException(FAILED_TO_UPDATE_MAIN_MENU);
-        }
-
-
     }
-
 
     @Transactional
     public void closeHouse(Long houseId) throws BaseException {
