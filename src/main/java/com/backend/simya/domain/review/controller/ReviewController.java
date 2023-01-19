@@ -31,8 +31,8 @@ public class ReviewController {
     private final HouseService houseService;
 
 
-    @PostMapping("/{house-id}")
-    public BaseResponse<ReviewResponseDto> postReview(@PathVariable("house-id") Long houseId,
+    @PostMapping("/{houseId}")
+    public BaseResponse<ReviewResponseDto> postReview(@PathVariable("houseId") Long houseId,
                                                       @RequestBody ReviewRequestDto reviewRequestDto) {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
@@ -46,8 +46,8 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/{house-id}")
-    public BaseResponse<List<ReviewResponseDto>> getHouseReviewList(@PathVariable("house-id") Long houseId) {
+    @GetMapping("/{houseId}")
+    public BaseResponse<List<ReviewResponseDto>> getHouseReviewList(@PathVariable("houseId") Long houseId) {
         try {
             House findHouse = houseService.findHouse(houseId);
             List<ReviewResponseDto> houseReviewList = reviewService.getHouseReviewList(findHouse);
@@ -61,7 +61,7 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping("/my")
     public BaseResponse<List<MyReviewResponseDto>> getCurrentProfileReviewList() {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
@@ -76,8 +76,8 @@ public class ReviewController {
         }
     }
 
-    @PatchMapping("/{review-id}")
-    public BaseResponse<ReviewResponseDto> updateReview(@PathVariable("review-id") Long reviewId,
+    @PatchMapping("/{reviewId}")
+    public BaseResponse<ReviewResponseDto> updateReview(@PathVariable("reviewId") Long reviewId,
                                                         @RequestBody ReviewRequestDto reviewRequestDto) {
         try {
             ReviewResponseDto updatedReviewDto = reviewService.updateReview(reviewId, reviewRequestDto);
@@ -87,8 +87,8 @@ public class ReviewController {
         }
     }
 
-    @PatchMapping("/delete/{review-id}")
-    public BaseResponse<BaseResponseStatus> deleteReview(@PathVariable("review-id") Long reviewId) {
+    @DeleteMapping("/{reviewId}")
+    public BaseResponse<BaseResponseStatus> deleteReview(@PathVariable("reviewId") Long reviewId) {
         try {
             reviewService.deleteReview(reviewId);
             return new BaseResponse<>(SUCCESS_TO_DELETE_REVIEW);
@@ -97,8 +97,8 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/check/{house-id}")
-    public BaseResponse<BaseResponseStatus> checkReviewedHouse(@PathVariable("house-id") Long houseId) {
+    @GetMapping("/check/{houseId}")
+    public BaseResponse<BaseResponseStatus> checkReviewedHouse(@PathVariable("houseId") Long houseId) {
         try {
             Long currentUserId = userService.getMyUserWithAuthorities().getUserId();
             if (reviewService.isReviewedHouse(currentUserId, houseId)) {
