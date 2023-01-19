@@ -14,6 +14,7 @@ import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.repository.HouseRepository;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.service.ProfileService;
+import com.backend.simya.domain.review.dto.ReviewResponseDto;
 import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.review.service.ReviewService;
 import com.backend.simya.domain.user.entity.User;
@@ -149,6 +150,24 @@ public class HouseService {
         Topic newTopic = topicService.createTopic(topicToRegister);
         return TopicResponseDto.from(newTopic);
     }
+    @Transactional
+    public void updateMainMenu(Long houseId, User user, String menu) throws BaseException{
+        House house = findHouse(houseId);
+
+        if(!house.getProfile().getProfileId().equals(user.getUserId())) {
+            throw new BaseException(FAILED_TO_UPDATE_MENU);
+        }
+
+        try {
+            house.updateMenu(menu);
+            log.info("이야기집의 전문메뉴가 {}로 수정되었습니다.", menu);
+        } catch (Exception ignored) {
+            throw new BaseException(FAILED_TO_UPDATE_MAIN_MENU);
+        }
+
+
+    }
+
 
     @Transactional
     public void closeHouse(Long houseId) throws BaseException {

@@ -5,6 +5,7 @@ import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.house.dto.request.NewHouseRequestDto;
 import com.backend.simya.domain.house.dto.request.TopicRequestDto;
 import com.backend.simya.domain.house.dto.response.*;
+import com.backend.simya.domain.house.entity.Category;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.service.HouseService;
@@ -91,6 +92,7 @@ public class HouseController {
         }
     }
 
+
     @PatchMapping("/delete/{house-id}")
     public BaseResponse<String> deleteHouse(@PathVariable("house-id") Long houseId) {
         try {
@@ -102,6 +104,24 @@ public class HouseController {
         }
     }
 
+    @PatchMapping("/menu/{houseId}")
+    public BaseResponse<String> updateMainMenu(@PathVariable("houseId") Long houseId, @RequestParam("menu") String menu) {
+
+        try {
+            User loginUser = userService.getMyUserWithAuthorities();
+            House house = houseService.findHouse(houseId);
+
+            if(house.getCategory().equals(Category.nameOf(menu))) {
+                return new BaseResponse<>("해당 메뉴는 이미 대표 메뉴입니다.");
+            }
+            houseService.updateMainMenu(houseId, loginUser, menu);
+            return new BaseResponse<>("이야기 집의 메인 메뉴가 바뀌었습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    
     @PatchMapping("/{house-id}/signboard")
     public BaseResponse<HouseResponseDto> updateSignboard(@PathVariable("house-id") Long houseId,
                                                           @RequestBody HouseUpdateRequestDto houseUpdateRequestDto) {

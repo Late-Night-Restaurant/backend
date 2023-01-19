@@ -88,6 +88,14 @@ public class House extends BaseTimeEntity {
         return this;
     }
 
+    public void updateMenu(String menu) {
+        this.category = Category.nameOf(menu);
+    }
+
+    public void delete() {
+        this.activated = false;
+    }
+
     public void addReview(Review review) {
         reviewList.add(review);
         review.setReviewedHouse(this);
