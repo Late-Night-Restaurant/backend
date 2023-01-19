@@ -152,7 +152,6 @@ public class OauthService {
                 .comment(null)
                 .picture(null)
                 .isRepresent(true)
-                .activated(true)
                 .build();
         newKakaoUser.addProfile(mainProfile);
         profileRepository.save(mainProfile);

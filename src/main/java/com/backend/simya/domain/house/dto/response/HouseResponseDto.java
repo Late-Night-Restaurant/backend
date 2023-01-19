@@ -24,7 +24,8 @@ public class HouseResponseDto {
         return HouseResponseDto.builder()
                 .houseId(house.getHouseId())
                 .houseName(house.getHouseName())
-                .category(house.getCategory().toString())
+                .category(house.getCategory().getName())
+                .signboardImageUrl(house.getSignboardImageUrl())
                 .comment(house.getComment())
                 .build();
     }

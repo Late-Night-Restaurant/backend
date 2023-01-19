@@ -31,7 +31,6 @@ public class FavoriteService {
         Favorite newFavorite = Favorite.builder()
                 .profile(mainProfile)
                 .house(houseToRegisterFavorite)
-                .activated(true)
                 .build();
         Favorite registeredFavorite = favoriteRepository.save(newFavorite);
         mainProfile.addFavorite(registeredFavorite);
@@ -41,22 +40,18 @@ public class FavoriteService {
     @Transactional
     public void cancelFavorite(Long favoriteId) throws BaseException {
         Favorite favoriteToCancel = findFavorite(favoriteId);
-        favoriteToCancel.changeStatus(false);
-        favoriteToCancel.getProfile().removeFavorite(favoriteToCancel);
-        favoriteToCancel.getHouse().removeFavorite(favoriteToCancel);
+        favoriteRepository.delete(favoriteToCancel);
     }
 
     public List<MyFavoriteHouseResponseDto> findCurrentProfileFavoriteHouses(User currentUser) {
         Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
         return favoriteRepository.findFavoriteListByProfileId(mainProfile.getProfileId()).stream()
-                .filter(Favorite::isActivated)
                 .map(MyFavoriteHouseResponseDto::from)
                 .collect(Collectors.toList());
     }
 
     public List<ProfileResponseDto> findProfilesLikeMyHouse(House house) {
         return favoriteRepository.findFavoriteListByHouseId(house.getHouseId()).stream()
-                .filter(Favorite::isActivated)
                 .map(Favorite::getProfile)
                 .map(ProfileResponseDto::from)
                 .collect(Collectors.toList());
@@ -66,5 +61,4 @@ public class FavoriteService {
         return favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new BaseException(FAILED_TO_FIND_FAVORITE));
     }
-
 }

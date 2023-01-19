@@ -34,9 +34,6 @@ public class Topic extends BaseTimeEntity {
     @Column(name = "is_today_topic")
     private boolean isTodayTopic;
 
-    @Column(name = "activated")
-    private boolean activated;
-
     public boolean isTodayTopic() {
         return this.isTodayTopic;
     }

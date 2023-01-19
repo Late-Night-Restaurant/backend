@@ -1,6 +1,7 @@
 package com.backend.simya.domain.house.dto.request;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data

@@ -1,11 +1,13 @@
 package com.backend.simya.domain.profile.service;
 
 
+import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.profile.dto.request.ProfileRequestDto;
 import com.backend.simya.domain.profile.dto.request.ProfileUpdateDto;
 import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.repository.ProfileRepository;
+import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
@@ -83,19 +85,16 @@ public class ProfileService {
     @Transactional
     public void deleteProfile(Long profileId) throws BaseException {
         try {
-            Profile profile = findProfile(profileId);
-            boolean isMain = profile.isRepresent();
-            if (profile.isActivated()) {
-                if (profile.getUser().getProfileList().isEmpty()) {
-                    throw new BaseException(USERS_NEED_ONE_MORE_PROFILE);
-                }
-                profile.delete(profileId);
-
-                if (isMain) {
-                    profile.autoSetMainProfile();
-                }
+            Profile profileToDelete = findProfile(profileId);
+            boolean isMain = profileToDelete.isRepresent();
+            if (profileToDelete.getUser().getProfileList().isEmpty()) {
+                throw new BaseException(USERS_NEED_ONE_MORE_PROFILE);
             } else {
-                throw new BaseException(ALREADY_DELETE_PROFILE);
+                if (isMain) {
+                    profileToDelete.autoSetMainProfile();
+                } else {
+                    profileRepository.delete(profileToDelete);
+                }
             }
         } catch (Exception ignored) {
             throw new BaseException(DELETE_FAIL_PROFILE);
@@ -108,4 +107,13 @@ public class ProfileService {
         );
     }
 
+    @Transactional
+    public void deleteReview(Profile currentProfile, Review review) {
+        currentProfile.removeReview(review);
+    }
+
+    @Transactional
+    public void deleteFavorite(Profile currentProfile, Favorite favorite) {
+        currentProfile.removeFavorite(favorite);
+    }
 }

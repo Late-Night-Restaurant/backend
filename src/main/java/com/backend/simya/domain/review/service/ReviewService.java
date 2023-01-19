@@ -48,7 +48,6 @@ public class ReviewService {
 
     public List<ReviewResponseDto> getHouseReviewList(House house) {
         return reviewRepository.findReviewsByHouse(house).stream()
-                .filter(Review::isActivated)
                 .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
     }
@@ -60,7 +59,6 @@ public class ReviewService {
     public List<MyReviewResponseDto> getCurrentProfileReviewList(User currentUser) {
         return reviewRepository.findReviewsByProfileId(currentUser.getProfileList()
                         .get(currentUser.getMainProfile()).getProfileId()).stream()
-                .filter(Review::isActivated)
                 .map(review -> MyReviewResponseDto.from(review.getHouse(), review))
                 .collect(Collectors.toList());
     }
@@ -68,7 +66,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long reviewId) throws BaseException {
         Review findReview = findReview(reviewId);
-        findReview.changeStatus(false);
+        reviewRepository.delete(findReview);
     }
 
     @Transactional
@@ -82,5 +80,9 @@ public class ReviewService {
     private Review findReview(Long reviewId) throws BaseException {
         return reviewRepository.findById(reviewId).
                 orElseThrow(() -> new BaseException(FAILED_TO_FIND_REVIEW));
+    }
+
+    public boolean isReviewedHouse(Long currentUserId, Long houseId) {
+        return !reviewRepository.findReviewsByUserIdAndHouseId(currentUserId, houseId).isEmpty();
     }
 }

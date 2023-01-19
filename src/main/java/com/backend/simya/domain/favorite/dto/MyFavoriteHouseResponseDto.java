@@ -2,6 +2,7 @@ package com.backend.simya.domain.favorite.dto;
 
 import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.house.dto.response.HouseIntroductionResponseDto;
+import com.backend.simya.domain.house.dto.response.HouseResponseDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,15 +18,12 @@ import lombok.NoArgsConstructor;
 public class MyFavoriteHouseResponseDto {
 
     private Long favoriteId;
-    private HouseIntroductionResponseDto houseIntroduction;
+    private HouseResponseDto favoriteHouse;
 
     public static MyFavoriteHouseResponseDto from(Favorite favorite) {
         return MyFavoriteHouseResponseDto.builder()
                 .favoriteId(favorite.getFavoriteId())
-                .houseIntroduction(HouseIntroductionResponseDto.from(
-                        favorite.getHouse().getProfile(),
-                        favorite.getHouse(),
-                        favorite.getHouse().getReviewList()))
+                .favoriteHouse(HouseResponseDto.from(favorite.getHouse()))
                 .build();
     }
 }

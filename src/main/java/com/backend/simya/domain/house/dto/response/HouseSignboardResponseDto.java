@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class HouseSignboardResponseDto {
 
     private Long houseId;
-    private Category category;
+    private String category;
     private String signboardImageUrl;
     private String houseName;
     private String todayTopicTitle;
@@ -28,7 +28,7 @@ public class HouseSignboardResponseDto {
     public static HouseSignboardResponseDto from(House house, String todayTopicTitle) {
         return HouseSignboardResponseDto.builder()
                 .houseId(house.getHouseId())
-                .category(house.getCategory())
+                .category(house.getCategory().getName())
                 .signboardImageUrl(house.getSignboardImageUrl())
                 .houseName(house.getHouseName())
                 .todayTopicTitle(todayTopicTitle)

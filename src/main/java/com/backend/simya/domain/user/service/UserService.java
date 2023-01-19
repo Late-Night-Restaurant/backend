@@ -50,7 +50,6 @@ public class UserService {
                     .comment(userDto.getProfile().getComment())
                     .picture(userDto.getProfile().getPicture())
                     .isRepresent(true)
-                    .activated(true)
                     .build();
             newUser.addProfile(mainProfile);
             profileRepository.save(mainProfile);
