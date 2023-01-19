@@ -14,12 +14,15 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-
      @Query(value = "select review " +
              "from Review review " +
              "where review.profile.profileId = :profileId")
      List<Review> findReviewsByProfileId(Long profileId);
 
+     @Query(value = "select review " +
+             "from Review review " +
+             "where review.profile.user.userId = :userId AND review.house.houseId = :houseId")
+     List<Review> findReviewsByUserIdAndHouseId(Long userId, Long houseId);
 
      List<Review> findReviewsByHouse(House house);
 }

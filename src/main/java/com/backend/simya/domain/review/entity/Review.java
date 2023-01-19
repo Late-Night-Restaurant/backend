@@ -44,10 +44,7 @@ public class Review extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "activated")
-    private boolean activated;
-
-    public void setReviewersProfile (Profile profile) {
+    public void setReviewersProfile(Profile profile) {
         this.profile = profile;
     }
 
@@ -61,10 +58,6 @@ public class Review extends BaseTimeEntity {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public void changeStatus(boolean activated) {
-        this.activated = activated;
     }
 
     public Review updateReview(int rate, String content) {

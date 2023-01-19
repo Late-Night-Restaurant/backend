@@ -31,7 +31,6 @@ public class HouseIntroductionResponseDto {
                 .masterProfile(ProfileResponseDto.from(profile))
                 .houseInfo(HouseResponseDto.from(house))
                 .houseReviewList(reviewList.stream()
-                        .filter(Review::isActivated)
                         .map(ReviewResponseDto::from)
                         .collect(Collectors.toList()))
                 .build();

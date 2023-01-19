@@ -18,11 +18,11 @@ public class TopicRequestDto {
     private String title;
     private String content;
 
-    public Topic toEntity(House house) {
+    public Topic toEntity(House house, boolean isMain) {
         return Topic.builder()
-                .title(this.title)
-                .content(this.content)
-                .isTodayTopic(false)
+                .title(this.getTitle())
+                .content(this.getContent())
+                .isTodayTopic(isMain)
                 .house(house)
                 .build();
     }

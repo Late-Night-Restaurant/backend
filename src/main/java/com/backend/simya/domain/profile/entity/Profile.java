@@ -61,15 +61,10 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "is_represent")
     private boolean isRepresent;
 
-    @Column(name = "activated")
-    private boolean activated;
-
-
     @Builder.Default
     @OneToMany(mappedBy = "profile", cascade = ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<House> houseList = new ArrayList<>();
-
 
     public void selectMainProfile() {
         this.isRepresent = true;
@@ -96,11 +91,6 @@ public class Profile extends BaseTimeEntity {
         return this;
     }
 
-    public Profile delete(Long profileId) {
-        this.activated = false;
-        return this;
-    }
-
     public void addReview(Review review) {
         reviewList.add(review);
         review.setReviewersProfile(this);
@@ -113,5 +103,9 @@ public class Profile extends BaseTimeEntity {
 
     public void removeFavorite(Favorite favorite) {
         favoriteList.remove(favorite);
+    }
+
+    public void removeReview(Review review) {
+        reviewList.remove(review);
     }
 }

@@ -70,15 +70,17 @@ public class House extends BaseTimeEntity {
     @Column(name = "open")
     private boolean open;  // 오픈 상태인지
 
-    @Column(name = "activated")
-    private boolean activated;
-
     public void openHouse(int capacity) {
         this.open = true;
         this.capacity = capacity;
     }
 
-    public House update(HouseUpdateRequestDto houseUpdateRequestDto) {
+    public void closeHouse() {
+        this.open = false;
+        this.capacity = 0;
+    }
+
+    public House updateSignboard(HouseUpdateRequestDto houseUpdateRequestDto) {
         this.signboardImageUrl = houseUpdateRequestDto.getSignboardImageUrl();
         this.houseName = houseUpdateRequestDto.getHouseName();
         this.comment = houseUpdateRequestDto.getComment();
@@ -86,32 +88,26 @@ public class House extends BaseTimeEntity {
         return this;
     }
 
-    public void delete() {
-        this.activated = false;
-    }
-
     public void addReview(Review review) {
         reviewList.add(review);
         review.setReviewedHouse(this);
     }
-
-    public void removeReview(Review review) {
-        reviewList.remove(review);
-    }
-
 
     public void addFavorite(Favorite favorite) {
         favoriteList.add(favorite);
         favorite.setHouse(this);
     }
 
-    public void removeFavorite(Favorite favorite) {
-        favoriteList.remove(favorite);
-    }
-
     public void addTopic(Topic topic) {
         topicList.add(topic);
-        topic.setHouseToRegisterTopic(this);
+        //topic.setHouseToRegisterTopic(this);
     }
 
+    public void deleteTopic(Topic topic) {
+        topicList.remove(topic);
+    }
+
+    public void deleteAllTopic() {
+        topicList.clear();
+    }
 }

@@ -25,7 +25,6 @@ public class NewHouseRequestDto {
                 .capacity(0)
                 .signboardImageUrl(signboardImageUrl)
                 .open(false)
-                .activated(true)
                 .build();
     }
 }

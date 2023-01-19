@@ -1,6 +1,5 @@
 package com.backend.simya.domain.house.service;
 
-import com.backend.simya.domain.house.dto.request.TopicRequestDto;
 import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.repository.TopicRepository;
@@ -12,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.backend.simya.global.common.BaseResponseStatus.DATABASE_ERROR;
 import static com.backend.simya.global.common.BaseResponseStatus.FAILED_TO_CREATE_TOPIC;
 
 @Slf4j
@@ -22,10 +22,10 @@ public class TopicService {
     private final TopicRepository topicRepository;
 
     @Transactional
-    public Topic createTopic(House houseToRegisterTopic, TopicRequestDto topicToRegisterRequestDto) throws BaseException {
+    public Topic createTopic(Topic topicToRegister) throws BaseException {
         try {
-            Topic newTopic = topicToRegisterRequestDto.toEntity(houseToRegisterTopic);
-            return topicRepository.save(newTopic);
+            log.info("TopicService - topicToRegister {}", topicToRegister.getTitle());
+            return topicRepository.save(topicToRegister);
         } catch (Exception ignored) {
             throw new BaseException(FAILED_TO_CREATE_TOPIC);
         }
@@ -36,10 +36,8 @@ public class TopicService {
         return topicRepository.findAllByHouseId(houseId);
     }
 
-    @Transactional
-    public void deleteAllTopic(Long houseId) {
-        List<Topic> allTopic = findAllTopic(houseId);
-        topicRepository.deleteAll(allTopic);
+    public Topic findTopic(Long topicId) throws BaseException {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new BaseException(DATABASE_ERROR));
     }
-
 }

@@ -36,22 +36,11 @@ public class Favorite extends BaseTimeEntity {
     @JsonBackReference
     private House house;
 
-    @Column(name = "activated")
-    private boolean activated;
-
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
 
     public void setHouse(House house) {
         this.house = house;
-    }
-
-    public boolean isActivated() {
-        return this.activated;
-    }
-
-    public void changeStatus(boolean activated) {
-        this.activated = activated;
     }
 }
