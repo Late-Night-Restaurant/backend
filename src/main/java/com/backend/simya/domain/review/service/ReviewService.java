@@ -52,8 +52,8 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public List<Review> getReviewList(House house) {
-        return reviewRepository.findReviewsByHouse(house);
+    public List<Review> getReviewList(Long houseId) {
+        return reviewRepository.findReviewsByHouseId(houseId);
     }
 
     public List<MyReviewResponseDto> getCurrentProfileReviewList(User currentUser) {

@@ -24,5 +24,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
              "where review.profile.user.userId = :userId AND review.house.houseId = :houseId")
      List<Review> findReviewsByUserIdAndHouseId(Long userId, Long houseId);
 
+     @Query(value = "select review " +
+             "from Review review " +
+             "where review.house.houseId = :houseId")
+     List<Review> findReviewsByHouseId(Long houseId);
+
      List<Review> findReviewsByHouse(House house);
 }

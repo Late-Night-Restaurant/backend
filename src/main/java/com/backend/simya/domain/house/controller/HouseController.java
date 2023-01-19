@@ -37,7 +37,6 @@ public class HouseController {
     private final UserService userService;
     private final TopicService topicService;
     private final ProfileService profileService;
-    private final ReviewService reviewService;
 
 
     @GetMapping("")
@@ -62,10 +61,7 @@ public class HouseController {
     @GetMapping("{house-id}")
     public BaseResponse<HouseIntroductionResponseDto> showHouseIntroduction(@PathVariable("house-id") Long houseId) {
         try {
-            House findHouse = houseService.findHouse(houseId);
-            Profile masterProfile = profileService.findProfile(findHouse.getProfile().getProfileId());
-            List<Review> reviewList = reviewService.getReviewList(findHouse);
-            return new BaseResponse<>(houseService.getHouseIntroduction(findHouse, masterProfile, reviewList));
+            return new BaseResponse<>(houseService.getHouseIntroduction(houseId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -94,7 +90,7 @@ public class HouseController {
 
 
     @PatchMapping("/delete/{house-id}")
-    public BaseResponse<String> deleteHouse(@PathVariable("house-id") Long houseId) {
+    public BaseResponse<BaseResponseStatus> deleteHouse(@PathVariable("house-id") Long houseId) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
             houseService.deleteHouse(loginUser, houseId);
@@ -104,24 +100,17 @@ public class HouseController {
         }
     }
 
-    @PatchMapping("/menu/{houseId}")
-    public BaseResponse<String> updateMainMenu(@PathVariable("houseId") Long houseId, @RequestParam("menu") String menu) {
-
+    @PatchMapping("/{house-id}/category")
+    public BaseResponse<BaseResponseStatus> updateCategory(@PathVariable("house-id") Long houseId, @RequestParam("category") String category) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
-            House house = houseService.findHouse(houseId);
-
-            if(house.getCategory().equals(Category.nameOf(menu))) {
-                return new BaseResponse<>("해당 메뉴는 이미 대표 메뉴입니다.");
-            }
-            houseService.updateMainMenu(houseId, loginUser, menu);
-            return new BaseResponse<>("이야기 집의 메인 메뉴가 바뀌었습니다.");
+            houseService.updateCategory(houseId, loginUser, category);
+            return new BaseResponse<>(SUCCESS_TO_UPDATE_CATEGORY);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
-    
     @PatchMapping("/{house-id}/signboard")
     public BaseResponse<HouseResponseDto> updateSignboard(@PathVariable("house-id") Long houseId,
                                                           @RequestBody HouseUpdateRequestDto houseUpdateRequestDto) {
@@ -184,7 +173,6 @@ public class HouseController {
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
-
     }
 
 }
