@@ -1,9 +1,7 @@
 package com.backend.simya.domain.review.service;
 
 import com.backend.simya.domain.house.entity.House;
-import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
-import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.review.dto.MyReviewResponseDto;
 import com.backend.simya.domain.review.dto.ReviewRequestDto;
 import com.backend.simya.domain.review.dto.ReviewResponseDto;
@@ -11,18 +9,12 @@ import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.review.repository.ReviewRepository;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.global.common.BaseException;
-import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
