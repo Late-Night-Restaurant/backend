@@ -13,8 +13,6 @@ import com.backend.simya.domain.user.entity.LoginType;
 import com.backend.simya.domain.user.entity.Role;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
-import com.backend.simya.global.common.BaseException;
-import com.backend.simya.global.common.BaseResponseStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import static com.backend.simya.global.common.BaseResponseStatus.POST_USERS_EXISTS_EMAIL;
 
 @Service
 @Slf4j

@@ -51,15 +51,15 @@ public class HouseController {
     @PostMapping("")
     public BaseResponse<HouseResponseDto> createHouse(@RequestBody NewHouseRequestDto newHouseRequestDto) {
         try {
-            Profile masterProfile = profileService.findProfile(newHouseRequestDto.getProfileId());  // 해당하는 프로필 찾기
+            Profile masterProfile = profileService.findProfile(newHouseRequestDto.getProfileId());
             return new BaseResponse<>(houseService.createHouse(masterProfile, newHouseRequestDto));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
-    @GetMapping("{house-id}")
-    public BaseResponse<HouseIntroductionResponseDto> showHouseIntroduction(@PathVariable("house-id") Long houseId) {
+    @GetMapping("{houseId}")
+    public BaseResponse<HouseIntroductionResponseDto> showHouseIntroduction(@PathVariable("houseId") Long houseId) {
         try {
             return new BaseResponse<>(houseService.getHouseIntroduction(houseId));
         } catch (BaseException e) {
@@ -77,10 +77,9 @@ public class HouseController {
         }
     }
 
-    @PatchMapping("/close/{house-id}")
-    public BaseResponse<BaseResponseStatus> closeHouse(@PathVariable("house-id") Long houseId) {
+    @PatchMapping("/close/{houseId}")
+    public BaseResponse<BaseResponseStatus> closeHouse(@PathVariable("houseId") Long houseId) {
         try {
-            User loginUser = userService.getMyUserWithAuthorities();
             houseService.closeHouse(houseId);
             return new BaseResponse<>(SUCCESS_TO_CLOSE_HOUSE);
         } catch (BaseException e) {
@@ -89,8 +88,8 @@ public class HouseController {
     }
 
 
-    @PatchMapping("/delete/{house-id}")
-    public BaseResponse<BaseResponseStatus> deleteHouse(@PathVariable("house-id") Long houseId) {
+    @DeleteMapping("/{houseId}")
+    public BaseResponse<BaseResponseStatus> deleteHouse(@PathVariable("houseId") Long houseId) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
             houseService.deleteHouse(loginUser, houseId);
@@ -100,8 +99,8 @@ public class HouseController {
         }
     }
 
-    @PatchMapping("/{house-id}/category")
-    public BaseResponse<BaseResponseStatus> updateCategory(@PathVariable("house-id") Long houseId, @RequestParam("category") String category) {
+    @PatchMapping("/{houseId}/category")
+    public BaseResponse<BaseResponseStatus> updateCategory(@PathVariable("houseId") Long houseId, @RequestParam("category") String category) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
             houseService.updateCategory(houseId, loginUser, category);
@@ -111,8 +110,8 @@ public class HouseController {
         }
     }
 
-    @PatchMapping("/{house-id}/signboard")
-    public BaseResponse<HouseResponseDto> updateSignboard(@PathVariable("house-id") Long houseId,
+    @PatchMapping("/{houseId}/signboard")
+    public BaseResponse<HouseResponseDto> updateSignboard(@PathVariable("houseId") Long houseId,
                                                           @RequestBody HouseUpdateRequestDto houseUpdateRequestDto) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
@@ -137,8 +136,8 @@ public class HouseController {
         }
     }
 
-    @GetMapping("/{house-id}/topic")
-    public BaseResponse<List<TopicResponseDto>> showHousesAllTopic(@PathVariable("house-id") Long houseId) {
+    @GetMapping("/{houseId}/topic")
+    public BaseResponse<List<TopicResponseDto>> showHousesAllTopic(@PathVariable("houseId") Long houseId) {
         try {
             List<TopicResponseDto> housesAllTopicResponseDtoList = houseService.getHousesTopic(houseId);
             if (housesAllTopicResponseDtoList.isEmpty()) {
@@ -151,8 +150,8 @@ public class HouseController {
         }
     }
 
-    @PostMapping("/{house-id}/topic")
-    public BaseResponse<TopicResponseDto> registerNewTopic(@PathVariable("house-id") Long houseId,
+    @PostMapping("/{houseId}/topic")
+    public BaseResponse<TopicResponseDto> registerNewTopic(@PathVariable("houseId") Long houseId,
                                                            @RequestBody TopicRequestDto topicRequestDto) {
         try {
             House houseToRegisterTopic = houseService.findHouse(houseId);
@@ -163,9 +162,9 @@ public class HouseController {
         }
     }
 
-    @PatchMapping("/{house-id}/topic/{topic-id}/delete")
-    public BaseResponse<BaseResponseStatus> deleteTopic(@PathVariable("house-id") Long houseId,
-                                                        @PathVariable("topic-id") Long topicId) {
+    @DeleteMapping("/{houseId}/topic/{topicId}")
+    public BaseResponse<BaseResponseStatus> deleteTopic(@PathVariable("houseId") Long houseId,
+                                                        @PathVariable("topicId") Long topicId) {
         try{
             Topic topicToDelete = topicService.findTopic(topicId);
             houseService.findHouse(houseId).deleteTopic(topicToDelete);
