@@ -28,8 +28,8 @@ public class FavoriteController {
     private final UserService userService;
     private final HouseService houseService;
 
-    @PostMapping("/{house-id}")
-    public BaseResponse<BaseResponseStatus> registerFavorite(@PathVariable("house-id") Long houseId) {
+    @PostMapping("/{houseId}")
+    public BaseResponse<BaseResponseStatus> registerFavorite(@PathVariable("houseId") Long houseId) {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
             House houseToRegisterFavorite = houseService.findHouse(houseId);
@@ -40,8 +40,8 @@ public class FavoriteController {
         }
     }
 
-    @PatchMapping("/{favorite_id}")
-    public BaseResponse<BaseResponseStatus> cancelFavorite(@PathVariable("favorite_id") Long favoriteId) {
+    @DeleteMapping("/{favoriteId}")
+    public BaseResponse<BaseResponseStatus> cancelFavorite(@PathVariable("favoriteId") Long favoriteId) {
         try {
             favoriteService.cancelFavorite(favoriteId);
             return new BaseResponse<>(SUCCESS_TO_CANCEL_FAVORITE);
@@ -50,7 +50,7 @@ public class FavoriteController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping("/my")
     public BaseResponse<List<MyFavoriteHouseResponseDto>> getMyFavoriteHouses() {
         try{
             User currentUser = userService.getMyUserWithAuthorities();
@@ -60,8 +60,8 @@ public class FavoriteController {
         }
     }
 
-    @GetMapping("/{house-id}")
-    public BaseResponse<List<ProfileResponseDto>> getProfilesLikeMyHouse(@PathVariable("house-id") Long houseId) {
+    @GetMapping("/{houseId}")
+    public BaseResponse<List<ProfileResponseDto>> getProfilesLikeMyHouse(@PathVariable("houseId") Long houseId) {
         try{
             House findHouse = houseService.findHouse(houseId);
             return new BaseResponse<>(favoriteService.findProfilesLikeMyHouse(findHouse));
