@@ -88,4 +88,13 @@ public class UserService {
 
     }
 
+    @Transactional
+    public void withdraw(Long userId) throws BaseException {
+        try {
+            userRepository.deleteById(userId);
+        } catch (Exception exception) {
+            throw new BaseException(DELETE_FAIL_USER);
+        }
+    }
+
 }
