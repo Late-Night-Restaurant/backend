@@ -1,17 +1,22 @@
 package com.backend.simya.domain.chat.controller;
 
+import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
+import com.backend.simya.domain.jwt.service.TokenProvider;
+import com.backend.simya.domain.user.dto.response.ChatLoginInfo;
+import com.backend.simya.domain.user.entity.User;
+import com.backend.simya.domain.user.service.UserService;
+import com.backend.simya.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * 웹 소켓 통신을 구현한 채팅 화면 View 구성
- */
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -19,48 +24,85 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final TokenProvider tokenProvider;
+    private final UserService userService;
+
+    @GetMapping("/room")
+    public String rooms(Model model) {
+        log.info("Controller- /room 실행");
+        return "/chat/room";
+    }
 
     /**
      * 모든 채팅방 리스트 조회
+     * -> 이때 userCount 정보 세팅
      */
     @GetMapping("/rooms")
-    public ModelAndView rooms(Model model) {
+    @ResponseBody
+    public List<ChatRoom> room() {
         log.info("# All Chat Rooms");
-        ModelAndView mv = new ModelAndView("chat/rooms");
-
-        mv.addObject("list", chatRoomRepository.findAllRoom());
-        return mv;
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllRoom();
+        chatRooms.forEach(
+                room -> room.setUserCount(chatRoomRepository.getUserCount(room.getRoomId()))
+        );
+        return chatRooms;
     }
-
-    /*@PostMapping("/chat/rooms")
-    public*/
 
     /**
      * 채팅방 개설
      */
     @PostMapping("/room")
-    public String createRoom(@RequestParam String name, RedirectAttributes rttr) {
+    @ResponseBody
+    public ChatRoom createRoom(@RequestParam String name) {
         log.info("# Create Chat Room, name: {}", name);
-
-        rttr.addAttribute("roomName", chatRoomRepository.createChatRoom(name).getName());
-        return "redirect:/chat/rooms";
+        return chatRoomRepository.createChatRoom(name);
     }
 
     /**
      * 채팅방 입장 화면
      */
-    /*@GetMapping("/room/enter/{roomId}")
+    @GetMapping("/room/enter/{roomId}")
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
-        return "chat/room";
+        return "/chat/roomdetail";
     }
-*/
+
     /**
      * 툭정 채팅방 조회
      */
-    @GetMapping("/room")
-    public void roomInfo(String roomId, Model model) {
+    @GetMapping("/room/{roomId}")
+    @ResponseBody
+    public ChatRoom roomInfo(@PathVariable String roomId) {
         log.info("# Get Chat Room, roomId: {}", roomId);
-        model.addAttribute("room", chatRoomRepository.findRoomById(roomId));
+        return chatRoomRepository.findRoomById(roomId);
+    }
+
+    /**
+     * 회원 정보 조회
+     * // TODO User App 에서 로그인한 사용자 가져오기
+     */
+    @GetMapping("/user")
+    @ResponseBody
+    public ChatLoginInfo getUserInfo() {
+        log.info("ChatLoginInfo 응답 객체 반환을 위한 준비");
+        try {
+            User loginUser = userService.getMyUserWithAuthorities();
+
+            log.info("Authentication - {}", loginUser.getUsername());
+
+            String name = loginUser.getUsername();
+            String token = tokenProvider.getJwt().getAccessToken();
+            log.info("JWT Token - {}", token);
+            return ChatLoginInfo.builder()
+                    .name(name)
+                    .token(token)
+                    .build();
+        } catch (BaseException e) {
+            log.error("ChatLoginInfo 객체 생성 실패");
+            return ChatLoginInfo.builder()
+                    .name("Bad Request")
+                    .token("Invalid Token")
+                    .build();
+        }
     }
 }
