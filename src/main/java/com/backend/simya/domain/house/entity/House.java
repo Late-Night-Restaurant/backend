@@ -46,6 +46,11 @@ public class House extends BaseTimeEntity {
     @JsonManagedReference
     private List<Favorite> favoriteList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "house", cascade = ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Topic> topicList = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private Category category;
@@ -65,15 +70,17 @@ public class House extends BaseTimeEntity {
     @Column(name = "open")
     private boolean open;  // 오픈 상태인지
 
-    @Column(name = "activated")
-    private boolean activated;
-
     public void openHouse(int capacity) {
         this.open = true;
         this.capacity = capacity;
     }
 
-    public House update(HouseUpdateRequestDto houseUpdateRequestDto) {
+    public void closeHouse() {
+        this.open = false;
+        this.capacity = 0;
+    }
+
+    public House updateSignboard(HouseUpdateRequestDto houseUpdateRequestDto) {
         this.signboardImageUrl = houseUpdateRequestDto.getSignboardImageUrl();
         this.houseName = houseUpdateRequestDto.getHouseName();
         this.comment = houseUpdateRequestDto.getComment();
@@ -81,8 +88,8 @@ public class House extends BaseTimeEntity {
         return this;
     }
 
-    public void delete() {
-        this.activated = false;
+    public void updateCategory(String category) {
+        this.category = Category.nameOf(category);
     }
 
     public void addReview(Review review) {
@@ -95,7 +102,16 @@ public class House extends BaseTimeEntity {
         favorite.setHouse(this);
     }
 
-    public void removeFavorite(Favorite favorite) {
-        favoriteList.remove(favorite);
+    public void addTopic(Topic topic) {
+        topicList.add(topic);
+        //topic.setHouseToRegisterTopic(this);
+    }
+
+    public void deleteTopic(Topic topic) {
+        topicList.remove(topic);
+    }
+
+    public void deleteAllTopic() {
+        topicList.clear();
     }
 }

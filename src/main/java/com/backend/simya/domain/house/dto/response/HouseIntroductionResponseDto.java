@@ -26,12 +26,11 @@ public class HouseIntroductionResponseDto {
     private HouseResponseDto houseInfo;
     private List<ReviewResponseDto> houseReviewList;
 
-    public static HouseIntroductionResponseDto from(Profile profile, House house, List<Review> reviewList) {
+    public static HouseIntroductionResponseDto from(House house) {
         return HouseIntroductionResponseDto.builder()
-                .masterProfile(ProfileResponseDto.from(profile))
+                .masterProfile(ProfileResponseDto.from(house.getProfile()))
                 .houseInfo(HouseResponseDto.from(house))
-                .houseReviewList(reviewList.stream()
-                        .filter(Review::isActivated)
+                .houseReviewList(house.getReviewList().stream()
                         .map(ReviewResponseDto::from)
                         .collect(Collectors.toList()))
                 .build();
