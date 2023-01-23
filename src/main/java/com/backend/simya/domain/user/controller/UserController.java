@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
+import static com.backend.simya.global.common.BaseResponseStatus.SUCCESS_TO_WITHDRAW;
 
 @Slf4j
 @RestController
@@ -93,5 +94,16 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
 
+    }
+
+    @DeleteMapping("/withdraw")
+    public BaseResponse withdraw() {
+        try {
+            User loginUser = userService.getMyUserWithAuthorities();
+            userService.withdraw(loginUser.getUserId());
+            return new BaseResponse(SUCCESS_TO_WITHDRAW);
+        } catch (BaseException e) {
+            return new BaseResponse(e.getStatus());
+        }
     }
 }

@@ -26,6 +26,7 @@ public enum BaseResponseStatus {
     HAVE_REVIEWED_BEFORE(true, 200, "리뷰를 쓴 적이 있는 유저입니다."),
     SUCCESS_TO_UPDATE_CATEGORY(true, 200, "이야기 집의 전문메뉴를 수정했습니다."),
 
+    SUCCESS_TO_WITHDRAW(true, 200, "회원탈퇴에 성공했습니다."),
 
 
 
@@ -62,6 +63,7 @@ public enum BaseResponseStatus {
     // user 관련
     FAILED_TO_LOGIN(false, 404, "존재하지 않는 아이디이거나 비밀번호가 틀렸습니다."),
     BANNED_USER_IN_LOGIN(false, 403, "정지된 유저이므로 로그인이 불가합니다."),
+    FAILED_TO_FIND_USER(false, 500, "데이터베이스에서 해당 유저를 찾는데 실패했습니다"),
 
     USERS_NEED_ONE_MORE_PROFILE(false, 400, "모든 회원은 하나 이상의 프로필이 존재해야 합니다."),
     ALREADY_DELETE_PROFILE(false, 400, "이미 삭제된 프로필입니다."),
@@ -89,6 +91,7 @@ public enum BaseResponseStatus {
 
     GET_FAIL_USERINFO(false, 500, "회원정보 조회에 실패했습니다"),
     POST_FAIL_USER(false, 500, "회원가입에 실패했습니다."),
+    DELETE_FAIL_USER(false, 500, "회원탈퇴에 실패했습니다."),
 
     // [PATCH] user 정보 수정 시
     MODIFY_FAIL_USERNAME(false, 500, "회원 이름을 변경하는 데 실패했습니다."),
@@ -109,12 +112,26 @@ public enum BaseResponseStatus {
     PASSWORD_ENCRYPTION_ERROR(false, 500, "비밀번호 암호화에 실패했습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 500, "비밀번호 복호화에 실패했습니다."),
     FAILED_TO_LOAD_TODAY_TOPIC(false, 500, "오늘의 메뉴를 불러오는데 실패했습니다."),
+    FAILED_TO_FIND_HOUSE(false, 500, "데이터베이스에서 이야기 집을 찾는데 실패했습니다"),
+    FAILED_TO_FIND_PROFILES_LIKE_MY_HOUSE(false, 500, "데이터베이스에서 내 이야기 집을 찜한 프로필을 찾는데 실패했습니다."),
+    FAILED_TO_FIND_MY_FAVORITE_HOUSE(false, 500, "데이터베이스에서 내가 찜한 이야기 집을 찾는데 실패했습니다."),
+    FAILED_TO_DELETE_FAVORITE(false, 500, "데이터베이스에서 찜을 삭제하는데 실패했습니다."),
+    FAILED_TO_FIND_HOUSES_REVIEW(false, 500, "데이터베이스에서 이야기 집에 달린 리뷰를 찾는데 실패했습니다."),
+
+
+
+
 
 
 
     //review 관련
-    FAILED_TO_CREATE_REVIEW(false, 500, "리뷰 생성에 실패했습니다."),
+    FAILED_TO_CREATE_REVIEW(false, 500, "데이터베이스에 리뷰를 저장하는데 실패했습니다."),
     FAILED_TO_FIND_REVIEW(false, 500, "리뷰를 찾을 수 없습니다."),
+    FAILED_TO_FIND_MY_REVIEW(false, 500, "데이터베이스에서 내 리뷰들을 찾는데 실패했습니다."),
+    FAILED_TO_DELETE_MY_REVIEW(false, 500, "데이터베이스에서 리뷰를 삭제하는데 실패했습니다."),
+    FAILED_TO_UPDATE_MY_REVIEW(false, 500, "데이터베이스에서 리뷰를 업데이트하는데 실패했습니다."),
+    FAILED_TO_CHECK_IS_REVIEWED(false, 500, "데이터베이스에서 리뷰작성 여부를 찾는데 실패했습니다"),
+
 
     FAILED_TO_FIND_FAVORITE(false, 500, "찜 목록을 찾을 수 없습니다."),
     FAILED_TO_CANCEL_FAVORITE(false, 500, "찜 해제에 실패했습니다."),

@@ -41,8 +41,6 @@ public class ReviewController {
             return new BaseResponse<>(reviewResponseDto);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
-        } catch (Exception e) {
-            return new BaseResponse<>(FAILED_TO_CREATE_REVIEW);
         }
     }
 
@@ -51,11 +49,7 @@ public class ReviewController {
         try {
             House findHouse = houseService.findHouse(houseId);
             List<ReviewResponseDto> houseReviewList = reviewService.getHouseReviewList(findHouse);
-            if (houseReviewList.isEmpty()) {
-                return new BaseResponse<>(NO_REVIEWS_YET);
-            } else {
-                return new BaseResponse<>(houseReviewList);
-            }
+            return new BaseResponse<>(houseReviewList);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -66,11 +60,7 @@ public class ReviewController {
         try {
             User currentUser = userService.getMyUserWithAuthorities();
             List<MyReviewResponseDto> myReviewList = reviewService.getCurrentProfileReviewList(currentUser);
-            if (myReviewList.isEmpty()) {
-                return new BaseResponse<>(NO_REVIEWS_YET);
-            } else {
-                return new BaseResponse<>(myReviewList);
-            }
+            return new BaseResponse<>(myReviewList);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

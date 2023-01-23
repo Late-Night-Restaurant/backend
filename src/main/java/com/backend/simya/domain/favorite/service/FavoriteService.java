@@ -39,22 +39,36 @@ public class FavoriteService {
 
     @Transactional
     public void cancelFavorite(Long favoriteId) throws BaseException {
-        Favorite favoriteToCancel = findFavorite(favoriteId);
-        favoriteRepository.delete(favoriteToCancel);
+        try {
+            Favorite favoriteToCancel = findFavorite(favoriteId);
+            favoriteRepository.delete(favoriteToCancel);
+        } catch (BaseException e) {
+            throw new BaseException(e.getStatus());
+        } catch (Exception e) {
+            throw new BaseException(FAILED_TO_DELETE_FAVORITE);
+        }
     }
 
-    public List<MyFavoriteHouseResponseDto> findCurrentProfileFavoriteHouses(User currentUser) {
-        Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
-        return favoriteRepository.findFavoriteListByProfileId(mainProfile.getProfileId()).stream()
-                .map(MyFavoriteHouseResponseDto::from)
-                .collect(Collectors.toList());
+    public List<MyFavoriteHouseResponseDto> findCurrentProfileFavoriteHouses(User currentUser) throws BaseException {
+        try {
+            Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
+            return favoriteRepository.findFavoriteListByProfileId(mainProfile.getProfileId()).stream()
+                    .map(MyFavoriteHouseResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BaseException(FAILED_TO_FIND_MY_FAVORITE_HOUSE);
+        }
     }
 
-    public List<ProfileResponseDto> findProfilesLikeMyHouse(House house) {
-        return favoriteRepository.findFavoriteListByHouseId(house.getHouseId()).stream()
-                .map(Favorite::getProfile)
-                .map(ProfileResponseDto::from)
-                .collect(Collectors.toList());
+    public List<ProfileResponseDto> findProfilesLikeMyHouse(House house) throws BaseException {
+        try {
+            return favoriteRepository.findFavoriteListByHouseId(house.getHouseId()).stream()
+                    .map(Favorite::getProfile)
+                    .map(ProfileResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+           throw new BaseException(FAILED_TO_FIND_PROFILES_LIKE_MY_HOUSE);
+        }
     }
 
     public Favorite findFavorite(Long favoriteId) throws BaseException {

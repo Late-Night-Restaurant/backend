@@ -63,7 +63,7 @@ public class ProfileController {
         }
     }
 
-    @PatchMapping("/{profileId}/delete")
+    @DeleteMapping("/{profileId}/delete")
     public BaseResponse<String> deleteProfile(@PathVariable("profileId") Long profileId) {
 
         try {
