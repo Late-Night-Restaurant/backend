@@ -135,8 +135,11 @@ public enum BaseResponseStatus {
 
     FAILED_TO_FIND_FAVORITE(false, 500, "찜 목록을 찾을 수 없습니다."),
     FAILED_TO_CANCEL_FAVORITE(false, 500, "찜 해제에 실패했습니다."),
-    FAILED_TO_REGISTER_FAVORITE(false, 500, "찜 등록에 실패했습니다.");
+    FAILED_TO_REGISTER_FAVORITE(false, 500, "찜 등록에 실패했습니다."),
 
+
+    // chat 관련
+    FAILED_TO_SEND_MESSAGE(false, 500, "메시지 전송에 실패했습니다.");
 
 
     /**
