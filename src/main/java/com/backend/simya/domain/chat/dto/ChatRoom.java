@@ -1,6 +1,8 @@
 package com.backend.simya.domain.chat.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom implements Serializable {
 
     private static final long serialVersionUID = 6494678977089006639L;
