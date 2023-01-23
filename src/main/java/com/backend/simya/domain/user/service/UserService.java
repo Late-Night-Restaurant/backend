@@ -67,7 +67,7 @@ public class UserService {
     public User getUserWithAuthorities(String username) throws BaseException {
         try {
             return userRepository.findOneWithAuthoritiesByEmail(username).orElseThrow(
-                    () -> new BaseException(USERS_NOT_FOUND)
+                    () -> new BaseException(FAILED_TO_FIND_USER)
             );
         } catch (Exception exception) {
             if (userRepository.findByEmail(username).isPresent()) {
@@ -83,7 +83,7 @@ public class UserService {
     public User getMyUserWithAuthorities() throws BaseException {
 
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByEmail).orElseThrow(
-                () -> new BaseException(USERS_NOT_FOUND)
+                () -> new BaseException(FAILED_TO_FIND_USER)
         );
 
     }

@@ -71,7 +71,7 @@ public class HouseService {
 
     public House findHouse(Long houseId) throws BaseException {
         return houseRepository.findById(houseId).orElseThrow(
-                () -> new BaseException(HOUSE_NOT_FOUND)
+                () -> new BaseException(FAILED_TO_FIND_HOUSE)
         );
     }
 

@@ -28,6 +28,7 @@ public class FavoriteController {
     private final UserService userService;
     private final HouseService houseService;
 
+
     @PostMapping("/{houseId}")
     public BaseResponse<BaseResponseStatus> registerFavorite(@PathVariable("houseId") Long houseId) {
         try {
@@ -35,8 +36,8 @@ public class FavoriteController {
             House houseToRegisterFavorite = houseService.findHouse(houseId);
             favoriteService.registerFavorite(currentUser, houseToRegisterFavorite);
             return new BaseResponse<>(SUCCESS_TO_REGISTER_FAVORITE);
-        } catch (Exception e) {
-            return new BaseResponse<>(FAILED_TO_REGISTER_FAVORITE);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -46,7 +47,7 @@ public class FavoriteController {
             favoriteService.cancelFavorite(favoriteId);
             return new BaseResponse<>(SUCCESS_TO_CANCEL_FAVORITE);
         } catch (BaseException e) {
-            return new BaseResponse<>(FAILED_TO_CANCEL_FAVORITE);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -56,7 +57,7 @@ public class FavoriteController {
             User currentUser = userService.getMyUserWithAuthorities();
             return new BaseResponse<>(favoriteService.findCurrentProfileFavoriteHouses(currentUser));
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -69,4 +70,5 @@ public class FavoriteController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
 }
