@@ -27,7 +27,9 @@ public enum BaseResponseStatus {
     SUCCESS_TO_UPDATE_CATEGORY(true, 200, "이야기 집의 전문메뉴를 수정했습니다."),
 
     SUCCESS_TO_WITHDRAW(true, 200, "회원탈퇴에 성공했습니다."),
-
+    SUCCESS_TO_UPDATE_PROFILE(true, 200, "프로필 수정이 완료되었습니다."),
+    SUCCESS_TO_DELETE_PROFILE(true, 200, "프로필이 삭제되었습니다."),
+    SUCCESS_TO_CHANGE_MAIN_PROFILE(true, 200, "메인 프로필이 변경되었습니다."),
 
 
 

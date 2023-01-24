@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
+import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/users/profile")
+@RequestMapping("/simya/users/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -56,20 +56,18 @@ public class ProfileController {
             profileUpdateDto.setProfileId(profileId);
             profileService.updateProfile(profileUpdateDto);
 
-            String result = "프로필 수정이 완료되었습니다.";
-            return new BaseResponse<>(result);
+            return new BaseResponse<>(SUCCESS_TO_UPDATE_PROFILE);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
-    @DeleteMapping("/{profileId}/delete")
+    @DeleteMapping("/{profileId}")
     public BaseResponse<String> deleteProfile(@PathVariable("profileId") Long profileId) {
 
         try {
             profileService.deleteProfile(profileId);
-            String result = "프로필이 삭제되었습니다.";
-            return new BaseResponse<>(result);
+            return new BaseResponse<>(SUCCESS_TO_DELETE_PROFILE);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -79,17 +77,17 @@ public class ProfileController {
     public BaseResponse<String> setMainProfile(@PathVariable("profileId") Long profileId) {
         try {
             profileService.setMainProfile(profileId);
-            String result = "메인 프로필이 변경되었습니다.";
-            return new BaseResponse<>(result);
+            return new BaseResponse<>(SUCCESS_TO_CHANGE_MAIN_PROFILE);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
     @GetMapping("/{profileId}")
-    public BaseResponse<Profile> getProfileInfo(@PathVariable("profileId") Long profileId) {
+    public BaseResponse<ProfileResponseDto> getProfileInfo(@PathVariable("profileId") Long profileId) {
         try {
-            return new BaseResponse<>(profileService.findProfile(profileId));
+            Profile profile = profileService.findProfile(profileId);
+            return new BaseResponse<>(ProfileResponseDto.from(profile));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
