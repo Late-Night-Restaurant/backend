@@ -29,10 +29,10 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
 
     private final AuthService authService;
+    private final UserService userService;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatService chatService;
     private final TokenProvider tokenProvider;
-    private final UserRepository userRepository;
 
     /**
      * WebSocket "/pub/chat/message" 로 들어오는 메시징 처리
@@ -43,17 +43,17 @@ public class ChatController {
         try {
             log.info("Web Socket Header 에서 읽어온 Access-Token: {}", token);
             String authenticateUser = tokenProvider.getAuthentication(token).getName();
-            Profile profile = null;
+            String profile = "X";
 
             try {
                 log.info("ChatController - Authenticate User : {}", authenticateUser);
-                profile = chatService.getSessionToMainProfile(authenticateUser);
+                profile = userService.getSessionToMainProfile(authenticateUser).getNickname();
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
             log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile);
 
-            message.setSender(profile.getNickname());         // 로그인 회원 정보로 대화명 설정
+            message.setSender(profile);         // 로그인 회원 정보로 대화명 설정
             message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
 
             // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s

@@ -7,6 +7,7 @@ import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
+import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class StompHandler implements ChannelInterceptor {
 
     private final TokenProvider tokenProvider;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
     private final ChatService chatService;
+    private final UserService userService;
 
     /**
      * WebSocket 을 통해 들어온 요청 처리 전에 수행되는 메소드
@@ -63,10 +64,10 @@ public class StompHandler implements ChannelInterceptor {
 
             // 클라이언트의 입장 메시지 채팅방에 발송 -> 입/퇴장 안내는 서버에서 일괄적으로 처리 : Redis Publish
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
-            Profile profile = null;
+            String profile = "X";
             log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
             try {
-                profile = chatService.getSessionToMainProfile(name);
+                profile = userService.getSessionToMainProfile(name).getNickname();
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
@@ -74,7 +75,7 @@ public class StompHandler implements ChannelInterceptor {
             chatService.sendChatMessage(ChatMessage.builder()
                     .type(ChatMessage.MessageType.ENTER)
                     .roomId(roomId)
-                    .sender(profile.getNickname())
+                    .sender(profile)
                     .build());
             log.info("SUBSCRIBED {}, {}", name, roomId);
 

@@ -78,19 +78,5 @@ public class ChatService {
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
     }
 
-    /**
-     * 채팅 메시지 발송자 - 세션 유저에서 대표 프로필 닉네임으로 설정
-     */
-    public Profile getSessionToMainProfile(String sessionUserName) throws BaseException{
-        User user = userRepository.findByEmail(sessionUserName).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.FAILED_TO_FIND_USER)
-        );
-        Profile profile = user.getProfileList().get(user.getMainProfile());
-
-        log.info("[Header] simpUser: {} => 심야식당 서비스에서 찾은 유저: {} / 대표 프로필: {}", sessionUserName, user, profile);
-
-        return profile;
-
-    }
 }
 
