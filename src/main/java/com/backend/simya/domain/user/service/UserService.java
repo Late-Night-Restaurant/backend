@@ -9,8 +9,10 @@ import com.backend.simya.domain.user.entity.Role;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponseStatus;
 import com.backend.simya.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 /**
  * 회원가입, 유저정보조회 등의 API를 구현하기 위한 Service 클래스
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -95,6 +98,22 @@ public class UserService {
         } catch (Exception exception) {
             throw new BaseException(DELETE_FAIL_USER);
         }
+    }
+
+    /**
+     * 채팅 메시지 발송자 - 세션 유저에서 대표 프로필 닉네임으로 설정 시 사용
+     */
+    @Transactional
+    public Profile getSessionToMainProfile(String sessionUserName) throws BaseException{
+        User user = userRepository.findByEmail(sessionUserName).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.FAILED_TO_FIND_USER)
+        );
+        Profile profile = user.getProfileList().get(user.getMainProfile());
+
+        log.info("[Header] simpUser: {} => 심야식당 서비스에서 찾은 유저: {} / 대표 프로필: {}", sessionUserName, user, profile);
+
+        return profile;
+
     }
 
 }

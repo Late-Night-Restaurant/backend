@@ -157,12 +157,13 @@ public class TokenProvider {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
             log.info("AuthService -> TokenProvider - getJwt() : header에 저장된 Access Token {}", request.getHeader("Access-Token"));
-            log.info("AuthService -> TokenProvider - getJwt() : header에 저장된 Access Token {}", request.getHeader("Refresh-Token"));
+            log.info("AuthService -> TokenProvider - getJwt() : header에 저장된 Refresh Token {}", request.getHeader("Refresh-Token"));
             String accessToken = request.getHeader("Access-Token").substring(7);
             String refreshToken = request.getHeader("Refresh-Token").substring(8);
 
             return new TokenRequestDto(accessToken, refreshToken);
         } catch (Exception exception) {
+            log.error("TokenProvider - Header에서 JWT 가져오기 실패");
             throw new BaseException(INVALID_JWT);
         }
     }

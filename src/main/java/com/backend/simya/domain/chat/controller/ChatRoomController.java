@@ -2,6 +2,7 @@ package com.backend.simya.domain.chat.controller;
 
 import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
+import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.user.dto.response.ChatLoginInfo;
 import com.backend.simya.domain.user.entity.User;
@@ -26,6 +27,7 @@ public class ChatRoomController {
     private final ChatRoomRepository chatRoomRepository;
     private final TokenProvider tokenProvider;
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping("/room")
     public String rooms(Model model) {
@@ -86,16 +88,18 @@ public class ChatRoomController {
     public ChatLoginInfo getUserInfo() {
         log.info("ChatLoginInfo 응답 객체 반환을 위한 준비");
         try {
-            User loginUser = userService.getMyUserWithAuthorities();
+//            User loginUser = userService.getMyUserWithAuthorities();
+            User loginUser = authService.authenticateUser();
 
             log.info("Authentication - {}", loginUser.getUsername());
 
-            String name = loginUser.getUsername();
+            int idx = loginUser.getMainProfile();
+            String name = loginUser.getProfileList().get(idx).getNickname();  // 대표 프로필의 닉네임으로 sender 명 지정
             String token = tokenProvider.getJwt().getAccessToken();
-            log.info("JWT Token - {}", token);
+            log.info("JWT nickname / Token - " + name + " " + token);
             return ChatLoginInfo.builder()
                     .name(name)
-                    .token(token)
+                    .token(token)  // TODO 프론트에서 "token" 키 값을 받아올 때 ChatLoginDto 의 값에서 가져오는 것
                     .build();
         } catch (BaseException e) {
             log.error("ChatLoginInfo 객체 생성 실패");
