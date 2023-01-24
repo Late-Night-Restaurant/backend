@@ -4,8 +4,14 @@ import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.user.entity.User;
+import com.backend.simya.domain.user.repository.UserRepository;
+import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.LazyInitializationException;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -23,6 +29,7 @@ public class StompHandler implements ChannelInterceptor {
 
     private final TokenProvider tokenProvider;
     private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
     private final ChatService chatService;
 
     /**
@@ -52,12 +59,22 @@ public class StompHandler implements ChannelInterceptor {
             chatRoomRepository.setUserEnterInfo(sessionId, roomId);
             chatRoomRepository.plusUserCount(roomId);  // 인원 수 +1
 
+            log.info("[Header] SessionId(simpSessionId): {}, RoomId(simpDestination): {}", sessionId, roomId);
+
             // 클라이언트의 입장 메시지 채팅방에 발송 -> 입/퇴장 안내는 서버에서 일괄적으로 처리 : Redis Publish
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
+            Profile profile = null;
+            log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
+            try {
+                profile = chatService.getSessionToMainProfile(name);
+            } catch (LazyInitializationException | BaseException e) {
+                log.error("유저와 대표 프로필 조회에 실패했습니다.");
+            }
+
             chatService.sendChatMessage(ChatMessage.builder()
                     .type(ChatMessage.MessageType.ENTER)
                     .roomId(roomId)
-                    .sender(name)
+                    .sender(profile.getNickname())
                     .build());
             log.info("SUBSCRIBED {}, {}", name, roomId);
 

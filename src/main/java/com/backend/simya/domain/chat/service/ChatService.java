@@ -3,9 +3,15 @@ package com.backend.simya.domain.chat.service;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.user.entity.User;
+import com.backend.simya.domain.user.repository.UserRepository;
+import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.LazyInitializationException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -22,6 +28,7 @@ public class ChatService {
     private final ChannelTopic channelTopic;
     private final RedisTemplate redisTemplate;
     private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
 
     /**
      * 채팅방 조회
@@ -69,6 +76,21 @@ public class ChatService {
             message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
+    }
+
+    /**
+     * 채팅 메시지 발송자 - 세션 유저에서 대표 프로필 닉네임으로 설정
+     */
+    public Profile getSessionToMainProfile(String sessionUserName) throws BaseException{
+        User user = userRepository.findByEmail(sessionUserName).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.FAILED_TO_FIND_USER)
+        );
+        Profile profile = user.getProfileList().get(user.getMainProfile());
+
+        log.info("[Header] simpUser: {} => 심야식당 서비스에서 찾은 유저: {} / 대표 프로필: {}", sessionUserName, user, profile);
+
+        return profile;
+
     }
 }
 

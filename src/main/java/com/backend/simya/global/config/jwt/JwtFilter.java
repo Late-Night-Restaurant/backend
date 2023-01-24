@@ -64,13 +64,12 @@ public class JwtFilter extends GenericFilterBean {
 
     // 필터링을 하려면 토큰 정보 필요 -> Request Header에서 토큰 정보를 꺼내오는 메소드
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        log.info("request = {}", request.getHeader("Access-Token"));
-        log.info("request = {}", request.getHeader("Authorization"));
-        log.info("BearerToken - {}", bearerToken);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            log.info("StringUtils.hasText 실행 - {}", bearerToken.substring(7));
-            return bearerToken.substring(7);
+        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
+        log.info("request(Access-Token) = {}", request.getHeader("Access-Token"));
+        log.info("request(Authorization) = {}", request.getHeader("Authorization"));
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
+            log.info("StringUtils.hasText 실행 - {}", accessToken.substring(7));
+            return accessToken.substring(7);
         }
         return null;
     }

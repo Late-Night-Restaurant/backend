@@ -64,6 +64,7 @@
             this.roomId = localStorage.getItem('wschat.roomId');
             this.roomName = localStorage.getItem('wschat.roomName');
             var _this = this;
+            console.log(this);
             axios.get('/chat/user').then(response => {
                 _this.token = response.data.token;
                 ws.connect({"token":_this.token}, function(frame) {
@@ -81,6 +82,7 @@
             sendMessage: function(type) {
                 ws.send("/pub/chat/message", {"token":this.token}, JSON.stringify({type:type, roomId:this.roomId, message:this.message}));
                 this.message = '';
+                console.log("Front token: " + this.token);
             },
             recvMessage: function(recv) {
                 this.userCount = recv.userCount;
