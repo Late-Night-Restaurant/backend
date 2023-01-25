@@ -90,6 +90,20 @@ public class StompHandler implements ChannelInterceptor {
             // 클라이언트의 퇴장 메시지 채팅방에 발송 -> 이후 퇴장한 클라이언트의 roomId 매핑 정보 삭제 : Redis Publish
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
             chatRoomRepository.removeUserEnterInfo(sessionId);
+
+            String profile = "X";
+            log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
+            try {
+                profile = userService.getSessionToMainProfile(name).getNickname();
+            } catch (LazyInitializationException | BaseException e) {
+                log.error("유저와 대표 프로필 조회에 실패했습니다.");
+            }
+            chatService.sendChatMessage(ChatMessage.builder()
+                    .type(ChatMessage.MessageType.QUIT)
+                    .roomId(roomId)
+                    .sender(profile)
+                    .build());
+
             log.info("DISCONNECTED {}, {}", sessionId, roomId);
 
         }

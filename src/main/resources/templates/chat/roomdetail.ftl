@@ -21,8 +21,8 @@
             <h4>{{roomName}} <span class="badge badge-info badge-pill">{{userCount}}</span></h4>
         </div>
         <div class="col-md-6 text-right">
-            <a class="btn btn-primary btn-sm" href="/logout">로그아웃</a>
-            <a class="btn btn-info btn-sm" href="/chat/room">채팅방 나가기</a>
+            <a class="btn btn-primary btn-sm" href="/simya/logout">로그아웃</a>
+            <a class="btn btn-info btn-sm" href="/simya/chat/room">채팅방 나가기</a>
         </div>
     </div>
     <div class="input-group">
@@ -47,7 +47,7 @@
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
     // websocket & stomp initialize
-    var sock = new SockJS("/ws-stomp");
+    var sock = new SockJS("/simya/ws-stomp");
     var ws = Stomp.over(sock);
     // vue.js
     var vm = new Vue({
@@ -65,22 +65,22 @@
             this.roomName = localStorage.getItem('wschat.roomName');
             var _this = this;
             console.log(this);
-            axios.get('/chat/user').then(response => {
+            axios.get('/simya/chat/user').then(response => {
                 _this.token = response.data.token;
                 ws.connect({"token":_this.token}, function(frame) {
-                    ws.subscribe("/sub/chat/room/"+_this.roomId, function(message) {
+                    ws.subscribe("/sub/simya/chat/room/"+_this.roomId, function(message) {
                         var recv = JSON.parse(message.body);
                         _this.recvMessage(recv);
                     });
                 }, function(error) {
                     alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
-                    location.href="/chat/room";
+                    location.href="/simya/chat/room";
                 });
             });
         },
         methods: {
             sendMessage: function(type) {
-                ws.send("/pub/chat/message", {"token":this.token}, JSON.stringify({type:type, roomId:this.roomId, message:this.message}));
+                ws.send("/pub/simya/chat/message", {"token":this.token}, JSON.stringify({type:type, roomId:this.roomId, message:this.message}));
                 this.message = '';
                 console.log("Front token: " + this.token);
             },

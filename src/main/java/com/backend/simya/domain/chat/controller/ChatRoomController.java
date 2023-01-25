@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/chat")
+@RequestMapping("/simya/chat")
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;

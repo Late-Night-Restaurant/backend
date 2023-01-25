@@ -37,7 +37,7 @@ public class ChatController {
     /**
      * WebSocket "/pub/chat/message" 로 들어오는 메시징 처리
      */
-    @MessageMapping("/chat/message")
+    @MessageMapping("/simya/chat/message")
     public void message(ChatMessage message, @Header("token") String token) {
 
         try {
