@@ -14,14 +14,16 @@ import com.backend.simya.global.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import static com.backend.simya.global.common.BaseResponseStatus.REQUEST_ERROR;
-import static com.backend.simya.global.common.BaseResponseStatus.SUCCESS_TO_WITHDRAW;
+import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
 @RestController
@@ -104,6 +106,16 @@ public class UserController {
             return new BaseResponse(SUCCESS_TO_WITHDRAW);
         } catch (BaseException e) {
             return new BaseResponse(e.getStatus());
+        }
+    }
+
+    @GetMapping("/logout")
+    public BaseResponse logout(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            return new BaseResponse(SUCCESS_TO_LOGOUT);
+        } catch (Exception e) {
+            return new BaseResponse(FAILED_TO_LOGOUT);
         }
     }
 }
