@@ -79,11 +79,14 @@ public class SecurityConfig {
 
                 // TODO 유저 권한을 가진 회원에게만 채팅방 접근 가능하도록
 
-                // 로그아웃 설정
-                /*.and()
+                /*// 로그아웃 설정
+                .and()
                 .logout()
-                .logoutUrl("simya/logout")
-                .invalidateHttpSession(true)
+                .logoutUrl("/simya/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)*/
+
+                /*
                 .deleteCookies("JSESSIONID")*/
 
                 .and()

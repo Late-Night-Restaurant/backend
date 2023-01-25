@@ -30,7 +30,7 @@ public class RedisSubscriber {
             // ChatMessage 객체로 매핑
             ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
             // WebSocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
+            messagingTemplate.convertAndSend("/sub/simya/chat/room/" + chatMessage.getRoomId(), chatMessage);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }

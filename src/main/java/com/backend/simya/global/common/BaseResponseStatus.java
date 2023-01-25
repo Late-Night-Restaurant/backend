@@ -27,7 +27,10 @@ public enum BaseResponseStatus {
     SUCCESS_TO_UPDATE_CATEGORY(true, 200, "이야기 집의 전문메뉴를 수정했습니다."),
 
     SUCCESS_TO_WITHDRAW(true, 200, "회원탈퇴에 성공했습니다."),
-
+    SUCCESS_TO_LOGOUT(true, 200, "로그아웃이 성공적으로 처리되었습니다."),
+    SUCCESS_TO_UPDATE_PROFILE(true, 200, "프로필 수정이 완료되었습니다."),
+    SUCCESS_TO_DELETE_PROFILE(true, 200, "프로필이 삭제되었습니다."),
+    SUCCESS_TO_CHANGE_MAIN_PROFILE(true, 200, "메인 프로필이 변경되었습니다."),
 
 
 
@@ -92,6 +95,8 @@ public enum BaseResponseStatus {
     GET_FAIL_USERINFO(false, 500, "회원정보 조회에 실패했습니다"),
     POST_FAIL_USER(false, 500, "회원가입에 실패했습니다."),
     DELETE_FAIL_USER(false, 500, "회원탈퇴에 실패했습니다."),
+    FAILED_TO_LOGOUT(false, 500, "로그아웃에 실패했습니다."),
+
 
     // [PATCH] user 정보 수정 시
     MODIFY_FAIL_USERNAME(false, 500, "회원 이름을 변경하는 데 실패했습니다."),
