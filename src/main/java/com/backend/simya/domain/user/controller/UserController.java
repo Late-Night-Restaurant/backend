@@ -51,7 +51,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/form-login")
+    @PostMapping("/form-login")
     public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
 
         if (errors.hasErrors()) {
