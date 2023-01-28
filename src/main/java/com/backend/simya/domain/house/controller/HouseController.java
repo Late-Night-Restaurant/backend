@@ -1,5 +1,6 @@
 package com.backend.simya.domain.house.controller;
 
+import com.backend.simya.domain.chat.service.ChatServiceForAndroid;
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.house.dto.request.NewHouseRequestDto;
@@ -37,6 +38,7 @@ public class HouseController {
     private final UserService userService;
     private final TopicService topicService;
     private final ProfileService profileService;
+    private final ChatServiceForAndroid chatService;
 
 
     @GetMapping("")
@@ -71,6 +73,7 @@ public class HouseController {
     public BaseResponse<HouseSignboardResponseDto> openHouse(@RequestBody HouseOpenRequestDto houseOpenRequestDto) {
         try {
             User loginUser = userService.getMyUserWithAuthorities();
+            chatService.openChatRoom(houseOpenRequestDto);
             return new BaseResponse<>(houseService.openHouse(loginUser, houseOpenRequestDto));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
@@ -81,12 +84,12 @@ public class HouseController {
     public BaseResponse<BaseResponseStatus> closeHouse(@PathVariable("houseId") Long houseId) {
         try {
             houseService.closeHouse(houseId);
+            chatService.closeChatRoom(houseId);
             return new BaseResponse<>(SUCCESS_TO_CLOSE_HOUSE);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 
     @DeleteMapping("/{houseId}")
     public BaseResponse<BaseResponseStatus> deleteHouse(@PathVariable("houseId") Long houseId) {
