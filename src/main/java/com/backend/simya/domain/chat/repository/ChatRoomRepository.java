@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 채팅방에 관련된 데이터를 처리하는 클래스
@@ -36,7 +38,7 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
     @Resource(name = "redisTemplate")
-    private HashOperations<String, String, List<Profile>> hashProfileList;
+    private SetOperations<String, ProfileResponseDto> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -111,40 +113,42 @@ public class ChatRoomRepository {
      * 프로필 리스트에 추가
      */
     public void addRoomProfileList(Profile profile, String roomId) {
-        ChatRoom chatRoom = findRoomById(roomId);
-        chatRoom.addProfile(profile);
-        if (Objects.requireNonNull(hashProfileList.get(PROFILE_LIST, roomId)).isEmpty()) {
-            hashProfileList.put(PROFILE_LIST, roomId, chatRoom.getProfileList());   // 주인장이 채팅방을 개설할 때 호출
-        } else {
-            hashProfileList.delete(PROFILE_LIST, roomId);
-            hashProfileList.put(PROFILE_LIST, roomId, chatRoom.getProfileList());   // 이후부터는 새로 갱신한 프로필 리스트로 다시 Put
+        log.info("프로필 리스트(Redis) 추가 전");
+        hashProfileList.add(roomId, ProfileResponseDto.from(profile));
+        log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
+        try {
+            log.info("Profile List: {}", printList(hashProfileList.members(roomId)));
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
         }
-        log.info("Profile List: {}", printList(chatRoom.getProfileList()));
-
     }
 
     /**
      * 프로필 리스트에서 제거
      */
     public void deleteRoomProfileList(Profile profile, String roomId) {
-        ChatRoom chatRoom = findRoomById(roomId);
-        chatRoom.deleteProfile(profile);
-        hashProfileList.delete(PROFILE_LIST, roomId);
-        log.info("Profile List: {}", printList(chatRoom.getProfileList()));
+        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
+        try {
+            long size = hashProfileList.size(roomId);
+            log.info("Profile List: {}", printList(hashProfileList.members(roomId)));
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        }
 
     }
 
     /**
      * roomId에 대한 프로필 리스트 가져오기
      */
-    public List<Profile> getRoomProfileList(String roomId) {
-        return hashProfileList.get(PROFILE_LIST, roomId);
+    public Set<ProfileResponseDto> getRoomProfileList(String roomId) {
+        long size = hashProfileList.size(roomId);
+        return hashProfileList.members(roomId);
     }
 
     // Test용 프로필의 닉네임 목록 출력
-    private StringBuilder printList(List<Profile> profileList) {
+    private StringBuilder printList(Set<ProfileResponseDto> profileList) {
         StringBuilder sb = new StringBuilder();
-        for (Profile profile : profileList) {
+        for (ProfileResponseDto profile : profileList) {
             sb.append(profile.getNickname() + ", ");
         }
         return sb;

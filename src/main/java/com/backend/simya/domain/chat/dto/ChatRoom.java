@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 채팅방 DTO
@@ -25,7 +23,7 @@ public class ChatRoom implements Serializable {
     private String roomId;
     private String name;   // TODO 이야기 집(House)과 연결
     private long userCount;  // 채팅방 인원 수o
-    private List<Profile> profileList = new ArrayList<>();
+    private Set<Profile> profileList = new HashSet<>();
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();
