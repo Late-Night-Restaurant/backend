@@ -1,6 +1,7 @@
 package com.backend.simya.domain.chat.repository;
 
 import com.backend.simya.domain.chat.dto.ChatRoom;
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;

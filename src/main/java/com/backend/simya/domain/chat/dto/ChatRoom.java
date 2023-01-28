@@ -1,11 +1,15 @@
 package com.backend.simya.domain.chat.dto;
 
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
+import com.backend.simya.domain.profile.entity.Profile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,13 +24,22 @@ public class ChatRoom implements Serializable {
 
     private String roomId;
     private String name;   // TODO 이야기 집(House)과 연결
-    private long userCount;  // 채팅방 인원 수
+    private long userCount;  // 채팅방 인원 수o
+    private List<Profile> profileList = new ArrayList<>();
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.name = name;
         return chatRoom;
+    }
+
+    public void addProfile(Profile profile) {
+        profileList.add(profile);
+    }
+
+    public void deleteProfile(Profile profile) {
+        profileList.remove(profile);
     }
 }
 
