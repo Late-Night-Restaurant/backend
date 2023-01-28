@@ -23,7 +23,7 @@ public class ChatRoom implements Serializable {
     private String roomId;
     private String name;   // TODO 이야기 집(House)과 연결
     private long userCount;  // 채팅방 인원 수o
-    private Set<ProfileResponseDto> profileList = new HashSet<>();
+    private List<ProfileResponseDto> profileList = new ArrayList<>();
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();

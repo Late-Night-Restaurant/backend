@@ -58,7 +58,8 @@
             message: '',
             messages: [],
             token: '',
-            userCount: 0
+            userCount: 0,
+            profileList: []
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -86,6 +87,7 @@
             },
             recvMessage: function(recv) {
                 this.userCount = recv.userCount;
+                this.profileList = recv.profileList;
                 this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message})
             }
         }

@@ -12,10 +12,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 채팅방에 관련된 데이터를 처리하는 클래스
@@ -51,7 +48,10 @@ public class ChatRoomRepository {
      * 특정 채팅방 조회
      */
     public ChatRoom findRoomById(String id) {
-        return hashOpsChatRoom.get(CHAT_ROOMS, id);
+        ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
+        List<ProfileResponseDto> profileList = new ArrayList<>(getRoomProfileList(id));
+        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
+        return chatRoom;
     }
 
     /**
@@ -116,11 +116,11 @@ public class ChatRoomRepository {
         log.info("프로필 리스트(Redis) 추가 전");
         hashProfileList.add(roomId, ProfileResponseDto.from(profile));
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
-        try {
+        /*try {
             log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
-        }
+        }*/
     }
 
     /**
@@ -128,12 +128,12 @@ public class ChatRoomRepository {
      */
     public void deleteRoomProfileList(Profile profile, String roomId) {
         if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
-        try {
+        /*try {
             long size = hashProfileList.size(roomId);
             log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
-        }
+        }*/
 
     }
 
@@ -141,6 +141,7 @@ public class ChatRoomRepository {
      * roomId에 대한 프로필 리스트 가져오기
      */
     public Set<ProfileResponseDto> getRoomProfileList(String roomId) {
+        log.info("ChatRoomRepository-getRoomProfileList() 실행");
         long size = hashProfileList.size(roomId);
         return hashProfileList.members(roomId);
     }
