@@ -35,11 +35,11 @@ public class ChatRoom implements Serializable {
     }
 
     public void addProfile(Profile profile) {
-        profileList.add(profile);
+        this.profileList.add(profile);
     }
 
     public void deleteProfile(Profile profile) {
-        profileList.remove(profile);
+        this.profileList.remove(profile);
     }
 }
 
