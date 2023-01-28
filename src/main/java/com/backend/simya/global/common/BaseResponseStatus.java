@@ -106,6 +106,7 @@ public enum BaseResponseStatus {
     DELETE_FAIL_PROFILE(false, 500, "프로필 삭제에 실패했습니다."),
     UPDATE_FAIL_PROFILE(false, 500, "프로필 수정에 실패했습니다."),
     SET_FAIL_MAIN_PROFILE(false, 500, "대표 프로필 지정에 실패했습니다."),
+    FAILED_TO_FIND_PROFILE(false, 500, "데이터베이스에서 프로필을 찾는데 실패했습니다"),
 
 
     // house 관련

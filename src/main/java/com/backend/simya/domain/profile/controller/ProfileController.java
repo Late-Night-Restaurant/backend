@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
@@ -48,6 +50,17 @@ public class ProfileController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @GetMapping("")
+    public BaseResponse<List<ProfileResponseDto>> getMyProfiles() {
+        try {
+            User currentUser = userService.getMyUserWithAuthorities();
+            return new BaseResponse<>(profileService.findMyAllProfile(currentUser));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 
     @PatchMapping("/{profileId}")
     public BaseResponse<String> updateProfile(@PathVariable("profileId") Long profileId, @RequestBody ProfileUpdateDto profileUpdateDto) {
@@ -92,4 +105,5 @@ public class ProfileController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
 }

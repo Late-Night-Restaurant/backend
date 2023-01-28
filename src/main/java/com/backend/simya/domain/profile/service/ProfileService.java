@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 
@@ -103,6 +106,16 @@ public class ProfileService {
         return profileRepository.findById(profileId).orElseThrow(
                 () -> new BaseException(PROFILE_NOT_FOUND)
         );
+    }
+
+    public List<ProfileResponseDto> findMyAllProfile(User currentUser) throws BaseException {
+        try {
+            return profileRepository.findProfilesByUser(currentUser).stream()
+                    .map(ProfileResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BaseException(FAILED_TO_FIND_PROFILE);
+        }
     }
 
     @Transactional
