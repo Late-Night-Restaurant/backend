@@ -117,7 +117,7 @@ public class ChatRoomRepository {
         hashProfileList.add(roomId, ProfileResponseDto.from(profile));
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
         try {
-            log.info("Profile List: {}", printList(hashProfileList.members(roomId)));
+            log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
         }
@@ -130,7 +130,7 @@ public class ChatRoomRepository {
         if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
         try {
             long size = hashProfileList.size(roomId);
-            log.info("Profile List: {}", printList(hashProfileList.members(roomId)));
+            log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
         }
@@ -145,12 +145,4 @@ public class ChatRoomRepository {
         return hashProfileList.members(roomId);
     }
 
-    // Test용 프로필의 닉네임 목록 출력
-    private StringBuilder printList(Set<ProfileResponseDto> profileList) {
-        StringBuilder sb = new StringBuilder();
-        for (ProfileResponseDto profile : profileList) {
-            sb.append(profile.getNickname() + ", ");
-        }
-        return sb;
-    }
 }

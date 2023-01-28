@@ -2,12 +2,11 @@ package com.backend.simya.domain.profile.dto.response;
 
 import com.backend.simya.domain.profile.entity.Profile;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Getter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

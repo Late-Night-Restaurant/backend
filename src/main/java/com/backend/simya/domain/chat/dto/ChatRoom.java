@@ -23,7 +23,7 @@ public class ChatRoom implements Serializable {
     private String roomId;
     private String name;   // TODO 이야기 집(House)과 연결
     private long userCount;  // 채팅방 인원 수o
-    private Set<Profile> profileList = new HashSet<>();
+    private Set<ProfileResponseDto> profileList = new HashSet<>();
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();
@@ -33,11 +33,11 @@ public class ChatRoom implements Serializable {
     }
 
     public void addProfile(Profile profile) {
-        this.profileList.add(profile);
+        this.profileList.add(ProfileResponseDto.from(profile));
     }
 
     public void deleteProfile(Profile profile) {
-        this.profileList.remove(profile);
+        this.profileList.remove(ProfileResponseDto.from(profile));
     }
 }
 
