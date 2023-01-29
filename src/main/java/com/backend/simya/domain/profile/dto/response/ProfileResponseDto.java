@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @Data
-@Getter
-@ToString
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProfileResponseDto {
 
     private Long profileId;

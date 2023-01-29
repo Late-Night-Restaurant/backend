@@ -3,15 +3,17 @@ package com.backend.simya.domain.chat.repository;
 import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -35,7 +37,7 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
     @Resource(name = "redisTemplate")
-    private SetOperations<String, ProfileResponseDto> hashProfileList;
+    private SetOperations<String, String> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -49,8 +51,9 @@ public class ChatRoomRepository {
      */
     public ChatRoom findRoomById(String id) {
         ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
-        List<ProfileResponseDto> profileList = new ArrayList<>(getRoomProfileList(id));
-        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
+        List<ProfileResponseDto> profileList = getRoomProfileList(id);
+        log.info("ProfileList 드디어 받았다!! {} ", profileList);
+//        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
         return chatRoom;
     }
 
@@ -82,6 +85,7 @@ public class ChatRoomRepository {
      */
     public void removeUserEnterInfo(String sessionId) {
         hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
+        hashProfileList.pop(getUserEnterRoomId(sessionId));
     }
 
     /**
@@ -112,22 +116,29 @@ public class ChatRoomRepository {
     /**
      * 프로필 리스트에 추가
      */
-    public void addRoomProfileList(Profile profile, String roomId) {
+    public void addRoomProfileList(Profile profile, String roomId, String sessionId) {
         log.info("프로필 리스트(Redis) 추가 전");
-        hashProfileList.add(roomId, ProfileResponseDto.from(profile));
+        hashProfileList.add(roomId, sessionId);
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
-        /*try {
-            log.info("Profile List: {}", hashProfileList.members(roomId));
+        try {
+            Set<String> sets = hashProfileList.members(roomId);
+            StringBuilder sb = new StringBuilder();
+            for (String profiles : sets) {
+                sb.append("\n").append(profiles);
+            }
+            log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
             log.error(e.getMessage());
-        }*/
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     /**
      * 프로필 리스트에서 제거
      */
-    public void deleteRoomProfileList(Profile profile, String roomId) {
-        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
+//    public void deleteRoomProfileList(Profile profile, String roomId) {
+//        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
         /*try {
             long size = hashProfileList.size(roomId);
             log.info("Profile List: {}", hashProfileList.members(roomId));
@@ -135,15 +146,40 @@ public class ChatRoomRepository {
             log.error(e.getMessage());
         }*/
 
-    }
+//    }
 
     /**
      * roomId에 대한 프로필 리스트 가져오기
      */
-    public Set<ProfileResponseDto> getRoomProfileList(String roomId) {
+    public List<ProfileResponseDto> getRoomProfileList(String roomId) {
         log.info("ChatRoomRepository-getRoomProfileList() 실행");
-        long size = hashProfileList.size(roomId);
-        return hashProfileList.members(roomId);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        log.info("hashProfileList.toString(): " + hashProfileList.toString());
+        byte[] result = gson.toJson(hashProfileList.pop(roomId, 1)).getBytes(StandardCharsets.UTF_8);
+        log.info("byte[] 변환 result: {}", result);
+        log.info("Arrays.toString(): {}", Arrays.toString(result));
+
+        /*List<Byte> list = new ArrayList<>();
+        for (byte b : result) {
+            list.add(new Byte(b));
+        }*/
+        return new ArrayList<>();
+    }
+
+    private ProfileResponseDto sessionIdToProfile(String sessionId, Profile profile) {
+        return ProfileResponseDto.from(profile);
+    }
+
+    /**
+     * roomId가 주어지면 내부 세션정보들을 모아 프로필 리스트로 반환하는 메소드
+     */
+    private List<ProfileResponseDto> getAllProfilesInRoom(String roomId) {
+        Set<String> sessionSet = hashProfileList.members(roomId);
+        List<ProfileResponseDto> profileList = new ArrayList<>();
+        for (String session : sessionSet) {
+            profileList.add(sessionIdToProfile(session));
+        }
+        return profileList;
     }
 
 }
