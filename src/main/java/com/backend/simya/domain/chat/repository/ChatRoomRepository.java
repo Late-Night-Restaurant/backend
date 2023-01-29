@@ -1,6 +1,7 @@
 package com.backend.simya.domain.chat.repository;
 
 import com.backend.simya.domain.chat.dto.ChatRoom;
+import com.backend.simya.domain.chat.dto.ChatRoomProfile;
 import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.google.gson.Gson;
@@ -37,7 +38,7 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
     @Resource(name = "redisTemplate")
-    private SetOperations<String, ProfileResponseDto> hashProfileList;
+    private SetOperations<String, ChatRoomProfile> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -51,7 +52,7 @@ public class ChatRoomRepository {
      */
     public ChatRoom findRoomById(String id) {
         ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
-        List<ProfileResponseDto> profileList = getRoomProfileList(id);
+        List<ChatRoomProfile> profileList = getRoomProfileList(id);
         log.info("ProfileList 드디어 받았다!! {} ", profileList);
 //        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
         return chatRoom;
@@ -85,7 +86,6 @@ public class ChatRoomRepository {
      */
     public void removeUserEnterInfo(String sessionId) {
         hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
-        hashProfileList.pop(getUserEnterRoomId(sessionId));
     }
 
     /**
@@ -117,14 +117,16 @@ public class ChatRoomRepository {
      * 프로필 리스트에 추가
      */
     public void addRoomProfileList(Profile profile, String roomId) {
+        hashOpsChatRoom.get(CHAT_ROOMS, roomId).addProfile(profile);
         log.info("프로필 리스트(Redis) 추가 전");
-        hashProfileList.add(roomId, ProfileResponseDto.from(profile));
+        hashProfileList.add(roomId, ChatRoomProfile.create(profile));
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
         try {
-            Set<ProfileResponseDto> sets = hashProfileList.members(roomId);
+            Set<Object> sets = Collections.singleton(hashProfileList.members(roomId));
+            log.info("addRoom - members() 성공: {}", sets.toArray());
             StringBuilder sb = new StringBuilder();
-            for (ProfileResponseDto profiles : sets) {
-                sb.append("\n").append(profiles.getNickname());
+            for (Object profiles : sets) {
+                sb.append("\n").append(((ChatRoomProfile) profiles).getNickname());
             }
             log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
@@ -138,9 +140,10 @@ public class ChatRoomRepository {
      * 프로필 리스트에서 제거
      */
     public void deleteRoomProfileList(Profile profile, String roomId) {
-        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
+        hashOpsChatRoom.get(CHAT_ROOMS, roomId).deleteProfile(profile);
         try {
             long size = hashProfileList.size(roomId);
+            hashProfileList.remove(roomId, ChatRoomProfile.create(profile), 1);
             log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
@@ -151,16 +154,16 @@ public class ChatRoomRepository {
     /**
      * roomId에 대한 프로필 리스트 가져오기
      */
-    public List<ProfileResponseDto> getRoomProfileList(String roomId) {
+    public List<ChatRoomProfile> getRoomProfileList(String roomId) {
         log.info("ChatRoomRepository-getRoomProfileList() 실행");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         log.info("hashProfileList.toString(): " + hashProfileList.toString());
 
-        Set<ProfileResponseDto> sets = null;
+        Set<ChatRoomProfile> sets = null;
         try {
             sets = hashProfileList.members(roomId);
             StringBuilder sb = new StringBuilder();
-            for (ProfileResponseDto profiles : sets) {
+            for (ChatRoomProfile profiles : sets) {
                 sb.append("\n").append(profiles.getNickname());
             }
             log.info("Profile List: " + sb.toString());

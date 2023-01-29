@@ -2,6 +2,7 @@ package com.backend.simya.domain.chat.dto;
 
 import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class ChatRoom implements Serializable {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.name = name;
+        chatRoom.profileList = new ArrayList<>();
         return chatRoom;
     }
 
