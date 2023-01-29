@@ -4,12 +4,16 @@ import com.backend.simya.domain.profile.entity.Profile;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-//@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProfileResponseDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProfileResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 6494678977089006639L;
 
     private Long profileId;
     private String nickname;

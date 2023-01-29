@@ -71,6 +71,7 @@
                 ws.connect({"token":_this.token}, function(frame) {
                     ws.subscribe("/sub/simya/chat/room/"+_this.roomId, function(message) {
                         var recv = JSON.parse(message.body);
+                        console.log(recv);
                         _this.recvMessage(recv);
                     });
                 }, function(error) {
@@ -88,7 +89,7 @@
             recvMessage: function(recv) {
                 this.userCount = recv.userCount;
                 this.profileList = recv.profileList;
-                this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message})
+                this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message});
             }
         }
     });

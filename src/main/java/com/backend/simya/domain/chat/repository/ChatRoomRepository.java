@@ -37,7 +37,7 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
     @Resource(name = "redisTemplate")
-    private SetOperations<String, String> hashProfileList;
+    private SetOperations<String, ProfileResponseDto> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -116,15 +116,15 @@ public class ChatRoomRepository {
     /**
      * 프로필 리스트에 추가
      */
-    public void addRoomProfileList(Profile profile, String roomId, String sessionId) {
+    public void addRoomProfileList(Profile profile, String roomId) {
         log.info("프로필 리스트(Redis) 추가 전");
-        hashProfileList.add(roomId, sessionId);
+        hashProfileList.add(roomId, ProfileResponseDto.from(profile));
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
         try {
-            Set<String> sets = hashProfileList.members(roomId);
+            Set<ProfileResponseDto> sets = hashProfileList.members(roomId);
             StringBuilder sb = new StringBuilder();
-            for (String profiles : sets) {
-                sb.append("\n").append(profiles);
+            for (ProfileResponseDto profiles : sets) {
+                sb.append("\n").append(profiles.getNickname());
             }
             log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
@@ -137,16 +137,16 @@ public class ChatRoomRepository {
     /**
      * 프로필 리스트에서 제거
      */
-//    public void deleteRoomProfileList(Profile profile, String roomId) {
-//        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
-        /*try {
+    public void deleteRoomProfileList(Profile profile, String roomId) {
+        if(hashProfileList.size(roomId) != 0) hashProfileList.remove(roomId, ProfileResponseDto.from(profile));
+        try {
             long size = hashProfileList.size(roomId);
             log.info("Profile List: {}", hashProfileList.members(roomId));
         } catch (NullPointerException e) {
             log.error(e.getMessage());
-        }*/
+        }
 
-//    }
+    }
 
     /**
      * roomId에 대한 프로필 리스트 가져오기
@@ -155,31 +155,35 @@ public class ChatRoomRepository {
         log.info("ChatRoomRepository-getRoomProfileList() 실행");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         log.info("hashProfileList.toString(): " + hashProfileList.toString());
-        byte[] result = gson.toJson(hashProfileList.pop(roomId, 1)).getBytes(StandardCharsets.UTF_8);
-        log.info("byte[] 변환 result: {}", result);
-        log.info("Arrays.toString(): {}", Arrays.toString(result));
 
-        /*List<Byte> list = new ArrayList<>();
-        for (byte b : result) {
-            list.add(new Byte(b));
-        }*/
-        return new ArrayList<>();
-    }
-
-    private ProfileResponseDto sessionIdToProfile(String sessionId, Profile profile) {
-        return ProfileResponseDto.from(profile);
-    }
-
-    /**
-     * roomId가 주어지면 내부 세션정보들을 모아 프로필 리스트로 반환하는 메소드
-     */
-    private List<ProfileResponseDto> getAllProfilesInRoom(String roomId) {
-        Set<String> sessionSet = hashProfileList.members(roomId);
-        List<ProfileResponseDto> profileList = new ArrayList<>();
-        for (String session : sessionSet) {
-            profileList.add(sessionIdToProfile(session));
+        Set<ProfileResponseDto> sets = null;
+        try {
+            sets = hashProfileList.members(roomId);
+            StringBuilder sb = new StringBuilder();
+            for (ProfileResponseDto profiles : sets) {
+                sb.append("\n").append(profiles.getNickname());
+            }
+            log.info("Profile List: " + sb.toString());
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
-        return profileList;
+
+        return new ArrayList<>(sets);
     }
+
+    /*private List<ProfileResponseDto> sessionIdToProfile(String sessionId, Profile profile) {
+
+
+        ProfileResponseDto profileResponseDto =
+    }
+
+    private Set<ProfileResponseDto> getAllProfilesInRoom(String roomId) {
+        Set<String> sessionSet = hashProfileList.members(getUserEnterRoomId(sessionId));
+        for (String session : sessionSet) {
+            sessionSet.add(sessionIdToProfile())
+        }
+    }*/
 
 }

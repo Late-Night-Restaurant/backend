@@ -57,6 +57,7 @@
                     // prevent html, allow json array
                     if(Object.prototype.toString.call(response.data) === "[object Array]")
                         this.chatrooms = response.data;
+                    console.log(this.chatrooms);
                 });
             },
             createRoom: function() {
