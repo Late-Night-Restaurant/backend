@@ -9,7 +9,7 @@ import java.util.List;
 public interface HouseRepository extends JpaRepository<House, Long> {
 
     @Query(value = "select house " +
-            "from Review house " +
+            "from House house " +
             "where house.profile.user.userId = :userId")
     List<House> findMyHousesByUserId(Long userId);
 }

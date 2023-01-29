@@ -128,11 +128,11 @@ public class HouseController {
     public BaseResponse<List<HouseResponseDto>> getMyHouses() {
         try {
             Long currentUserId = userService.getMyUserWithAuthorities().getUserId();
-            List<HouseResponseDto> houseSignboardResponseDtoList = houseService.getMyHouses(currentUserId);
-            if (houseSignboardResponseDtoList.isEmpty()) {
+            List<HouseResponseDto> houseResponseDtoList = houseService.getMyHouses(currentUserId);
+            if (houseResponseDtoList.isEmpty()) {
                 return new BaseResponse<>(NO_HOUSE_YET);
             } else {
-                return new BaseResponse<>(houseSignboardResponseDtoList);
+                return new BaseResponse<>(houseResponseDtoList);
             }
         } catch (Exception e) {
             return new BaseResponse<>(DATABASE_ERROR);

@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
@@ -134,7 +135,7 @@ public class HouseService {
     public List<HouseResponseDto> getMyHouses(Long currentUserId) {
 
         return houseRepository.findMyHousesByUserId(currentUserId).stream()
-                .filter(House::isOpen)
+                .filter(Objects::nonNull)
                 .map(HouseResponseDto::from)
                 .collect(Collectors.toList());
     }
