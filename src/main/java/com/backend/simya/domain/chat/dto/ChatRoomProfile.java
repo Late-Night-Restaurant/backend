@@ -15,14 +15,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ChatRoomProfile  {
 
-//    private long profileId;
+    private long profileId;
     private String nickname;
     private String comment;
     private String picture;
 
     public static ChatRoomProfile create(Profile profile) {
         ChatRoomProfile chatRoomProfile = new ChatRoomProfile();
-//        chatRoomProfile.profileId = profile.getProfileId();
+        chatRoomProfile.profileId = profile.getProfileId();
         chatRoomProfile.nickname = profile.getNickname();
         chatRoomProfile.comment = profile.getComment();
         chatRoomProfile.picture = profile.getPicture();
