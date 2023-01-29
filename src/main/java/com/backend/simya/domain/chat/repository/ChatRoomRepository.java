@@ -1,15 +1,22 @@
 package com.backend.simya.domain.chat.repository;
 
 import com.backend.simya.domain.chat.dto.ChatRoom;
+import com.backend.simya.domain.chat.dto.ChatRoomProfile;
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * 채팅방에 관련된 데이터를 처리하는 클래스
@@ -18,11 +25,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Repository
 public class ChatRoomRepository {
+    private final ProfileRepository profileRepository;
 
     // Redis CacheKeys
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String USER_COUNT = "USER_COUNT";
     public static final String ENTER_INFO = "ENTER_INFO";
+    public static final String PROFILE_LIST = "PROFILE_LIST";
+
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
@@ -30,6 +40,8 @@ public class ChatRoomRepository {
     private HashOperations<String, String, String> hashOpsEnterInfo;
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
+    @Resource(name = "redisTemplate")
+    private SetOperations<String, String> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -42,7 +54,11 @@ public class ChatRoomRepository {
      * 특정 채팅방 조회
      */
     public ChatRoom findRoomById(String id) {
-        return hashOpsChatRoom.get(CHAT_ROOMS, id);
+        ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
+//        List<ChatRoomProfile> profileList = getRoomProfileList(id);
+//        log.info("ProfileList 드디어 받았다!! {} ", profileList);
+//        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
+        return chatRoom;
     }
 
     /**
@@ -98,6 +114,77 @@ public class ChatRoomRepository {
         return Optional.ofNullable(
                 valueOps.decrement(USER_COUNT + "_" + roomId)
         ).filter(count -> count > 0).orElse(0L);
+    }
+
+    /**
+     * 프로필 리스트에 추가
+     */
+    public void addRoomProfileList(Profile profile, String roomId) {
+        Objects.requireNonNull(hashOpsChatRoom.get(CHAT_ROOMS, roomId)).addProfile(profile);   // roomRedis의 리스트에 추가
+        log.info("프로필 리스트(Redis) 추가 전");
+        hashProfileList.add(roomId, String.valueOf(profile.getProfileId()));
+        log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
+        try {
+            List<ChatRoomProfile> list = getRoomProfileList(roomId);
+            log.info("addRoom - members() 성공: {}", list );
+            log.info("isMemeber : {}", hashProfileList.isMember(roomId, String.valueOf(profile.getProfileId())));
+            StringBuilder sb = new StringBuilder();
+            for (ChatRoomProfile profiles : list ) {
+                sb.append(" ").append(profiles.getNickname());
+            }
+            log.info("Profile List: " + sb.toString());
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 프로필 리스트에서 제거
+     */
+    public void deleteRoomProfileList(Profile profile, String roomId) {
+        Objects.requireNonNull(hashOpsChatRoom.get(CHAT_ROOMS, roomId)).deleteProfile(profile);  // roomRedis의 리스트에서 삭제
+        hashProfileList.remove(roomId, String.valueOf(profile.getProfileId()));
+        try {
+            List<ChatRoomProfile> list  = getRoomProfileList(roomId);
+            log.info("deleteRoom - members() 성공: {}", list );
+            log.info("isMemeber : {}", hashProfileList.isMember(roomId, String.valueOf(profile.getProfileId())));
+            StringBuilder sb = new StringBuilder();
+            for (ChatRoomProfile profiles : list) {
+                sb.append(" ").append(profiles.getNickname());
+            }
+            log.info("Profile List: " + sb.toString());
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        }
+
+    }
+
+    /**
+     * roomId에 대한 프로필 리스트 가져오기
+     */
+    public List<ChatRoomProfile> getRoomProfileList(String roomId) {
+        log.info("ChatRoomRepository-getRoomProfileList() 실행");
+        log.info("hashProfileList.toString(): " + hashProfileList.toString());
+
+        List<ChatRoomProfile> chatRoomProfileList = new ArrayList<>();
+        try {
+            List<String> profileIdSet = new ArrayList<>(hashProfileList.members(roomId));
+            log.info("members() -> {}", profileIdSet);
+            StringBuilder sb = new StringBuilder();
+            for (int i=0; i<profileIdSet.size(); i++) {
+                log.info("profileId->Dto: {}", profileIdToDto(profileIdSet.get(i)));
+                chatRoomProfileList.add(profileIdToDto(profileIdSet.get(i)));
+                sb.append("\n").append(profileIdToDto(profileIdSet.get(i)).getNickname());
+            }
+            log.info("Profile List: " + sb.toString());
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        }
+        return chatRoomProfileList;
+    }
+
+    private ChatRoomProfile profileIdToDto(String profileId) {
+        return ChatRoomProfile.create(profileRepository.findById(Long.parseLong(profileId)).orElseThrow(null));
     }
 
 }

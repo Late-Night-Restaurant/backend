@@ -1,8 +1,12 @@
 package com.backend.simya.domain.chat.dto;
 
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 채팅 메시지 타입 : 채팅방 입장(ENTER), 대화하기(TALK), 퇴장(QUIT)

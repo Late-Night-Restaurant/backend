@@ -1,10 +1,12 @@
 package com.backend.simya.global.config.websocket.handler;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.domain.user.service.UserService;
@@ -21,12 +23,14 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class StompHandler implements ChannelInterceptor {
+    private final ProfileRepository profileRepository;
 
     private final TokenProvider tokenProvider;
     private final ChatRoomRepository chatRoomRepository;
@@ -64,10 +68,12 @@ public class StompHandler implements ChannelInterceptor {
 
             // 클라이언트의 입장 메시지 채팅방에 발송 -> 입/퇴장 안내는 서버에서 일괄적으로 처리 : Redis Publish
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
-            String profile = "X";
+            String profileNickname = "X";
             log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
             try {
-                profile = userService.getSessionToMainProfile(name).getNickname();
+                Profile profile = userService.getSessionToMainProfile(name);
+                profileNickname = profile.getNickname();
+                chatRoomRepository.addRoomProfileList(profile, roomId);
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
@@ -75,7 +81,7 @@ public class StompHandler implements ChannelInterceptor {
             chatService.sendChatMessage(ChatMessage.builder()
                     .type(ChatMessage.MessageType.ENTER)
                     .roomId(roomId)
-                    .sender(profile)
+                    .sender(profileNickname)
                     .build());
             log.info("SUBSCRIBED {}, {}", name, roomId);
 
@@ -91,17 +97,19 @@ public class StompHandler implements ChannelInterceptor {
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
             chatRoomRepository.removeUserEnterInfo(sessionId);
 
-            String profile = "X";
+            String profileNickname = "X";
             log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
             try {
-                profile = userService.getSessionToMainProfile(name).getNickname();
+                Profile profile = userService.getSessionToMainProfile(name);
+                profileNickname = profile.getNickname();
+                chatRoomRepository.deleteRoomProfileList(profile, roomId);
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
             chatService.sendChatMessage(ChatMessage.builder()
                     .type(ChatMessage.MessageType.QUIT)
                     .roomId(roomId)
-                    .sender(profile)
+                    .sender(profileNickname)
                     .build());
 
             log.info("DISCONNECTED {}, {}", sessionId, roomId);
@@ -109,5 +117,7 @@ public class StompHandler implements ChannelInterceptor {
         }
         return message;
     }
+
+
 }
 

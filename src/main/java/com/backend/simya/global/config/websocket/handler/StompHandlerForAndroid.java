@@ -1,3 +1,4 @@
+/*
 package com.backend.simya.global.config.websocket.handler;
 
 import com.backend.simya.domain.chat.dto.ChatMessageForAndroid;
@@ -30,12 +31,14 @@ public class StompHandlerForAndroid implements ChannelInterceptor {
     private final ChatServiceForAndroid chatService;
     private final UserService userService;
 
-    /**
+    */
+/**
      * WebSocket 을 통해 들어온 요청 처리 전에 수행되는 메소드
      * -> WebSocket 연결 시, 요청 헤더의 토큰 유효성을 검증
      *
      * * 유효하지 않은 JWT 토큰 셋팅 시에는 WebSocket 연결을 하지 않고 에외처리됨
-     */
+     *//*
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         try {
@@ -107,3 +110,4 @@ public class StompHandlerForAndroid implements ChannelInterceptor {
     }
 }
 
+*/

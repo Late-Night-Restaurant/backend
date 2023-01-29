@@ -58,7 +58,8 @@
             message: '',
             messages: [],
             token: '',
-            userCount: 0
+            userCount: 0,
+            profileList: []
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -70,6 +71,7 @@
                 ws.connect({"token":_this.token}, function(frame) {
                     ws.subscribe("/sub/simya/chat/room/"+_this.roomId, function(message) {
                         var recv = JSON.parse(message.body);
+                        console.log(recv);
                         _this.recvMessage(recv);
                     });
                 }, function(error) {
@@ -86,7 +88,8 @@
             },
             recvMessage: function(recv) {
                 this.userCount = recv.userCount;
-                this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message})
+                this.profileList = recv.profileList;
+                this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message});
             }
         }
     });

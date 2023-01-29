@@ -2,21 +2,28 @@ package com.backend.simya.domain.profile.dto.response;
 
 import com.backend.simya.domain.profile.entity.Profile;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Data
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProfileResponseDto {
 
+    @JsonProperty("profileId")
     private Long profileId;
+
+    @JsonProperty("nickname")
     private String nickname;
+
+    @JsonProperty("comment")
     private String comment;
+
+    @JsonProperty("picture")
     private String picture;
 
     public static ProfileResponseDto from(Profile profile) {
