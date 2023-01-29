@@ -4,6 +4,7 @@ import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.dto.ChatRoomProfile;
 import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ import java.util.*;
 @RequiredArgsConstructor
 @Repository
 public class ChatRoomRepository {
+    private final ProfileRepository profileRepository;
 
     // Redis CacheKeys
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String USER_COUNT = "USER_COUNT";
     public static final String ENTER_INFO = "ENTER_INFO";
     public static final String PROFILE_LIST = "PROFILE_LIST";
+
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
@@ -38,7 +41,7 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
     @Resource(name = "redisTemplate")
-    private SetOperations<String, ChatRoomProfile> hashProfileList;
+    private SetOperations<String, String> hashProfileList;
 
     /**
      * 모든 채팅방 조회
@@ -52,8 +55,8 @@ public class ChatRoomRepository {
      */
     public ChatRoom findRoomById(String id) {
         ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
-        List<ChatRoomProfile> profileList = getRoomProfileList(id);
-        log.info("ProfileList 드디어 받았다!! {} ", profileList);
+//        List<ChatRoomProfile> profileList = getRoomProfileList(id);
+//        log.info("ProfileList 드디어 받았다!! {} ", profileList);
 //        if (!profileList.isEmpty()) chatRoom.setProfileList(profileList);
         return chatRoom;
     }
@@ -117,21 +120,20 @@ public class ChatRoomRepository {
      * 프로필 리스트에 추가
      */
     public void addRoomProfileList(Profile profile, String roomId) {
-        hashOpsChatRoom.get(CHAT_ROOMS, roomId).addProfile(profile);
+        Objects.requireNonNull(hashOpsChatRoom.get(CHAT_ROOMS, roomId)).addProfile(profile);   // roomRedis의 리스트에 추가
         log.info("프로필 리스트(Redis) 추가 전");
-        hashProfileList.add(roomId, ChatRoomProfile.create(profile));
+        hashProfileList.add(roomId, String.valueOf(profile.getProfileId()));
         log.info("프로필 리스트(Redis) 추가 후: {}", profile.getNickname());
         try {
-            Set<Object> sets = Collections.singleton(hashProfileList.members(roomId));
-            log.info("addRoom - members() 성공: {}", sets.toArray());
+            List<ChatRoomProfile> list = getRoomProfileList(roomId);
+            log.info("addRoom - members() 성공: {}", list );
+            log.info("isMemeber : {}", hashProfileList.isMember(roomId, String.valueOf(profile.getProfileId())));
             StringBuilder sb = new StringBuilder();
-            for (Object profiles : sets) {
-                sb.append("\n").append(((ChatRoomProfile) profiles).getNickname());
+            for (ChatRoomProfile profiles : list ) {
+                sb.append(" ").append(profiles.getNickname());
             }
             log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
-            log.error(e.getMessage());
-        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }
@@ -140,11 +142,17 @@ public class ChatRoomRepository {
      * 프로필 리스트에서 제거
      */
     public void deleteRoomProfileList(Profile profile, String roomId) {
-        hashOpsChatRoom.get(CHAT_ROOMS, roomId).deleteProfile(profile);
+        Objects.requireNonNull(hashOpsChatRoom.get(CHAT_ROOMS, roomId)).deleteProfile(profile);  // roomRedis의 리스트에서 삭제
+        hashProfileList.remove(roomId, String.valueOf(profile.getProfileId()));
         try {
-            long size = hashProfileList.size(roomId);
-            hashProfileList.remove(roomId, ChatRoomProfile.create(profile), 1);
-            log.info("Profile List: {}", hashProfileList.members(roomId));
+            List<ChatRoomProfile> list  = getRoomProfileList(roomId);
+            log.info("deleteRoom - members() 성공: {}", list );
+            log.info("isMemeber : {}", hashProfileList.isMember(roomId, String.valueOf(profile.getProfileId())));
+            StringBuilder sb = new StringBuilder();
+            for (ChatRoomProfile profiles : list) {
+                sb.append(" ").append(profiles.getNickname());
+            }
+            log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
             log.error(e.getMessage());
         }
@@ -156,37 +164,27 @@ public class ChatRoomRepository {
      */
     public List<ChatRoomProfile> getRoomProfileList(String roomId) {
         log.info("ChatRoomRepository-getRoomProfileList() 실행");
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         log.info("hashProfileList.toString(): " + hashProfileList.toString());
 
-        Set<ChatRoomProfile> sets = null;
+        List<ChatRoomProfile> chatRoomProfileList = new ArrayList<>();
         try {
-            sets = hashProfileList.members(roomId);
+            List<String> profileIdSet = new ArrayList<>(hashProfileList.members(roomId));
+            log.info("members() -> {}", profileIdSet);
             StringBuilder sb = new StringBuilder();
-            for (ChatRoomProfile profiles : sets) {
-                sb.append("\n").append(profiles.getNickname());
+            for (int i=0; i<profileIdSet.size(); i++) {
+                log.info("profileId->Dto: {}", profileIdToDto(profileIdSet.get(i)));
+                chatRoomProfileList.add(profileIdToDto(profileIdSet.get(i)));
+                sb.append("\n").append(profileIdToDto(profileIdSet.get(i)).getNickname());
             }
             log.info("Profile List: " + sb.toString());
         } catch (NullPointerException e) {
             log.error(e.getMessage());
-        } catch (Exception e) {
-            log.error(e.getMessage());
         }
-
-        return new ArrayList<>(sets);
+        return chatRoomProfileList;
     }
 
-    /*private List<ProfileResponseDto> sessionIdToProfile(String sessionId, Profile profile) {
-
-
-        ProfileResponseDto profileResponseDto =
+    private ChatRoomProfile profileIdToDto(String profileId) {
+        return ChatRoomProfile.create(profileRepository.findById(Long.parseLong(profileId)).orElseThrow(null));
     }
-
-    private Set<ProfileResponseDto> getAllProfilesInRoom(String roomId) {
-        Set<String> sessionSet = hashProfileList.members(getUserEnterRoomId(sessionId));
-        for (String session : sessionSet) {
-            sessionSet.add(sessionIdToProfile())
-        }
-    }*/
 
 }
