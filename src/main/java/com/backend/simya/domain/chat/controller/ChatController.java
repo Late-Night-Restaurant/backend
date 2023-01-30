@@ -73,20 +73,21 @@ public class ChatController {
         try {
             log.info("Web Socket Header 에서 읽어온 Access-Token: {}", message.getToken());
             String authenticateUser = tokenProvider.getAuthentication(message.getToken()).getName();
-            String profile = "X";
+            log.info("Android에서 가져온 message : {}", message);
 
             try {
                 log.info("ChatController - Authenticate User : {}", authenticateUser);
-                profile = userService.getSessionToMainProfile(authenticateUser).getNickname();
+                Profile profile = userService.getSessionToMainProfile(authenticateUser);
+                message.setSender(profile.getNickname());         // 로그인 회원 정보로 대화명 설정
+                log.info("여기서 프로필 이미지가 들어갑니다 : {}", profile.getPicture());
+                message.setPicture(profile.getPicture());
+                message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
+                log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile.getNickname());
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
-            log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile);
-
-            message.setSender(profile);         // 로그인 회원 정보로 대화명 설정
-            message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
-
             // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s
+            log.info("Android에서 가져온 뒤 바꾼 message : {}", message);
             chatService.sendChatMessage(message);
         } catch (Exception e) {
             log.error(e.getMessage());

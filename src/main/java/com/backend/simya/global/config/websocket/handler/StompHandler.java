@@ -1,6 +1,7 @@
 package com.backend.simya.global.config.websocket.handler;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
@@ -46,6 +47,7 @@ public class StompHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        log.info("PreSend의 메시지 command : {}", accessor.getCommand());
         // WebSocket 연결 시, 헤더의 JWT Token 검증
         if (StompCommand.CONNECT == accessor.getCommand()) {   // 채팅룸 연결 요청
 
@@ -72,18 +74,19 @@ public class StompHandler implements ChannelInterceptor {
             log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
             try {
                 Profile profile = userService.getSessionToMainProfile(name);
-                profileNickname = profile.getNickname();
                 chatRoomRepository.addRoomProfileList(profile, roomId);
+
+                chatService.sendChatMessage(ChatMessageCustom.builder()
+                        .type(ChatMessage.MessageType.ENTER)
+                        .roomId(roomId)
+                        .sender(profile.getNickname())
+                        .picture(profile.getPicture())
+                        .build());
+                log.info("SUBSCRIBED {}, {}", name, roomId);
+
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
-
-            chatService.sendChatMessage(ChatMessage.builder()
-                    .type(ChatMessage.MessageType.ENTER)
-                    .roomId(roomId)
-                    .sender(profileNickname)
-                    .build());
-            log.info("SUBSCRIBED {}, {}", name, roomId);
 
         } else if (StompCommand.DISCONNECT == accessor.getCommand()) {  // WebSocket 연결 종료
 
@@ -97,20 +100,19 @@ public class StompHandler implements ChannelInterceptor {
             String name = Optional.ofNullable((Principal) message.getHeaders().get("simpUser")).map(Principal::getName).orElse("UnknownUser");
             chatRoomRepository.removeUserEnterInfo(sessionId);
 
-            String profileNickname = "X";
             log.info("StompHandler - 유저 대표 프로필 찾기 위한 이름: {}", name);
             try {
                 Profile profile = userService.getSessionToMainProfile(name);
-                profileNickname = profile.getNickname();
                 chatRoomRepository.deleteRoomProfileList(profile, roomId);
+                chatService.sendChatMessage(ChatMessageCustom.builder()
+                        .type(ChatMessage.MessageType.QUIT)
+                        .roomId(roomId)
+                        .sender(profile.getNickname())
+                        .picture(profile.getPicture())
+                        .build());
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
-            chatService.sendChatMessage(ChatMessage.builder()
-                    .type(ChatMessage.MessageType.QUIT)
-                    .roomId(roomId)
-                    .sender(profileNickname)
-                    .build());
 
             log.info("DISCONNECTED {}, {}", sessionId, roomId);
 
