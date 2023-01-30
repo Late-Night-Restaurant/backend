@@ -80,6 +80,7 @@ public class StompHandler implements ChannelInterceptor {
                         .type(ChatMessage.MessageType.ENTER)
                         .roomId(roomId)
                         .sender(profile.getNickname())
+                        .token(tokenProvider.getJwt().getAccessToken())
                         .picture(profile.getPicture())
                         .build());
                 log.info("SUBSCRIBED {}, {}", name, roomId);
@@ -108,6 +109,7 @@ public class StompHandler implements ChannelInterceptor {
                         .type(ChatMessage.MessageType.QUIT)
                         .roomId(roomId)
                         .sender(profile.getNickname())
+                        .token(tokenProvider.getJwt().getAccessToken())
                         .picture(profile.getPicture())
                         .build());
             } catch (LazyInitializationException | BaseException e) {
