@@ -3,7 +3,10 @@ package com.backend.simya.domain.chat.service;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.dto.ChatMessageCustom;
+import com.backend.simya.domain.chat.dto.ChatRoom;
+import com.backend.simya.domain.chat.dto.ChatRoomForAndroid;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
+import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
@@ -44,20 +47,24 @@ public class ChatService {
         }
     }
 
-    /*
-     * 채팅방 생성 - Random UUID 를 ID 로 가지는 채팅방 객체 생성 -> chatRooms 에 추가
-     * **ID는 식별자로, 조회 시 사용
-     */
+    public void openChatRoom(HouseOpenRequestDto houseOpenRequestDto) {
+        chatRoomRepository.saveChatRoom(ChatRoom.createForAndroid(String.valueOf(houseOpenRequestDto.getHouseId())));
+    }
 
-    /*public ChatRoom createRoom(String name) {
-        String randomId = UUID.randomUUID().toString();
-        ChatRoom chatRoom = ChatRoom.builder()
-                .roomId(randomId)
-                .name(name)
-                .build();
-        chatRooms.put(randomId, chatRoom);   // 채팅방 리스트에 새로 개설한 채팅방 추가
-        return chatRoom;
-    }*/
+    public void enterChatRoom(String sessionId, String roomId) {
+        chatRoomRepository.setUserEnterInfo(sessionId, roomId);
+        chatRoomRepository.plusUserCount(roomId);  // 인원 수 +1
+    }
+
+    public void exitChatRoom(String sessionId, String roomId) {
+        chatRoomRepository.removeUserEnterInfo(sessionId);
+        chatRoomRepository.minusUserCount(roomId);  // 인원 수 +1
+    }
+
+    public void closeChatRoom(Long roomId) {
+        chatRoomRepository.removeChatRoom(String.valueOf(roomId));
+    }
+
 
     /*
      * 메시지 발송 - 지정한 웹 소켓 세션으로 메시지 발송

@@ -1,5 +1,6 @@
 package com.backend.simya.domain.house.controller;
 
+import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.chat.service.ChatServiceForAndroid;
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
@@ -38,7 +39,7 @@ public class HouseController {
     private final UserService userService;
     private final TopicService topicService;
     private final ProfileService profileService;
-    private final ChatServiceForAndroid chatService;
+    private final ChatService chatService;
 
 
     @GetMapping("")

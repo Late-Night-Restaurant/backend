@@ -70,6 +70,10 @@ public class ChatRoomRepository {
         return chatRoom;
     }
 
+    public void saveChatRoom(ChatRoom chatRoom) {
+        hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+    }
+
     /**
      * 유저가 입장한 채팅방 정보(roomId)와 유저 세션 정보(sessionId) 매핑하여 저장
      */
@@ -97,6 +101,11 @@ public class ChatRoomRepository {
     public long getUserCount(String roomId) {
         return Long.parseLong(Optional.ofNullable(valueOps.get(USER_COUNT + "_" + roomId)).orElse("0"));
     }
+
+    public void removeChatRoom(String roomId) {
+        hashOpsChatRoom.delete(CHAT_ROOMS, roomId);
+    }
+
 
     /**
      * 채팅방에 새로운 유저가 입장한 경우 => 인원 수 +1
