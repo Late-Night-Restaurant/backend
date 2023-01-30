@@ -2,6 +2,7 @@ package com.backend.simya.domain.chat.service;
 
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.entity.User;
@@ -77,6 +78,22 @@ public class ChatService {
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
     }
+
+    public void sendChatMessage(ChatMessageCustom message) {
+        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
+
+        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
+            log.info(message.getSender() + "님이 방에 입장했습니다");
+            message.setMessage(message.getSender() + "님이 방에 입장했습니다");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+            log.info(message.getSender() + "님이 방에서 나갔습니다.");
+            message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
+            message.setSender("[알림]");
+        }
+        redisTemplate.convertAndSend(channelTopic.getTopic(), message);
+    }
+
 
 }
 

@@ -1,6 +1,8 @@
 package com.backend.simya.domain.chat.controller;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
+import com.backend.simya.domain.chat.dto.ChatMessageForAndroid;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.jwt.service.AuthService;
@@ -17,6 +19,7 @@ import org.hibernate.LazyInitializationException;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 /**
@@ -63,4 +66,32 @@ public class ChatController {
         }
 
     }
+
+    @MessageMapping("/simya/chat/androidMessage")
+    public void message(ChatMessageCustom message) {
+
+        try {
+            log.info("Web Socket Header 에서 읽어온 Access-Token: {}", message.getToken());
+            String authenticateUser = tokenProvider.getAuthentication(message.getToken()).getName();
+            String profile = "X";
+
+            try {
+                log.info("ChatController - Authenticate User : {}", authenticateUser);
+                profile = userService.getSessionToMainProfile(authenticateUser).getNickname();
+            } catch (LazyInitializationException | BaseException e) {
+                log.error("유저와 대표 프로필 조회에 실패했습니다.");
+            }
+            log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile);
+
+            message.setSender(profile);         // 로그인 회원 정보로 대화명 설정
+            message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
+
+            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s
+            chatService.sendChatMessage(message);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+    }
+
 }
