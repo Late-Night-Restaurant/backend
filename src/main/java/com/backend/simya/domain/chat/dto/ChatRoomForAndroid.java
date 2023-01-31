@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatRoomForAndroid implements ChatRoomInterface {
 
-    private static final long serialVersionUID = 6494678977089006639L;
+    //private static final long serialVersionUID = 6494678977089006639L;
 
     private Long roomId;
     private Long userCount;

@@ -34,6 +34,15 @@ public class ChatRoom implements Serializable {
         return chatRoom;
     }
 
+    public static ChatRoom createForAndroid(String roomId) {
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.roomId = roomId;
+        chatRoom.name = "새로움";
+        chatRoom.profileList = new ArrayList<>();
+        return chatRoom;
+    }
+
+
     public void addProfile(Profile profile) {
         this.profileList.add(ProfileResponseDto.from(profile));
     }

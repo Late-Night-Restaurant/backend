@@ -1,6 +1,7 @@
 package com.backend.simya.domain.chat.service;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class RedisSubscriber {
         try {
             log.info("objectMapper.readValue() 전");
             // ChatMessage 객체로 매핑
-            ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
+            ChatMessageCustom chatMessage = objectMapper.readValue(publishMessage, ChatMessageCustom.class);
             log.info("objectMapper.readValue() 후");
 
             // WebSocket 구독자에게 채팅 메시지 Send

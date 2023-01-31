@@ -1,5 +1,8 @@
 package com.backend.simya.domain.house.controller;
 
+import com.backend.simya.domain.chat.dto.ChatRoomProfile;
+import com.backend.simya.domain.chat.repository.ChatRoomRepository;
+import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.chat.service.ChatServiceForAndroid;
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
@@ -38,7 +41,8 @@ public class HouseController {
     private final UserService userService;
     private final TopicService topicService;
     private final ProfileService profileService;
-    private final ChatServiceForAndroid chatService;
+    private final ChatService chatService;
+    private final ChatRoomRepository chatRoomRepository;
 
 
     @GetMapping("")
@@ -152,6 +156,12 @@ public class HouseController {
             return new BaseResponse<>(DATABASE_ERROR);
         }
     }
+
+    @GetMapping("/{houseId}/guest")
+    public BaseResponse<List<ChatRoomProfile>> getCurrentGuestsProfile(@PathVariable("houseId") Long houseId) {
+        return new BaseResponse<>(chatRoomRepository.getRoomProfileList(String.valueOf(houseId)));
+    }
+
 
     @PostMapping("/{houseId}/topic")
     public BaseResponse<TopicResponseDto> registerNewTopic(@PathVariable("houseId") Long houseId,

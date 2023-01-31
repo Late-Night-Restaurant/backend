@@ -2,8 +2,12 @@ package com.backend.simya.domain.user.controller;
 
 import com.backend.simya.domain.jwt.dto.response.TokenDto;
 import com.backend.simya.domain.jwt.service.AuthService;
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
+import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.profile.service.ProfileService;
 import com.backend.simya.domain.user.dto.request.LoginDto;
 import com.backend.simya.domain.user.dto.request.UserDto;
+import com.backend.simya.domain.user.dto.response.FormLoginResponseDto;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
@@ -69,7 +73,10 @@ public class UserController {
             response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Access " + accessToken);
             response.addHeader(JwtFilter.REFRESH_HEADER, "Refresh " + refreshToken);
 
-            return new BaseResponse<>(tokenDto);
+            User currentUser = userService.getMyUserWithAuthorities();
+            Profile mainProfile = currentUser.getProfileList().get(currentUser.getMainProfile());
+
+            return new BaseResponse<>(FormLoginResponseDto.from(mainProfile, accessToken, refreshToken));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
