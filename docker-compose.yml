@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+
+
+  database:
+    container_name: mysql_database
+    image: mysql:5.7
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file:
+      - .env
+
+    volumes:
+      - ./mysql/conf.d:/etc/mysql/conf.d   #mysql 설정파일 위치
+
+    ports:
+      - '13306:3306'
+
+    command:
+      - 'mysqld'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+
+    networks:
+      - test_network
+
+  application:
+    container_name: latenight-restaurant
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - '8081:8080'
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://simya-db.cxudcrcc5ksr.ap-northeast-2.rds.amazonaws.com:13306/LATENIGHT
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - database
+    links:
+      - database
+    networks:
+      - test_network
+
+  redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: "redis-docker"
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    volumes:
+      - ./redis:/data
+    ports:
+      - '6379:6379'
+    env_file:
+      - .env
+
+
+networks:
+  test_network:
+

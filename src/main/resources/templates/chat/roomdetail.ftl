@@ -59,7 +59,11 @@
             messages: [],
             token: '',
             userCount: 0,
-            profileList: []
+            profileList: [],
+            profileId: '',
+            nickname: '',
+            comment:'',
+            picture: ''
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -73,6 +77,7 @@
                         var recv = JSON.parse(message.body);
                         console.log(recv);
                         _this.recvMessage(recv);
+                        console.log(_this.recvMessage(recv));
                     });
                 }, function(error) {
                     alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
@@ -88,7 +93,7 @@
             },
             recvMessage: function(recv) {
                 this.userCount = recv.userCount;
-                this.profileList = recv.profileList;
+                this.profileList.unshift({"profileId":recv.profileId, "nickname": recv.nickname, "comment": recv.comment, "picture": recv.picture});
                 this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message});
             }
         }
