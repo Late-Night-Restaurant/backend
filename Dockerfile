@@ -1,10 +1,9 @@
 FROM adoptopenjdk/openjdk11:latest
-FROM ubuntu:22.04
+#FROM ubuntu:22.04
 MAINTAINER yejunpark1 <jun20020216@gmail.com>
 
 #자동 실행할 명령어
 #RUN ["/bin/bash", "-c", "sudo apt -y install nginx"]
-RUN ["chmod","+x","${JAVA_HOME}"]
 
 # Avoding user interaction with tzdata
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,7 +19,8 @@ ARG JAR_FILE=./build/libs/simya-0.0.1-SNAPSHOT.jar
 
 #JAR 파일 메인 디렉토리에 복사
 COPY ${JAR_FILE} app.jar
+#COPY /Users/jun/Library/Java/JavaVirtualMachines/corretto-17.0.5/Contents/Home/bin/
 
 
 #시스템 진입점 정의
-ENTRYPOINT ["/Users/jun/Library/Java/JavaVirtualMachines/corretto-17.0.5/Contents/Home/bin/java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
