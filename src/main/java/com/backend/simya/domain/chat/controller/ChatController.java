@@ -78,8 +78,8 @@ public class ChatController {
             try {
                 log.info("ChatController - Authenticate User : {}", authenticateUser);
                 Profile profile = userService.getSessionToMainProfile(authenticateUser);
-                message.setSender(profile.getNickname());         // 로그인 회원 정보로 대화명 설정
-                log.info("여기서 프로필 이미지가 들어갑니다 : {}", profile.getPicture());
+                message.setProfileId(profile.getProfileId());
+                message.setSender(profile.getNickname());
                 message.setPicture(profile.getPicture());
                 message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
                 log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile.getNickname());

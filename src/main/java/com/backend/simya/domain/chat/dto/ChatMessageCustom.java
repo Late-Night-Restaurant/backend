@@ -10,9 +10,10 @@ public class ChatMessageCustom {
     }
 
     @Builder
-    public ChatMessageCustom(ChatMessage.MessageType type, String roomId, String sender, String picture, String token, String message, long userCount) {
+    public ChatMessageCustom(ChatMessage.MessageType type, String roomId, Long profileId, String sender, String picture, String token, String message, long userCount) {
         this.type = type;
         this.roomId = roomId;
+        this.profileId = profileId;
         this.sender = sender;
         this.picture = picture;
         this.token = token;
@@ -27,6 +28,7 @@ public class ChatMessageCustom {
     private ChatMessage.MessageType type;   // 메시지 유형
     private String roomId;   // 방 번호
     private String sender;
+    private Long profileId;
     private String picture;
     private String token;// 발신자
     private String message;  // 메시지 데이터

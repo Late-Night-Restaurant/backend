@@ -79,6 +79,7 @@ public class StompHandler implements ChannelInterceptor {
                 chatService.sendChatMessage(ChatMessageCustom.builder()
                         .type(ChatMessage.MessageType.ENTER)
                         .roomId(roomId)
+                        .profileId(profile.getProfileId())
                         .sender(profile.getNickname())
                         .token(tokenProvider.getJwt().getAccessToken())
                         .picture(profile.getPicture())
@@ -109,6 +110,7 @@ public class StompHandler implements ChannelInterceptor {
                         .type(ChatMessage.MessageType.QUIT)
                         .roomId(roomId)
                         .sender(profile.getNickname())
+                        .profileId(profile.getProfileId())
                         .token(tokenProvider.getJwt().getAccessToken())
                         .picture(profile.getPicture())
                         .build());

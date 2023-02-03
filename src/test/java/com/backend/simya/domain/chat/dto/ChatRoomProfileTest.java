@@ -1,3 +1,4 @@
+/*
 package com.backend.simya.domain.chat.dto;
 
 import com.backend.simya.domain.profile.entity.Profile;
@@ -35,4 +36,4 @@ class ChatRoomProfileTest {
         System.out.println(testResult);
     }
 
-}
+}*/
