@@ -1,5 +1,5 @@
 FROM adoptopenjdk/openjdk11:latest
-#FROM ubuntu:22.04
+FROM ubuntu:22.04
 MAINTAINER yejunpark1 <jun20020216@gmail.com>
 
 #자동 실행할 명령어
