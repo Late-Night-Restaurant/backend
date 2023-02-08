@@ -27,24 +27,25 @@ services:
 
   application:
     container_name: latenight-restaurant
-    restart: on-failure
+    restart: always
     build:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - '8081:8080'
+      - '8081:8081'
+#    image: openjdk:11
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://simya-db.cxudcrcc5ksr.ap-northeast-2.rds.amazonaws.com:13306/LATENIGHT
+      SPRING_DATASOURCE_URL: jdbc:mysql://simya-db.cxudcrcc5ksr.ap-northeast-2.rds.amazonaws.com:3306/LATENIGHT
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - database
-    links:
-      - database
+      - redis
     networks:
       - test_network
+
 
   redis:
     image: redis:alpine
@@ -59,8 +60,11 @@ services:
       - '6379:6379'
     env_file:
       - .env
+    networks:
+      - test_network
 
 
 networks:
   test_network:
+    driver: bridge
 
