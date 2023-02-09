@@ -37,3 +37,5 @@ out/
 .vscode/
 
 ### yml ###
+.env
+!/.env
