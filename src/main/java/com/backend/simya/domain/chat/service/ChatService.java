@@ -95,6 +95,7 @@ public class ChatService {
         } else if (ChatMessage.MessageType.FORCE.equals(message.getType())) {
             log.info("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
             message.setMessage("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
+
             message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
