@@ -118,6 +118,5 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoom freezeRoom(@PathVariable String roomId) {
         return chatRoomRepository.freezeChatRoom(roomId);
-
     }
 }
