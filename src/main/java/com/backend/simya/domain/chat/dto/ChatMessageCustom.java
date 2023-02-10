@@ -22,7 +22,7 @@ public class ChatMessageCustom {
     }
 
     public enum MessageType {
-        ENTER, TALK, QUIT
+        ENTER, TALK, QUIT, FREEZE, BAN
     }
 
     private ChatMessage.MessageType type;   // 메시지 유형
@@ -30,7 +30,7 @@ public class ChatMessageCustom {
     private String sender;
     private Long profileId;
     private String picture;
-    private String token;// 발신자
+    private String token;    // 발신자
     private String message;  // 메시지 데이터
     private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
 }

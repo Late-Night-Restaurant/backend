@@ -76,7 +76,7 @@ public class ChatRoomRepository {
     public ChatRoom freezeChatRoom(String id) {
         ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
         chatRoom.setFreeze(true);
-        hashOpsChatRoom.delete(CHAT_ROOMS, id);   // TODO 그냥 freeze: true인 채로 저장할까
+//        hashOpsChatRoom.delete(CHAT_ROOMS, id);   // TODO 그냥 freeze: true인 채로 저장할까
         return chatRoom;
     }
 

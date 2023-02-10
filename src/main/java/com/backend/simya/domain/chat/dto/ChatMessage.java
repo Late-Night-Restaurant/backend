@@ -33,7 +33,7 @@ public class ChatMessage {
     }
 
     public enum MessageType {
-        ENTER, TALK, QUIT
+        ENTER, TALK, QUIT, FREEZE, BAN
     }
 
     private MessageType type;   // 메시지 유형

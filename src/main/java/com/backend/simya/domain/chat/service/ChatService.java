@@ -76,6 +76,14 @@ public class ChatService {
             log.info(message.getSender() + "님이 방에서 나갔습니다.");
             message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
             message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.FREEZE.equals(message.getType())) {
+            log.info(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            message.setMessage(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.BAN.equals(message.getType())) {
+            log.info(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
+            message.setMessage(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
+            message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
     }
@@ -90,6 +98,14 @@ public class ChatService {
         } else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
             log.info(message.getSender() + "님이 방에서 나갔습니다.");
             message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.FREEZE.equals(message.getType())) {
+            log.info(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            message.setMessage(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.BAN.equals(message.getType())) {
+            log.info(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
+            message.setMessage(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
             message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
