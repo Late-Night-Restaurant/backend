@@ -36,4 +36,4 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: clean build   // gradle clean build를 실행하는 워크플로우
+        arguments: clean build    # gradle clean build를 실행하는 워크플로우
