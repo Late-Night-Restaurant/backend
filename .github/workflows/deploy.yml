@@ -53,9 +53,9 @@ jobs:
 #        with:
 #          arguments: clean build -x test
 
-      - name: Make Zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip .
-        shell: bash
+#      - name: Make Zip file
+#        run: zip -qq -r ./$GITHUB_SHA.zip .
+#        shell: bash
 
           
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
