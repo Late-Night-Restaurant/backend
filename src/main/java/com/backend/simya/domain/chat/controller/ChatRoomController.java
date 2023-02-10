@@ -8,6 +8,7 @@ import com.backend.simya.domain.user.dto.response.ChatLoginInfo;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -108,5 +109,14 @@ public class ChatRoomController {
                     .token("Invalid Token")
                     .build();
         }
+    }
+
+    /**
+     * 채팅방 얼리기
+     */
+    @PatchMapping("/room/{roomId}")
+    @ResponseBody
+    public ChatRoom freezeRoom(@PathVariable String roomId) {
+        return chatRoomRepository.freezeChatRoom(roomId);
     }
 }

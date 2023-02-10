@@ -70,6 +70,16 @@ public class ChatRoomRepository {
         return chatRoom;
     }
 
+    /**
+     * 채팅방 얼리기(삭제) : Redis에 저장되어 있던 채팅방 목록에서 삭제한다.
+     */
+    public ChatRoom freezeChatRoom(String id) {
+        ChatRoom chatRoom = hashOpsChatRoom.get(CHAT_ROOMS, id);
+        chatRoom.setFreeze(true);
+        hashOpsChatRoom.delete(CHAT_ROOMS, id);   // TODO 그냥 freeze: true인 채로 저장할까
+        return chatRoom;
+    }
+
     public void saveChatRoom(ChatRoom chatRoom) {
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
     }
