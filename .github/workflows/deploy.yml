@@ -47,15 +47,15 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-#        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        run: ./gradlew build
-        shell: bash
-#        with:
-#          arguments: clean build -x test
-
-#      - name: Make Zip file
-#        run: zip -qq -r ./$GITHUB_SHA.zip .
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+#        run: ./gradlew build
 #        shell: bash
+        with:
+          arguments: clean build -x test
+
+      - name: Make Zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
 
           
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
