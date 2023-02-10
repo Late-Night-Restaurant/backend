@@ -64,7 +64,7 @@ jobs:
 
       ## 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./${{ S3_BUCKET_NAME }}.zip ./deploy
+        run: zip -r -qq -j ./simya-s3-bucket.zip ./deploy
           
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
@@ -80,7 +80,7 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./${{ S3_BUCKET_NAME }}.zip s3://${{ S3_BUCKET_NAME }}/
+          ./simya-s3-bucket.zip s3://simya-s3-bucket/
 #          aws deploy push \
 #            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
 #            --ignore-hidden-files \
