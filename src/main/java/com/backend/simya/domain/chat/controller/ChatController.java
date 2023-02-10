@@ -2,24 +2,19 @@ package com.backend.simya.domain.chat.controller;
 
 import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.dto.ChatMessageCustom;
-import com.backend.simya.domain.chat.dto.ChatMessageForAndroid;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.profile.entity.Profile;
-import com.backend.simya.domain.user.entity.User;
-import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
-import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LazyInitializationException;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 
 /**
