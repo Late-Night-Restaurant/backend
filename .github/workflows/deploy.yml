@@ -55,9 +55,9 @@ jobs:
 #        with:
 #          arguments: clean build -x test
 
-      - name: Make Zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip .
-        shell: bash
+#      - name: Make Zip file
+#        run: zip -qq -r ./$GITHUB_SHA.zip .
+#        shell: bash
 #        run: |
 #          mv ./build/libs/simya-0.0.1-SNAPSHOT.jar ./
 #          zip buildFile.zip ./scripts/deploy.sh  ./scripts/server-check.sh ./appspec.yml ./simya-0.0.1-SNAPSHOT.jar
