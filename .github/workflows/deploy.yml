@@ -85,13 +85,12 @@ jobs:
       
       # 5. 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
-        run: |
-#        aws s3 cp --region ap-northeast-2 ./simya.zip s3://${{ env.S3_BUCKET_NAME }}/
-          aws deploy push \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
-            --s3-location s3://${{ env.S3_BUCKET_NAME }}/simya.zip \
-            --source .
+        run: aws s3 cp --region ap-northeast-2 ./simya.zip s3://${{ env.S3_BUCKET_NAME }}/simya.zip
+#          aws deploy push \
+#            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+#            --ignore-hidden-files \
+#            --s3-location s3://${{ env.S3_BUCKET_NAME }}/simya.zip \
+#            --source .
         #          aws s3 cp \
         #            --region ap-northeast-2 \
         #            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
