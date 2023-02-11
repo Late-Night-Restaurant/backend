@@ -36,7 +36,7 @@ REPOSITORY=/home/ubuntu/app
 cd $REPOSITORY
 
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
-JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
+JAR_PATH=$REPOSITORY/simya-0.0.1-SNAPSHOT.jar
 
 CURRENT_PID=$(pgrep -fla java | grep hayan | awk '{print $1}')
 
