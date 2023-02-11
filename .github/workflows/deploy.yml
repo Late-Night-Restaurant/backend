@@ -56,13 +56,13 @@ jobs:
 #          arguments: clean build -x test
 
       - name: Make Zip file
-#        run: zip -qq -r ./$GITHUB_SHA.zip .
-#        shell: bash
-        run: |
-          mv ./build/libs/simya-0.0.1-SNAPSHOT.jar ./
-          zip buildFile.zip ./scripts/deploy.sh  ./scripts/server-check.sh ./appspec.yml ./simya-0.0.1-SNAPSHOT.jar 
-
-      
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
+#        run: |
+#          mv ./build/libs/simya-0.0.1-SNAPSHOT.jar ./
+#          zip buildFile.zip ./scripts/deploy.sh  ./scripts/server-check.sh ./appspec.yml ./simya-0.0.1-SNAPSHOT.jar
+#
+#
 
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
@@ -75,14 +75,14 @@ jobs:
       # 5. 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
         run: | 
-#          aws s3 cp \
-#            --region ap-northeast-2 \
-#            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
           aws deploy push \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
             --ignore-hidden-files \
             --s3-location s3://${{ env.S3_BUCKET_NAME }}/$GITHUB_SHA.zip \
             --source .
+        #          aws s3 cp \
+        #            --region ap-northeast-2 \
+        #            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
             
       # 6. S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
