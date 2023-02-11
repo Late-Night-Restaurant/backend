@@ -47,6 +47,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "activated")
     private boolean activated;
 
+    @Embedded
+    private Address address;
+
     // 연관관계 매핑
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)
