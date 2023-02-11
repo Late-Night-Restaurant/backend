@@ -74,7 +74,7 @@ jobs:
         run: cp ./scripts/*.sh ./deploy
 
       - name: Make Zip file
-        run: zip -r ./${{ env.S3_BUCKET_NAME }}.zip ./deploy
+        run: zip -r ./simya-deployment.zip ./deploy
         shell: bash
 
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
@@ -87,7 +87,7 @@ jobs:
       
       # 5. 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
-        run: aws s3 cp --region ap-northeast-2 ./${{ env.S3_BUCKET_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/
+        run: aws s3 cp --region ap-northeast-2 ./simya-deployment.zip s3://${{ env.S3_BUCKET_NAME }}/
 #          aws deploy push \
 #            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
 #            --ignore-hidden-files \
@@ -108,8 +108,8 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=${{ env.S3_BUCKET_NAME }}.zip,bundleType=zip \
-          --region ${{ env.AWS_REGION }}
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=simya-deployment.zip,bundleType=zip \
+          --region ap-northeast-2
 #
 #          DEPLOYMENT_ID=$(cat deploymentId.txt | jq -r '.deploymentId')
 #
