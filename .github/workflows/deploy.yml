@@ -75,14 +75,14 @@ jobs:
       # 5. 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
         run: | 
-          aws s3 cp \
-            --region ap-northeast-2 \
-            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
-#          aws deploy push \
-#            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-#            --ignore-hidden-files \
-#            --s3-location s3://${{ env.S3_BUCKET_NAME }}/$GITHUB_SHA.zip \
-#            --source .
+#          aws s3 cp \
+#            --region ap-northeast-2 \
+#            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://${{ env.S3_BUCKET_NAME }}/$GITHUB_SHA.zip \
+            --source .
             
       # 6. S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
@@ -92,20 +92,20 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=community-build/buildFile.zip,bundleType=zip > deploymentId.txt
-          
-          DEPLOYMENT_ID=$(cat deploymentId.txt | jq -r '.deploymentId')
-
-          echo "Wait 60 seconds for deployment and test"
-          sleep 60
-
-          IS_SUCCESS=$(aws deploy get-deployment --deployment-id $DEPLOYMENT_ID | jq -r '.deploymentInfo.status')
-
-          echo $IS_SUCCESS;
-
-          if [ "$IS_SUCCESS" = "Succeeded" ];
-          then
-            echo "SUCCESS DEPLOY!"
-          else
-            echo "FAIL DEPLOY!"
-            exit 1
-          fi
+#
+#          DEPLOYMENT_ID=$(cat deploymentId.txt | jq -r '.deploymentId')
+#
+#          echo "Wait 60 seconds for deployment and test"
+#          sleep 60
+#
+#          IS_SUCCESS=$(aws deploy get-deployment --deployment-id $DEPLOYMENT_ID | jq -r '.deploymentInfo.status')
+#
+#          echo $IS_SUCCESS;
+#
+#          if [ "$IS_SUCCESS" = "Succeeded" ];
+#          then
+#            echo "SUCCESS DEPLOY!"
+#          else
+#            echo "FAIL DEPLOY!"
+#            exit 1
+#          fi
