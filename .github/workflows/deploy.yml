@@ -108,7 +108,7 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=${{ env.S3_BUCKET_NAME }}.zip,bundleType=zip
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=${{ env.S3_BUCKET_NAME }}.zip,bundleType=zip \
           --region ${{ env.AWS_REGION }}
 #
 #          DEPLOYMENT_ID=$(cat deploymentId.txt | jq -r '.deploymentId')
