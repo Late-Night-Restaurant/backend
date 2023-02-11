@@ -23,7 +23,6 @@
         <div class="col-md-6 text-right">
             <a class="btn btn-primary btn-sm" href="/simya/logout">로그아웃</a>
             <a class="btn btn-secondary btn-sm" @click="sendMessage('FREEZE')" href="">채팅방 얼리기</a>
-
             <a class="btn btn-info btn-sm" href="/simya/chat/room">채팅방 나가기</a>
         </div>기
     </div>
