@@ -81,7 +81,7 @@ public class ChatController {
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
             }
-            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s
+            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)
             log.info("Android에서 가져온 뒤 바꾼 message : {}", message);
             chatService.sendChatMessage(message);
         } catch (Exception e) {
