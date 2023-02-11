@@ -14,7 +14,7 @@ chmod +x $PROJECT_ROOT/build/libs/
 
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/simya-0.0.1-SNAPSHOT.jar $JAR_FILE
+cp $PROJECT_ROOT/simya-0.0.1-SNAPSHOT.jar $JAR_FILE
 
 echo "> JAR_FILE: $JAR_FILE"
 echo "> $JAR_FILE 에 실행권한 추가"
