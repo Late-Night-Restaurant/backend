@@ -13,6 +13,7 @@ permissions:
     pattern: "**"  # 매칭되는 패턴에만 권한 부여(optional)
     owner: ubuntu  # object의 소유자(optional)
     group: ubuntu  # object의 그룹 이름(optional)
+    mode: 755
 
 ### hooks 섹션: 배포 이후에 수행할 스크립트
 hooks:
