@@ -9,6 +9,7 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 TIME_NOW=$(date +%c)
 
+chmod +x $PROJECT_ROOT/build/libs/
 
 
 # build 파일 복사
