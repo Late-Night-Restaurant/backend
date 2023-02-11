@@ -16,12 +16,12 @@ permissions:
 
 ### hooks 섹션: 배포 이후에 수행할 스크립트
 hooks:
-  AfterInstall:
-    - location: scripts/stop.sh  # hooks에서 실행할 스크립트 위치
-      timeout: 60  # 스크립트 실행에 허용되는 최대시간(optional), 이를 넘는 경우 배포 실패로 간주됨
-      runas: ubuntu  # 스크립트를 실행하는 사용자(optional)
+#  AfterInstall:
+#    - location: scripts/stop.sh  # hooks에서 실행할 스크립트 위치
+#      timeout: 60  # 스크립트 실행에 허용되는 최대시간(optional), 이를 넘는 경우 배포 실패로 간주됨
+#      runas: ubuntu  # 스크립트를 실행하는 사용자(optional)
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: deploy.sh
       timeout: 60   # 60 안에 실행하지 못하면 배포 실패로 간주
       runas: ubuntu
 #  ValidateService:
