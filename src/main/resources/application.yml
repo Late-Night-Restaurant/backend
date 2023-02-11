@@ -34,8 +34,8 @@ spring:
         client:
           registration:
             kakao:
-              client-id: ${KAKAO_CLIENT_ID}
-              client-secret: ${KAKAO_CLIENT_SECRET}
+              client-id: 4ab7b193bdd041a30446ede285a1f77a
+              client-secret: cjW924pToyagFaxJhQy5Ad3KKFpeEtrU
               redirect-uri: http://localhost:8080/api/authorization_code
               authorization-grant-type: authorization_code
               client-authentication-method: GET
@@ -79,5 +79,5 @@ jwt:
   header: Access-Token
   #HS512 알고리즘을 사용 => 512bit(64byte) 이상의 secret key를 사용해야 한다.
   #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
-  secret: ${JWT_SECRET_KEY}
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
 
