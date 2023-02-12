@@ -22,7 +22,7 @@ public class ChatMessageCustom {
     }
 
     public enum MessageType {
-        ENTER, TALK, QUIT, FREEZE, BAN
+        ENTER, TALK, QUIT, FREEZE, BAN, FORCE
     }
 
     private ChatMessage.MessageType type;   // 메시지 유형

@@ -59,6 +59,14 @@ public class ChatService {
         chatRoomRepository.removeChatRoom(String.valueOf(roomId));
     }
 
+    public void freezeChatRoom(Long roomId) {
+
+    }
+
+    public void reactivateChatRoom(Long roomId) {
+
+    }
+
 
     /*
      * 메시지 발송 - 지정한 웹 소켓 세션으로 메시지 발송
@@ -77,12 +85,16 @@ public class ChatService {
             message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
             message.setSender("[알림]");
         } else if (ChatMessage.MessageType.FREEZE.equals(message.getType())) {
-            log.info(message.getSender() + "님의 이야기 집이 얼었습니다.");
-            message.setMessage(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            log.info("현재 이야기 집이 얼었습니다.");
+            message.setMessage("현재 이야기 집이 얼었습니다.");
             message.setSender("[알림]");
         } else if (ChatMessage.MessageType.BAN.equals(message.getType())) {
-            log.info(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
-            message.setMessage(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
+            log.info(message.getSender() + "님의 채팅창이 얼었습니다.");
+            message.setMessage(message.getSender() + "님의 채팅창이 얼었습니다.");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.FORCE.equals(message.getType())) {
+            log.info("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
+            message.setMessage("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
             message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
@@ -100,12 +112,16 @@ public class ChatService {
             message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
             message.setSender("[알림]");
         } else if (ChatMessage.MessageType.FREEZE.equals(message.getType())) {
-            log.info(message.getSender() + "님의 이야기 집이 얼었습니다.");
-            message.setMessage(message.getSender() + "님의 이야기 집이 얼었습니다.");
+            log.info("현재 이야기 집이 얼었습니다.");
+            message.setMessage("현재 이야기 집이 얼었습니다.");
             message.setSender("[알림]");
         } else if (ChatMessage.MessageType.BAN.equals(message.getType())) {
-            log.info(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
-            message.setMessage(message.getSender() + "님이 방에서 퇴장당하셨습니다.");
+            log.info(message.getSender() + "님의 채팅창이 얼었습니다.");
+            message.setMessage(message.getSender() + "님의 채팅창이 얼었습니다.");
+            message.setSender("[알림]");
+        } else if (ChatMessage.MessageType.FORCE.equals(message.getType())) {
+            log.info("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
+            message.setMessage("주인장님이 " + message.getSender() + "님을 강제퇴장시켰습니다.");
             message.setSender("[알림]");
         }
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);

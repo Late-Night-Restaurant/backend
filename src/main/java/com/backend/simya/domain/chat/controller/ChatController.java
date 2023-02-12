@@ -41,6 +41,9 @@ public class ChatController {
             String authenticateUser = tokenProvider.getAuthentication(token).getName();
             String profile = "X";
 
+            if (ChatMessage.MessageType.BAN.equals(message.getType())) {
+
+            }
             try {
                 log.info("ChatController - Authenticate User : {}", authenticateUser);
                 profile = userService.getSessionToMainProfile(authenticateUser).getNickname();
@@ -52,7 +55,7 @@ public class ChatController {
             message.setSender(profile);         // 로그인 회원 정보로 대화명 설정
             message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
 
-            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s
+            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)
             chatService.sendChatMessage(message);
         } catch (Exception e) {
             log.error(e.getMessage());
