@@ -15,6 +15,14 @@ spring:
     username: simya
     password: simya1234!!
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+
+
   jpa:
     open-in-view: true
     hibernate:
@@ -69,11 +77,25 @@ spring:
     host: localhost
     port: 6379
 
+
 logging:
   level:
     com.com.backend: DEBUG   # 로깅 레벨 설정
     org.springframework.messaging: TRACE
     org.springframework.web.socket: TRACE
+
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA2SZKNJZQGTBNX5WY
+      secret-key: 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
+    s3:
+      bucket: simya-s3-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 jwt:
   header: Access-Token
