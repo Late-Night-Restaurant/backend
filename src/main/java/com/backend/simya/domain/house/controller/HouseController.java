@@ -5,7 +5,7 @@ import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
-import com.backend.simya.domain.house.dto.request.NewHouseRequestDto;
+import com.backend.simya.domain.house.dto.request.HouseCreateRequestDto;
 import com.backend.simya.domain.house.dto.request.TopicRequestDto;
 import com.backend.simya.domain.house.dto.response.*;
 import com.backend.simya.domain.house.entity.House;
@@ -22,6 +22,7 @@ import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,10 +52,11 @@ public class HouseController {
     }
 
     @PostMapping("")
-    public BaseResponse<HouseResponseDto> createHouse(@RequestBody NewHouseRequestDto newHouseRequestDto) {
+    public BaseResponse<HouseResponseDto> createHouse(@RequestPart HouseCreateRequestDto houseCreateRequestDto,
+                                                      @RequestPart("image")MultipartFile signboardImage) {
         try {
-            Profile masterProfile = profileService.findProfile(newHouseRequestDto.getProfileId());
-            return new BaseResponse<>(houseService.createHouse(masterProfile, newHouseRequestDto));
+            Profile masterProfile = profileService.findProfile(houseCreateRequestDto.getProfileId());
+            return new BaseResponse<>(houseService.createHouse(houseCreateRequestDto, signboardImage, masterProfile));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

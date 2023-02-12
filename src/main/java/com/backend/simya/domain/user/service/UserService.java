@@ -1,21 +1,24 @@
 package com.backend.simya.domain.user.service;
 
 
+import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.repository.ProfileRepository;
-import com.backend.simya.domain.user.dto.request.UserDto;
+import com.backend.simya.domain.user.dto.request.FormSignupRequestDto;
 import com.backend.simya.domain.user.entity.LoginType;
 import com.backend.simya.domain.user.entity.Role;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponseStatus;
+import com.backend.simya.global.util.S3Uploader;
 import com.backend.simya.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
@@ -28,41 +31,29 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
+
 
     @Transactional
-    public UserDto formSignup(UserDto userDto) throws BaseException {
+    public void formSignup(FormSignupRequestDto formSignupRequestDto,
+                           MultipartFile profileImage) throws BaseException {
 
-        if (userRepository.existsByEmail(userDto.getEmail())) {
+        if (userRepository.existsByEmail(formSignupRequestDto.getEmail())) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
-
         try {
-            User newUser = User.builder()
-                    .email(userDto.getEmail())
-                    .pw(passwordEncoder.encode(userDto.getPassword()))
-                    .loginType(LoginType.FORM)
-                    .role(Role.ROLE_USER)
-                    .activated(true)
-                    .build();
-
-            Profile mainProfile = Profile.builder()
-                    .nickname(userDto.getProfile().getNickname())
-                    .user(newUser)
-                    .comment(userDto.getProfile().getComment())
-                    .picture(userDto.getProfile().getPicture())
-                    .isRepresent(true)
-                    .build();
+            User newUser = formSignupRequestDto.toEntity(passwordEncoder);
+            String profileImageUrl = s3Uploader.uploadImage(profileImage);
+            Profile mainProfile = formSignupRequestDto.getProfile().toEntity(true, profileImageUrl);
             newUser.addProfile(mainProfile);
-            profileRepository.save(mainProfile);
-
-            return UserDto.from(userRepository.save(newUser));
-
+            userRepository.save(newUser);
         } catch (Exception exception) {
+            log.info(exception.getMessage());
             throw new BaseException(POST_FAIL_USER);
         }
     }
+
 
     //== 유저, 권한정보를 가져오는 메소드 ==//
     // email 을 기준으로 정보를 가져온다.

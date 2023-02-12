@@ -81,7 +81,6 @@ public class House extends BaseTimeEntity {
     }
 
     public House updateSignboard(HouseUpdateRequestDto houseUpdateRequestDto) {
-        this.signboardImageUrl = houseUpdateRequestDto.getSignboardImageUrl();
         this.houseName = houseUpdateRequestDto.getHouseName();
         this.comment = houseUpdateRequestDto.getComment();
 

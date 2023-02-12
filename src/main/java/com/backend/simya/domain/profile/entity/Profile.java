@@ -56,7 +56,7 @@ public class Profile extends BaseTimeEntity {
     private String comment;
 
     @Column(name = "picture")
-    private String picture;
+    private String pictureUrl;
 
     @Column(name = "is_represent")
     private boolean isRepresent;
@@ -85,9 +85,7 @@ public class Profile extends BaseTimeEntity {
     public Profile update(ProfileUpdateDto updateDto) {
         this.nickname = updateDto.getNickname();
         this.comment = updateDto.getComment();
-        this.picture = updateDto.getPicture();
         this.isRepresent = updateDto.isRepresent();
-
         return this;
     }
 

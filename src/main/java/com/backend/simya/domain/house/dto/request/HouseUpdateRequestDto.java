@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HouseUpdateRequestDto {
     
-    private String signboardImageUrl;
     private String houseName;
     private String comment;
 }
