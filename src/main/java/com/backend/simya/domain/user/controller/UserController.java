@@ -2,17 +2,14 @@ package com.backend.simya.domain.user.controller;
 
 import com.backend.simya.domain.jwt.dto.response.TokenDto;
 import com.backend.simya.domain.jwt.service.AuthService;
-import com.backend.simya.domain.profile.dto.response.ProfileResponseDto;
 import com.backend.simya.domain.profile.entity.Profile;
-import com.backend.simya.domain.profile.service.ProfileService;
-import com.backend.simya.domain.user.dto.request.LoginDto;
-import com.backend.simya.domain.user.dto.request.UserDto;
+import com.backend.simya.domain.user.dto.request.FormSignupRequestDto;
+import com.backend.simya.domain.user.dto.request.LoginRequestDto;
 import com.backend.simya.domain.user.dto.response.FormLoginResponseDto;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.common.BaseResponse;
-import com.backend.simya.global.common.BaseResponseStatus;
 import com.backend.simya.global.common.ValidErrorDetails;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,23 +38,25 @@ public class UserController {
 
 
     @PostMapping("/form-signup")
-    public BaseResponse signup(@Valid @RequestBody UserDto userDto, Errors errors) {
-
+    public BaseResponse formSignup(@Valid @RequestPart FormSignupRequestDto formSignupRequestDto,
+                                        @RequestPart("image") MultipartFile profileImage,
+                                        Errors errors) {
         if (errors.hasErrors()) {
             log.info("ValidError: {}", errors);
             ValidErrorDetails errorDetails = new ValidErrorDetails();
             return new BaseResponse<>(REQUEST_ERROR, errorDetails.validateHandling(errors));
         }
-
         try {
-            return new BaseResponse<>(userService.formSignup(userDto));
+            userService.formSignup(formSignupRequestDto, profileImage);
+            return new BaseResponse<>(SUCCESS_TO_SIGNUP);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
+
     @PostMapping("/form-login")
-    public BaseResponse formLogin(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response, Errors errors) {
+    public BaseResponse formLogin(@Valid @RequestBody LoginRequestDto loginDto, HttpServletResponse response, Errors errors) {
 
         if (errors.hasErrors()) {
             log.info("ValidError: {}", errors);
