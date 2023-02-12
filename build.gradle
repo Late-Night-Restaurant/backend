@@ -31,6 +31,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config'
 
 
 
