@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
@@ -43,8 +44,13 @@ public class HouseService {
     public HouseResponseDto createHouse(HouseCreateRequestDto newHouseRequestDto,
                                         MultipartFile signboardImage,
                                         Profile masterProfile) throws BaseException {
-        String signboardImageUrl = s3Uploader.uploadImage(signboardImage);
         try {
+            String signboardImageUrl;
+            if (signboardImage == null) {
+                signboardImageUrl = "default";
+            } else {
+                signboardImageUrl = s3Uploader.uploadImage(signboardImage);
+            }
             House savedHouse = houseRepository.save(newHouseRequestDto.toEntity(masterProfile, signboardImageUrl));
             return HouseResponseDto.from(savedHouse);
         } catch (Exception ignored) {
