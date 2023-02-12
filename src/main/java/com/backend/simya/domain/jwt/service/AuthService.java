@@ -1,18 +1,14 @@
 package com.backend.simya.domain.jwt.service;
 
-import com.backend.simya.domain.jwt.dto.request.TokenRequestDto;
 import com.backend.simya.domain.jwt.dto.response.TokenDto;
 import com.backend.simya.domain.jwt.entity.RefreshToken;
 import com.backend.simya.domain.jwt.repository.RefreshTokenRepository;
-import com.backend.simya.domain.user.dto.request.LoginDto;
+import com.backend.simya.domain.user.dto.request.LoginRequestDto;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.global.common.BaseException;
 import com.backend.simya.global.config.jwt.JwtFilter;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
 
@@ -47,7 +39,7 @@ public class AuthService {
     // 롤백 문제 발생, @Transactional과 예외처리 관련
     // 왜 UsernameNotFound가 아닌 Exception이 올까?
     //@Transactional
-    public TokenDto login(LoginDto loginDto) throws BaseException {
+    public TokenDto login(LoginRequestDto loginDto) throws BaseException {
 
         Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
         if (user.isEmpty()) {
@@ -69,7 +61,7 @@ public class AuthService {
 
     // Authencation 객체를 만들어 인증한 뒤, Context에 저장
     @Transactional
-    public Authentication authenticate(LoginDto loginDto) throws UsernameNotFoundException, BaseException {
+    public Authentication authenticate(LoginRequestDto loginDto) throws UsernameNotFoundException, BaseException {
         try {
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
