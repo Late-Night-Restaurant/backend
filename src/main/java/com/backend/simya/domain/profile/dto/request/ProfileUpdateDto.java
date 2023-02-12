@@ -7,13 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileUpdateDto {
 
-    private Long profileId;
-
     private String nickname;
     
     private String comment;
-
-    private String picture;
 
     private boolean isRepresent;
 }

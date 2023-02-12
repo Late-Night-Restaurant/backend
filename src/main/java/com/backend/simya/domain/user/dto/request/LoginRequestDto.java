@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -14,7 +13,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
+public class LoginRequestDto {
 
     @NotBlank(message = "아이디는 필수 입력 값입니다,")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
