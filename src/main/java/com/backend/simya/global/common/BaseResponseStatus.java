@@ -31,6 +31,7 @@ public enum BaseResponseStatus {
     SUCCESS_TO_UPDATE_PROFILE(true, 200, "프로필 수정이 완료되었습니다."),
     SUCCESS_TO_DELETE_PROFILE(true, 200, "프로필이 삭제되었습니다."),
     SUCCESS_TO_CHANGE_MAIN_PROFILE(true, 200, "메인 프로필이 변경되었습니다."),
+    SUCCESS_TO_SIGNUP(true, 200, "회원가입에 성공했습니다"),
 
 
 
@@ -71,6 +72,7 @@ public enum BaseResponseStatus {
     USERS_NEED_ONE_MORE_PROFILE(false, 400, "모든 회원은 하나 이상의 프로필이 존재해야 합니다."),
     ALREADY_DELETE_PROFILE(false, 400, "이미 삭제된 프로필입니다."),
     PROFILE_NOT_FOUND(false, 404, "존재하지 않는 프로필입니다."),
+    INVALID_FILE_TYPE(false, 404, "잘못된 형식의 파일입니다."),
 
 
     // house 관련
@@ -96,6 +98,7 @@ public enum BaseResponseStatus {
     POST_FAIL_USER(false, 500, "회원가입에 실패했습니다."),
     DELETE_FAIL_USER(false, 500, "회원탈퇴에 실패했습니다."),
     FAILED_TO_LOGOUT(false, 500, "로그아웃에 실패했습니다."),
+    FAILED_TO_UPLOAD_IMAGE(false, 500, "이미지 업로드에 실패했습니다."),
 
 
     // [PATCH] user 정보 수정 시
