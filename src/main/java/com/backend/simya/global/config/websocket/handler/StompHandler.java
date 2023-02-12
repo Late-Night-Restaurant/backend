@@ -82,7 +82,7 @@ public class StompHandler implements ChannelInterceptor {
                         .profileId(profile.getProfileId())
                         .sender(profile.getNickname())
                         .token(tokenProvider.getJwt().getAccessToken())
-                        .picture(profile.getPicture())
+                        .pictureUrl(profile.getPictureUrl())
                         .build());
                 log.info("SUBSCRIBED {}, {}", name, roomId);
 
@@ -112,7 +112,7 @@ public class StompHandler implements ChannelInterceptor {
                         .sender(profile.getNickname())
                         .profileId(profile.getProfileId())
                         .token(tokenProvider.getJwt().getAccessToken())
-                        .picture(profile.getPicture())
+                        .pictureUrl(profile.getPictureUrl())
                         .build());
             } catch (LazyInitializationException | BaseException e) {
                 log.error("유저와 대표 프로필 조회에 실패했습니다.");
