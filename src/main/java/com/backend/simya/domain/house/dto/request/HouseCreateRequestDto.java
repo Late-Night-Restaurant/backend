@@ -8,17 +8,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class NewHouseRequestDto {
+public class HouseCreateRequestDto {
 
     private Long profileId;  // 방장 프로필_id
     private String category;
-    private String signboardImageUrl;
     private String houseName;
     private String comment;
 
-    public House toEntity(Profile profile) {
+    public House toEntity(Profile ownerProfile, String signboardImageUrl) {
         return House.builder()
-                .profile(profile)
+                .profile(ownerProfile)
                 .category(Category.nameOf(category))
                 .houseName(houseName)
                 .comment(comment)

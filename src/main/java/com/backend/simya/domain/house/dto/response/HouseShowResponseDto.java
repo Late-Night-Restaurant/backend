@@ -16,6 +16,6 @@ public class HouseShowResponseDto {
     private Long houseId;
     private String houseName;
     private String name;
-    private String picture;
+    private String pictureUrl;
     private String comment;
 }

@@ -1,19 +1,24 @@
 package com.backend.simya.domain.user.dto.request;
 
 import com.backend.simya.domain.profile.dto.request.ProfileRequestDto;
-import com.backend.simya.domain.profile.entity.Profile;
+import com.backend.simya.domain.user.entity.LoginType;
+import com.backend.simya.domain.user.entity.Role;
 import com.backend.simya.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 
-@Getter @Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class FormSignupRequestDto {
 
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -27,15 +32,13 @@ public class UserDto {
 
     private ProfileRequestDto profile;
 
-    public static UserDto from(User user) {
-        if (user == null) return null;
-        Profile profile = user.getProfileList().get(0);
-        ProfileRequestDto profileRequestDto = new ProfileRequestDto(profile.getNickname(), profile.getComment(), profile.getPicture());
-
-        return UserDto.builder()
-                .email(user.getEmail())
-                .profile(profileRequestDto)
+    public User toEntity(PasswordEncoder passwordEncoder) {
+        return User.builder()
+                .email(this.getEmail())
+                .pw(passwordEncoder.encode(this.getPassword()))
+                .loginType(LoginType.FORM)
+                .role(Role.ROLE_USER)
+                .activated(true)
                 .build();
     }
-
 }

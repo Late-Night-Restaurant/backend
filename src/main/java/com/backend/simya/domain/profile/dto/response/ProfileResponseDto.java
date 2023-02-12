@@ -11,7 +11,6 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProfileResponseDto {
 
     @JsonProperty("profileId")
@@ -23,15 +22,15 @@ public class ProfileResponseDto {
     @JsonProperty("comment")
     private String comment;
 
-    @JsonProperty("picture")
-    private String picture;
+    @JsonProperty("pictureUrl")
+    private String pictureUrl;
 
     public static ProfileResponseDto from(Profile profile) {
         return ProfileResponseDto.builder()
                 .profileId(profile.getProfileId())
                 .nickname(profile.getNickname())
                 .comment(profile.getComment())
-                .picture(profile.getPicture())
+                .pictureUrl(profile.getPictureUrl())
                 .build();
     }
 }
