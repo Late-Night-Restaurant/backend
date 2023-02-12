@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import java.util.Optional;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 @Slf4j
@@ -39,7 +41,7 @@ public class UserController {
 
     @PostMapping("/form-signup")
     public BaseResponse formSignup(@Valid @RequestPart FormSignupRequestDto formSignupRequestDto,
-                                        @RequestPart("image") MultipartFile profileImage,
+                                        @RequestPart(value = "image", required = false) MultipartFile profileImage,
                                         Errors errors) {
         if (errors.hasErrors()) {
             log.info("ValidError: {}", errors);

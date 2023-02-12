@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
@@ -53,7 +54,7 @@ public class HouseController {
 
     @PostMapping("")
     public BaseResponse<HouseResponseDto> createHouse(@RequestPart HouseCreateRequestDto houseCreateRequestDto,
-                                                      @RequestPart("image")MultipartFile signboardImage) {
+                                                      @RequestPart(value = "image", required = false) MultipartFile signboardImage) {
         try {
             Profile masterProfile = profileService.findProfile(houseCreateRequestDto.getProfileId());
             return new BaseResponse<>(houseService.createHouse(houseCreateRequestDto, signboardImage, masterProfile));
