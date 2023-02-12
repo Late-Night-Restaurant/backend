@@ -10,11 +10,14 @@ import com.backend.simya.domain.profile.repository.ProfileRepository;
 import com.backend.simya.domain.review.entity.Review;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.global.common.BaseException;
+import com.backend.simya.global.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,33 +30,30 @@ import static com.backend.simya.global.common.BaseResponseStatus.*;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final S3Uploader s3Uploader;
 
     @Transactional
-    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto, User currentUser) throws BaseException {
+    public ProfileResponseDto createProfile(ProfileRequestDto profileRequestDto,
+                                            MultipartFile profileImage,
+                                            User currentUser) throws BaseException {
         try {
-            Profile savedProfile = profileRepository.save(profileRequestDto.toEntity());
+            String profileImageUrl = s3Uploader.uploadImage(profileImage);
+            Profile savedProfile = profileRepository.save(profileRequestDto.toEntity(false, profileImageUrl));
             currentUser.addProfile(savedProfile);
-            return ProfileResponseDto.builder()
-                    .profileId(savedProfile.getProfileId())
-                    .nickname(savedProfile.getNickname())
-                    .comment(savedProfile.getNickname())
-                    .picture(savedProfile.getPicture())
-                    .build();
+            return ProfileResponseDto.from(savedProfile);
         } catch (Exception ignored) {
             throw new BaseException(POST_FAIL_PROFILE);
         }
     }
 
     @Transactional
-    public void updateProfile(ProfileUpdateDto profileUpdateDto) throws BaseException {
-
+    public ProfileResponseDto updateProfile(ProfileUpdateDto profileUpdateDto, Long profileId) throws BaseException {
         try {
-            Profile profile = findProfile(profileUpdateDto.getProfileId());
-            profile.update(profileUpdateDto);
+            Profile profile = findProfile(profileId);
+            return  ProfileResponseDto.from(profile.update(profileUpdateDto));
         } catch (Exception ignored) {
             throw new BaseException(UPDATE_FAIL_PROFILE);
         }
-
     }
 
     // 대표 프로필은 하나만 지정 가능
@@ -94,6 +94,7 @@ public class ProfileService {
                 if (isMain) {
                     profileToDelete.autoSetMainProfile();
                 } else {
+                    s3Uploader.deleteImage(profileToDelete.getPictureUrl());
                     profileRepository.delete(profileToDelete);
                 }
             }

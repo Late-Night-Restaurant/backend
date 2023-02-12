@@ -146,7 +146,7 @@ public class OauthService {
                 .nickname("simya")
                 .user(newKakaoUser)
                 .comment(null)
-                .picture(null)
+                .pictureUrl(null)
                 .isRepresent(true)
                 .build();
         newKakaoUser.addProfile(mainProfile);
