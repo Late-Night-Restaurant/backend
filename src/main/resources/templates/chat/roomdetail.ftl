@@ -22,6 +22,7 @@
         </div>
         <div class="col-md-6 text-right">
             <a class="btn btn-primary btn-sm" href="/simya/logout">로그아웃</a>
+            <a class="btn btn-secondary btn-sm" @click="sendMessage('FREEZE')" href="">채팅방 얼리기</a>
             <a class="btn btn-info btn-sm" href="/simya/chat/room">채팅방 나가기</a>
         </div>
     </div>
@@ -95,8 +96,13 @@
                 this.userCount = recv.userCount;
                 this.profileList.unshift({"profileId":recv.profileId, "nickname": recv.nickname, "comment": recv.comment, "picture": recv.picture});
                 this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message});
+            },
+            banMessage: function (type, profileId) {   // front의 프로필 리스트 영역에서 선택한 값으로 넘겨주기 -> @click='sendMessage("BAN", 1)';
+                ws.send("/pub/simya/chat/message", {"token": this.token}, JSON.stringify({type:type, roomId:this.roomId, message:this.message}));
+                this.message = '';
+            },
+            forceQuitMessage: function(type, profileId) {
             }
-        }
     });
 </script>
 </body>
