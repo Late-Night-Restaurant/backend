@@ -1,18 +1,13 @@
 package com.backend.simya.global.config.websocket.handler;
 
-import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.dto.ChatMessageCustom;
-import com.backend.simya.domain.chat.dto.ChatRoom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.profile.repository.ProfileRepository;
-import com.backend.simya.domain.user.entity.User;
-import com.backend.simya.domain.user.repository.UserRepository;
 import com.backend.simya.domain.user.service.UserService;
 import com.backend.simya.global.common.BaseException;
-import com.backend.simya.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LazyInitializationException;
@@ -24,7 +19,6 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -77,7 +71,7 @@ public class StompHandler implements ChannelInterceptor {
                 chatRoomRepository.addRoomProfileList(profile, roomId);
 
                 chatService.sendChatMessage(ChatMessageCustom.builder()
-                        .type(ChatMessage.MessageType.ENTER)
+                        .type(ChatMessageCustom.MessageType.ENTER)
                         .roomId(roomId)
                         .profileId(profile.getProfileId())
                         .sender(profile.getNickname())
@@ -107,7 +101,7 @@ public class StompHandler implements ChannelInterceptor {
                 Profile profile = userService.getSessionToMainProfile(name);
                 chatRoomRepository.deleteRoomProfileList(profile, roomId);
                 chatService.sendChatMessage(ChatMessageCustom.builder()
-                        .type(ChatMessage.MessageType.QUIT)
+                        .type(ChatMessageCustom.MessageType.QUIT)
                         .roomId(roomId)
                         .sender(profile.getNickname())
                         .profileId(profile.getProfileId())

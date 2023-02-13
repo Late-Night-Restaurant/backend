@@ -24,12 +24,13 @@ public class ChatMessage {
     }
 
     @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String message, long userCount) {
+    public ChatMessage(MessageType type, String roomId, String sender, String message, long userCount, long freezeId) {
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
         this.message = message;
         this.userCount = userCount;
+        this.freezeId = freezeId;
     }
 
     public enum MessageType {
@@ -41,5 +42,6 @@ public class ChatMessage {
     private String sender;   // 발신자
     private String message;  // 메시지 데이터
     private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
+    private long freezeId;  // 강제퇴장(FORCE) / 채팅얼리기(BAN) 하는 대상의 프로필 ID
 }
 

@@ -10,7 +10,7 @@ public class ChatMessageCustom {
     }
 
     @Builder
-    public ChatMessageCustom(ChatMessage.MessageType type, String roomId, Long profileId, String sender, String pictureUrl, String token, String message, long userCount) {
+    public ChatMessageCustom(ChatMessageCustom.MessageType type, String roomId, Long profileId, String sender, String pictureUrl, String token, String message, long userCount) {
         this.type = type;
         this.roomId = roomId;
         this.profileId = profileId;
@@ -25,7 +25,7 @@ public class ChatMessageCustom {
         ENTER, TALK, QUIT, FREEZE, BAN, FORCE
     }
 
-    private ChatMessage.MessageType type;   // 메시지 유형
+    private ChatMessageCustom.MessageType type;   // 메시지 유형
     private String roomId;   // 방 번호
     private String sender;
     private Long profileId;
@@ -33,4 +33,5 @@ public class ChatMessageCustom {
     private String token;// 발신자
     private String message;  // 메시지 데이터
     private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
+//    private long freezeId;  // 강제퇴장(FORCE) or 채팅얼리기(BAN) 하는 대상의 프로필 ID
 }
