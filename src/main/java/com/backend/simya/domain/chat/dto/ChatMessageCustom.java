@@ -31,7 +31,7 @@ public class ChatMessageCustom {
     private String sender;
     private Long profileId;
     private String pictureUrl;
-    private String token;// 발신자
+    private String token;    // 발신자
     private String message;  // 메시지 데이터
     private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
 //    private long freezeId;  // 강제퇴장(FORCE) or 채팅얼리기(BAN) 하는 대상의 프로필 ID
