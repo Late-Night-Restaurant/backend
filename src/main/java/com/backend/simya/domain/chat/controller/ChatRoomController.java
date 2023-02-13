@@ -114,7 +114,7 @@ public class ChatRoomController {
     /**
      * 채팅방 얼리기
      */
-    @PatchMapping("/room/{roomId}")
+    @PatchMapping("/room /{roomId}")
     @ResponseBody
     public ChatRoom freezeRoom(@PathVariable String roomId) {
         return chatRoomRepository.freezeChatRoom(roomId);
