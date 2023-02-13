@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import static com.backend.simya.global.common.BaseResponseStatus.*;
 
 /**
@@ -38,13 +41,17 @@ public class UserService {
     @Transactional
     public void formSignup(FormSignupRequestDto formSignupRequestDto,
                            MultipartFile profileImage) throws BaseException {
-
         if (userRepository.existsByEmail(formSignupRequestDto.getEmail())) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
         try {
+            String profileImageUrl;
+            if(profileImage == null){
+                profileImageUrl = "default";
+            } else {
+                profileImageUrl = s3Uploader.uploadImage(profileImage);
+            }
             User newUser = formSignupRequestDto.toEntity(passwordEncoder);
-            String profileImageUrl = s3Uploader.uploadImage(profileImage);
             Profile mainProfile = formSignupRequestDto.getProfile().toEntity(true, profileImageUrl);
             newUser.addProfile(mainProfile);
             userRepository.save(newUser);
