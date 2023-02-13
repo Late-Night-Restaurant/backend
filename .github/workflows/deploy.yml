@@ -6,33 +6,30 @@ name: Deploy to Amazon EC2
 on:
   # Triggers the workflow on push or pull request events but only for the "develop" branch
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-
-  # trigger가 없어도 수동으로 동작할 수 있게끔 해주는 역할
-  workflow_dispatch:
-
+    branches:
+      - develop
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: simya-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: codedeploy-simya-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: simya-deployment-group
-  
-#permissions:
-#  contents: read
 
+permissions:
+  contents: read
+
+  # Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      
+
       # 1. 기본 체크아웃
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,37 +40,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          
+
       # 3. Gradle build (test 제외)
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Build with Gradle
-        run: |
-          ./gradlew clean build
-
-      ### 디렉토리 생성
-      - name: Make Directory
-        run: mkdir -p deploy
-
-      ### Jar 파일 복사
-      - name: Copy Jar
-#        run: zip -qq -r ./$GITHUB_SHA.zip .
-#        shell: bash
-        run: cp ./build/libs/simya-0.0.1-SNAPSHOT.jar ./deploy
-#          zip buildFile.zip ./scripts/deploy.sh  ./scripts/server-check.sh ./appspec.yml ./simya-0.0.1-SNAPSHOT.jar
-
-      ### appspec.yml 파일 복사
-      - name: Copy appspec.yml
-        run: cp appspec.yml ./deploy
-
-      ### script files 복사
-      - name: Copy script
-        run: cp ./scripts/*.sh ./deploy
-
-      - name: Make Zip file
-        run: zip -r ./simya.zip ./deploy
-        shell: bash
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: clean build -x test
 
       # 4. AWS 인증(IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
@@ -82,46 +54,27 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
       # 5. 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
-        run: aws s3 cp --region ap-northeast-2 ./simya.zip s3://${{ env.S3_BUCKET_NAME }}/simya.zip
-#          aws deploy push \
-#            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-#            --ignore-hidden-files \
-#            --s3-location s3://${{ env.S3_BUCKET_NAME }}/simya.zip \
-#            --source .
-        #          aws s3 cp \
-        #            --region ap-northeast-2 \
-        #            buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/community-build/
-            
+        run: |
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
+            --source .
+
       # 6. S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
       - name: Deploy to AWS EC2 from S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws deploy create-deployment \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-          --file-exists-behavior OVERWRITE \
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=simya.zip,bundleType=zip \
-          --region ap-northeast-2
-#
-#          DEPLOYMENT_ID=$(cat deploymentId.txt | jq -r '.deploymentId')
-#
-#          echo "Wait 60 seconds for deployment and test"
-#          sleep 60
-#
-#          IS_SUCCESS=$(aws deploy get-deployment --deployment-id $DEPLOYMENT_ID | jq -r '.deploymentInfo.status')
-#
-#          echo $IS_SUCCESS;
-#
-#          if [ "$IS_SUCCESS" = "Succeeded" ];
-#          then
-#            echo "SUCCESS DEPLOY!"
-#          else
-#            echo "FAIL DEPLOY!"
-#            exit 1
-#          fi
+          aws deploy create-deployment \ 
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
