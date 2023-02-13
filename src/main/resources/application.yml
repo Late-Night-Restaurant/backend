@@ -14,7 +14,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: simya
     password: simya1234!!
-<<<<<<< HEAD
 
   servlet:
     multipart:
@@ -23,8 +22,6 @@ spring:
       max-request-size: 100MB
 
 
-=======
->>>>>>> 68ff091 ([ feat ] Chat Freeze)
 
   jpa:
     open-in-view: true

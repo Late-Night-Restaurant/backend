@@ -29,13 +29,8 @@ public class ChatMessageCustom {
     private String roomId;   // 방 번호
     private String sender;
     private Long profileId;
-<<<<<<< HEAD
     private String pictureUrl;
     private String token;// 발신자
-=======
-    private String picture;
-    private String token;    // 발신자
->>>>>>> 92d9477 ([ feat ] ChatMessage ENUM 추가)
     private String message;  // 메시지 데이터
     private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
 }
