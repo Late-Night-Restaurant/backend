@@ -11,6 +11,7 @@ public class ChatMessageCustom {
 
     @Builder
     public ChatMessageCustom(ChatMessageCustom.MessageType type, String roomId, Long profileId, String sender, String pictureUrl, String token, String message, long userCount) {
+
         this.type = type;
         this.roomId = roomId;
         this.profileId = profileId;
