@@ -28,4 +28,3 @@ hooks:
 #  ValidateService:
 #    - location: scripts/server-check.sh
 #      timeout: 60
-
