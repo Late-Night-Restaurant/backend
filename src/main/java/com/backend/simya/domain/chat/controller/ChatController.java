@@ -4,7 +4,6 @@ import com.backend.simya.domain.chat.dto.ChatMessage;
 import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import com.backend.simya.domain.chat.service.ChatService;
-import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.domain.profile.entity.Profile;
 import com.backend.simya.domain.user.service.UserService;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Controller;
 //@Controller
 public class ChatController {
 
-    private final AuthService authService;
     private final UserService userService;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatService chatService;
@@ -75,7 +73,7 @@ public class ChatController {
                 Profile profile = userService.getSessionToMainProfile(authenticateUser);
                 message.setProfileId(profile.getProfileId());
                 message.setSender(profile.getNickname());
-                message.setPicture(profile.getPicture());
+                message.setPictureUrl(profile.getPictureUrl());
                 message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
                 log.info("@MessageMapping - authenticateUser: {} => nickname: {}", authenticateUser, profile.getNickname());
             } catch (LazyInitializationException | BaseException e) {
