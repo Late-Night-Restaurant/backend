@@ -77,7 +77,7 @@ public class StompHandler implements ChannelInterceptor {
                 chatRoomRepository.addRoomProfileList(profile, roomId);
 
                 chatService.sendChatMessage(ChatMessageCustom.builder()
-                        .type(ChatMessage.MessageType.ENTER)
+                        .type(ChatMessageCustom.MessageType.ENTER)
                         .roomId(roomId)
                         .profileId(profile.getProfileId())
                         .sender(profile.getNickname())
@@ -107,7 +107,7 @@ public class StompHandler implements ChannelInterceptor {
                 Profile profile = userService.getSessionToMainProfile(name);
                 chatRoomRepository.deleteRoomProfileList(profile, roomId);
                 chatService.sendChatMessage(ChatMessageCustom.builder()
-                        .type(ChatMessage.MessageType.QUIT)
+                        .type(ChatMessageCustom.MessageType.QUIT)
                         .roomId(roomId)
                         .sender(profile.getNickname())
                         .profileId(profile.getProfileId())
