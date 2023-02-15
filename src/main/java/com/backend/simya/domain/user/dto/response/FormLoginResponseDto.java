@@ -25,6 +25,7 @@ public class FormLoginResponseDto {
         return FormLoginResponseDto.builder()
                 .profileId(profile.getProfileId())
                 .nickname(profile.getNickname())
+                .pictureUrl(profile.getPictureUrl())
                 .comment(profile.getComment())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
