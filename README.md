@@ -40,19 +40,19 @@
 
 ## 🛠️ 개발 환경
 
-| 프레임워크 | SpringBoot |
-| --- | --- |
-| 통합 개발 환경 | IntelliJ |
+| 프레임워크 | SpringBoot                      |
+| --- |---------------------------------|
+| 통합 개발 환경 | IntelliJ                        |
 | 배포 | AWS EC2(Ubuntu), S3, CodeDepoly |
-| 데이터베이스 | AWS RDS(MySQL) |
-| Project 빌드 관리 도구 | Gradle |
-| CI/CD 툴 | Github Actions |
-| ERD 다이어그램 툴 | ERDCloud |
-| Java version | Java 11  |
-| 패키지 구조 | 도메인 패키지 구조 |
-| 기타 | JPA, WebSocket, Redis |
-| 버전 관리 | Git, Github |
-| 협업 툴 | Notion, Discord, Figma |
+| 데이터베이스 | AWS RDS(MySQL)                  |
+| Project 빌드 관리 도구 | Gradle                          |
+| CI/CD 툴 | Github Actions                  |
+| ERD 다이어그램 툴 | ERDCloud, MySQLWorkbench        |
+| Java version | Java 11                         |
+| 패키지 구조 | 도메인 패키지 구조                      |
+| 기타 | JPA, WebSocket, Redis           |
+| 버전 관리 | Git, Github                     |
+| 협업 툴 | Notion, Discord, Figma          |
 
 ### 시스템 아키텍처
 
