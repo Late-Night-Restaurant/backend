@@ -16,7 +16,7 @@
 자극적이고, 나 빼고 모두가 행복해보이는, 사용할 수록 외롭게만 느껴졌던 SNS의 문제점을 해결하고자 합니다.
 
 
-## 주요 기능
+### 주요 기능
 #### 회원
 - 회원가입, 탈퇴
 - 로그인, 로그아웃
@@ -38,8 +38,9 @@
 - 손님 목록, 프로필 정보 조회
 
 
+<br/><br/>
 
-# 🛠️ 개발 환경
+## 🛠️ 개발 환경
 
 | 프레임워크 | SpringBoot |
 | --- | --- |
@@ -55,17 +56,17 @@
 | 버전 관리 | Git, Github |
 | 협업 툴 | Notion, Discord, Figma |
 
-## 시스템 아키텍처
+### 시스템 아키텍처
 
 ![Service Architecture.png](https://user-images.githubusercontent.com/80024278/222954610-ca9ece89-a8b2-4a1f-bcc2-a1839304a7d8.png)
 
-## 프로젝트 폴더 구조
+### 프로젝트 폴더 구조
 <details>
 <summary> 자세히 보기 👈🏻 </summary>
 <div>
 
 
-    ```java
+ ```
     src
         ├── main
         │   ├── java
@@ -229,21 +230,21 @@
         │   └── resources
         │       ├── application.yml
         └── test
-    ```
+ ```
 </div>
 </details>
 
-## API 명세서
+### API 명세서
 
 📄 [API Docs](https://www.notion.so/1e03e34f94fa453e9091fd298e53319a)
 
-## 데이터베이스 ERD
+### 데이터베이스 ERD
 
 ![심야식당 ERD.png](https://user-images.githubusercontent.com/80024278/222954607-54d96c60-bcbc-478f-8370-dc1df44190b1.png)
 
-# 👥 Backend Convention
+## 👥 Backend Convention
 
-## 브랜치 운영 방식
+### 브랜치 운영 방식
 
 > master, develop, feat, fix, test, study
 >
@@ -266,7 +267,7 @@ ex. **feat/#3-header, feat/#56-login, feat/#32-profile_info_detail**
 
 `study` : 공부용 브랜치    ex. **study/wak**
 
-## Commit Message
+### Commit Message
 
 커밋 메시지 앞에 [ feat ] [ fix ]..  붙이기 → **[ 태그 ] 제목** 의 형태로
 
@@ -287,7 +288,7 @@ ex. **feat/#3-header, feat/#56-login, feat/#32-profile_info_detail**
 
 [깃(Git) 커밋 가이드](https://tech.10000lab.xyz/git/git-commit-discipline.html)
 
-## Code Review
+### Code Review
 
 1. 리뷰 시 확인해보면 좋을 것
     1. 시간복잡도
@@ -308,7 +309,7 @@ ex. **feat/#3-header, feat/#56-login, feat/#32-profile_info_detail**
 
 [효과적인 코드리뷰를 위한 리뷰어의 자세](https://tech.kakao.com/2022/03/17/2022-newkrew-onboarding-codereview/)
 
-# 🧑🏻‍💻 Team
+## 🧑🏻‍💻 Team
 
 
 |                                        **[왁/위진영](https://github.com/weejinyoung)**                                         |                                         **[쭈니/박예준](https://github.com/jun02160)**                                          |
