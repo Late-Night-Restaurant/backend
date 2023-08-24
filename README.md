@@ -234,7 +234,7 @@
 
 ### API 명세서
 
-📄 [API Docs](https://www.notion.so/1e03e34f94fa453e9091fd298e53319a)
+📄 [API Docs](https://plain-sea-ee4.notion.site/API-1e03e34f94fa453e9091fd298e53319a?pvs=4)
 
 ### 데이터베이스 ERD
 
